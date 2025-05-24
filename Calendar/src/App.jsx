@@ -7,6 +7,7 @@ function App() {
   return (
     <>
       <Nav></Nav>
+      <h2>hui</h2>
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route
