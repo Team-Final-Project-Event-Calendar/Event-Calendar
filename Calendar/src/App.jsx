@@ -7,7 +7,7 @@ function App() {
     <>
       <Nav></Nav>
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/" element={<Authentication />}></Route>
         <Route
           path="/account/authentication"
           element={<Authentication />}
