@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import "./Authentication.css";
 
 export default function Authentication() {
   const [mode, setMode] = useState("login");
@@ -75,8 +76,8 @@ export default function Authentication() {
   };
 
   return (
-    <div>
-      <div>
+    <div className="auth-container">
+      <div className="auth-toggle">
         <button
           type="button"
           onClick={() => setMode("login")}
@@ -93,7 +94,7 @@ export default function Authentication() {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form className="auth-form" onSubmit={handleSubmit}>
         <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
         {mode === "register" && (
