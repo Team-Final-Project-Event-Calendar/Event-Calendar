@@ -57,6 +57,9 @@
     font-size: 1rem;
     background: #f9f9f9;
     transition: border-color 0.2s;
+    color: #222;
+    /* Added for dark text */
+
 }
 
 .auth-form input:focus {
