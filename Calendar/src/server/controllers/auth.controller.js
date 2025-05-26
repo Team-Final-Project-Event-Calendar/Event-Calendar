@@ -9,6 +9,31 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
     const existingUser = await User.findOne({ email });
+    if (
+      password.length < 8 ||
+      password.length > 30 ||
+      !/[A-Za-z]/.test(password)
+    ) {
+      return res.status(400).send({
+        message:
+          "Password must be 8-30 characters long and include at least one letter (A-Z).",
+      });
+    }
+    if (
+      !firstName ||
+      !lastName ||
+      firstName.length < 1 ||
+      firstName.length > 30 ||
+      lastName.length < 1 ||
+      lastName.length > 30 ||
+      !/^[A-Za-z]+$/.test(firstName) ||
+      !/^[A-Za-z]+$/.test(lastName)
+    ) {
+      return res.status(400).send({
+        message:
+          "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z).",
+      });
+    }
     if (existingUser)
       return res.status(409).json({ msg: "User already exists" });
 
