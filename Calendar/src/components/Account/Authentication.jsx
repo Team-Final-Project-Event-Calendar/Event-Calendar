@@ -7,6 +7,7 @@ import "./Authentication.css";
 export default function Authentication() {
   const [mode, setMode] = useState("login");
   const [user, setUser] = useState({
+    username: "",
     email: "",
     password: "",
     firstName: "",
@@ -41,15 +42,16 @@ export default function Authentication() {
   };
 
   const handleRegister = async () => {
-    const { email, password, firstName, lastName } = user;
+    const { username, email, password, firstName, lastName } = user;
     console.log(user, "hope is currently working");
 
-    if (!email || !password || !firstName || !lastName) {
+    if (!username || !email || !password || !firstName || !lastName) {
       return alert("Please fill in all fields");
     }
 
     try {
       const res = await axios.post("http://localhost:5000/api/auth/register", {
+        username,
         email,
         password,
         firstName,
@@ -59,7 +61,13 @@ export default function Authentication() {
       console.log("Registration successful!", res.data);
       alert("Registration successful! Please login.");
       setMode("login");
-      setUser({ email: "", password: "", firstName: "", lastName: "" });
+      setUser({
+        username: "",
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+      });
     } catch (err) {
       console.error("Registration failed:", err.response?.data || err.message);
       alert("Registration failed!");
@@ -99,6 +107,16 @@ export default function Authentication() {
 
         {mode === "register" && (
           <>
+            <div>
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                type="text"
+                value={user.username}
+                onChange={updateUser("username")}
+                placeholder="Enter your username"
+              />
+            </div>
             <div>
               <label htmlFor="firstName">First Name</label>
               <input

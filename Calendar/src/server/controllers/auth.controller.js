@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { username, email, password, firstName, lastName } = req.body;
     const existingUser = await User.findOne({ email });
     if (
       password.length < 8 ||
@@ -37,7 +37,13 @@ router.post("/register", async (req, res) => {
     if (existingUser)
       return res.status(409).json({ msg: "User already exists" });
 
-    const newUser = new User({ email, password, firstName, lastName });
+    const newUser = new User({
+      username,
+      email,
+      password,
+      firstName,
+      lastName,
+    });
     await newUser.save();
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
