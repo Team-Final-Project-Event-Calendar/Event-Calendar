@@ -4,9 +4,9 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import authRoutes from "./auth.js";
+import authRoutes from "./controllers/auth.controller.js";
 import verifyToken from "./verify-token.js";
-import User from "./user.js";
+import User from "./models/user.model.js";
 
 const app = express();
 
