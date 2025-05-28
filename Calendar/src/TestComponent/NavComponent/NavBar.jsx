@@ -6,11 +6,13 @@ function NavBar() {
     <div
       style={{
         display: "flex",
-        backgroundColor: "yellow",
+        backgroundColor: "#5565dd",
         justifyContent: "space-between",
+        alignItems: "center",
         padding: "20px",
       }}
     >
+      <div className="logo-container"></div>
       <DrawerComponent />
     </div>
   );

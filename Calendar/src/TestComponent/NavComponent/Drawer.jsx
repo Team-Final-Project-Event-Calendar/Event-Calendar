@@ -4,7 +4,7 @@ function DrawerComponent() {
   return (
     <Drawer.Root>
       <Drawer.Trigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="xs">
           Side menu
         </Button>
       </Drawer.Trigger>
@@ -13,10 +13,10 @@ function DrawerComponent() {
         <Drawer.Positioner padding="4">
           <Drawer.Content rounded="md">
             <Drawer.Header>
-              <Drawer.Title>Drawer Title</Drawer.Title>
+              <Drawer.Title style={{ color: "pink" }}>Side menu</Drawer.Title>
             </Drawer.Header>
-            <Drawer.Body>
-              <p>Profile</p>
+            <Drawer.Body style={{ justifyItems: "center", color: "white" }}>
+              <p style={{ paddingBottom: "30px" }}>Profile</p>
               <p>My Events</p>
             </Drawer.Body>
             <Drawer.Footer>
