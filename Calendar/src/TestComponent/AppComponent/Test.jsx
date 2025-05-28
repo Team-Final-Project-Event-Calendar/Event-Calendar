@@ -15,7 +15,12 @@ function Test() {
     <div>
       <NavBar isSignedIn={isSignedIn} onSignIn={handleSignIn} />
       <Routes>
-        <Route path="/" element={<HomeView></HomeView>}></Route>
+        <Route
+          path="/"
+          element={
+            isSignedIn ? <h1>Successfully signed in</h1> : <HomeView></HomeView>
+          }
+        ></Route>
       </Routes>
     </div>
   );
