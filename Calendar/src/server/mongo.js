@@ -7,7 +7,7 @@ import cors from "cors";
 import authRoutes from "./controllers/auth.controller.js";
 import verifyToken from "./verify-token.js";
 import User from "./models/user.model.js";
-
+import Event from "./models/event.model.js";
 const app = express();
 
 app.use(
@@ -27,24 +27,25 @@ mongoose
   .then(() => {
     console.log("✅ connect with MongoDB!");
 
-    app.post("/api/movies", verifyToken, async (req, res) => {
+    app.post("/api/events", verifyToken, async (req, res) => {
       try {
-        const newUser = new User(req.body);
-        const savedUser = await savedUser.save();
-        res.status(201).json(savedUser);
+        const newEvent = new Event({ ...req.body, userId: req.user.id });
+        const savedEvent = await newEvent.save();
+        res.status(201).json(savedEvent);
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
     });
-
-    app.get("/api/movies", verifyToken, async (req, res) => {
+    
+    app.get("/api/events", verifyToken, async (req, res) => {
       try {
-        const user = await User.find({});
-        res.json(user);
+        const events = await Event.find({ userId: req.user.id });
+        res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
+    
 
     app.listen(process.env.PORT, () => {
       console.log(`🚀 Server work with http://localhost:${process.env.PORT}`);

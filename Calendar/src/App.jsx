@@ -1,16 +1,20 @@
+// app.jsx
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Nav from "./components/Nav/Nav";
+import Admin from "./components/Authentication/Admin/Admin";
+import Home from "./components/Home";
 function App() {
   return (
     <>
       <Nav></Nav>
       <Routes>
-        <Route path="/" element={<Authentication />}></Route>
+        <Route path="/" element={<Home />}></Route>
         <Route
-          path="/account/authentication"
+          path="/authentication/authentication"
           element={<Authentication />}
         ></Route>
+        <Route path='/authentication/admin' element={<Admin />}></Route>
       </Routes>
     </>
   );

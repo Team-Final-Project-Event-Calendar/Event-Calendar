@@ -1,14 +1,13 @@
+import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import React from "react";
-import { useState } from "react";
-import axios from "axios";
+import { AuthContext } from "./AuthContext";
 import "./Authentication.css";
 
 export default function Authentication() {
+  const { login, register, logout, isLoggedIn, user: loggedUser } = useContext(AuthContext);
   const [mode, setMode] = useState("login");
   const [user, setUser] = useState({
     username: "",
-    phoneNumber: "", // <-- use camelCase
     email: "",
     password: "",
     firstName: "",
@@ -17,177 +16,75 @@ export default function Authentication() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const updateUser = (prop) => (e) =>
-    setUser({ ...user, [prop]: e.target.value });
+  const updateUser = (prop) => (e) => setUser({ ...user, [prop]: e.target.value });
 
   const handleLogin = async () => {
-    const { email, password } = user;
-    if (!email || !password) {
-      return alert("Please enter an email and password");
-    }
-
+    if (!user.email || !user.password) return alert("Please enter email and password");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-
-      const data = res.data;
-      console.log("Login successful!", data);
+      await login(user.email, user.password);
       alert("Login successful!");
       navigate(location.state?.from?.pathname ?? "/");
     } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
-      alert("Login failed!");
+      console.error("Login failed:", err);
+      const message =
+        err?.response?.data?.msg || err?.response?.data?.message || "Login failed!";
+      alert(message);
     }
   };
 
   const handleRegister = async () => {
-    const { username, phoneNumber, email, password, firstName, lastName } =
-      user;
-    console.log(user, "hope is currently working");
-
-    if (
-      !username ||
-      !phoneNumber || // <-- check for 'phoneNumber'
-      !email ||
-      !password ||
-      !firstName ||
-      !lastName
-    ) {
+    const { username, email, password, firstName, lastName } = user;
+    if (!username || !email || !password || !firstName || !lastName) {
       return alert("Please fill in all fields");
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
-        username,
-        phoneNumber, // <-- send as 'phoneNumber'
-        email,
-        password,
-        firstName,
-        lastName,
-      });
-
-      console.log("Registration successful!", res.data);
+      await register({ username, email, password, firstName, lastName });
       alert("Registration successful! Please login.");
       setMode("login");
-      setUser({
-        username: "",
-        phoneNumber: "",
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-      });
+      setUser({ username: "", email: "", password: "", firstName: "", lastName: "" });
     } catch (err) {
-      console.error("Registration failed:", err.response?.data || err.message);
-      alert("Registration failed!");
+      console.error("Registration failed:", err.message);
+      alert(err.message);
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (mode === "login") {
-      handleLogin();
-    } else {
-      handleRegister();
-    }
+    mode === "login" ? handleLogin() : handleRegister();
   };
 
   return (
     <div className="auth-container">
-      <div className="auth-toggle">
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          disabled={mode === "login"}
-        >
-          Login
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("register")}
-          disabled={mode === "register"}
-        >
-          Register
-        </button>
-      </div>
-
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>{mode === "login" ? "Login" : "Register"}</h2>
-
-        {mode === "register" && (
-          <>
-            <div>
-              <label htmlFor="username">Username</label>
-              <input
-                id="username"
-                type="text"
-                value={user.username}
-                onChange={updateUser("username")}
-                placeholder="Enter your username"
-              />
-            </div>
-            <div>
-              <label htmlFor="phoneNumber">Phone Number</label>
-              <input
-                type="tel"
-                value={user.phoneNumber}
-                onChange={updateUser("phoneNumber")}
-                name="phoneNumber"
-                id="phoneNumber"
-                pattern="^0[0-9]{9}$"
-                required
-                placeholder="Enter phone number"
-              />
-            </div>
-            <div>
-              <label htmlFor="firstName">First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                value={user.firstName}
-                onChange={updateUser("firstName")}
-                placeholder="Enter your first name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                value={user.lastName}
-                onChange={updateUser("lastName")}
-                placeholder="Enter your last name"
-              />
-            </div>
-          </>
-        )}
-
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={user.email}
-            onChange={updateUser("email")}
-            placeholder="Enter your email"
-          />
+      {isLoggedIn ? (
+        <div className="auth-logged-in">
+          <h2>Welcome, {loggedUser?.firstName || "User"}!</h2>
+          <button onClick={logout}>Logout</button>
         </div>
-
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={user.password}
-            onChange={updateUser("password")}
-            placeholder="Enter your password"
-          />
-        </div>
-
-        <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
-      </form>
+      ) : (
+        <>
+          <div className="auth-toggle">
+            <button onClick={() => setMode("login")} disabled={mode === "login"}>Login</button>
+            <button onClick={() => setMode("register")} disabled={mode === "register"}>Register</button>
+          </div>
+  
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <h2>{mode === "login" ? "Login" : "Register"}</h2>
+  
+            {mode === "register" && (
+              <>
+                <input type="text" placeholder="Username" value={user.username} onChange={updateUser("username")} />
+                <input type="text" placeholder="First Name" value={user.firstName} onChange={updateUser("firstName")} />
+                <input type="text" placeholder="Last Name" value={user.lastName} onChange={updateUser("lastName")} />
+              </>
+            )}
+            <input type="email" placeholder="Email" value={user.email} onChange={updateUser("email")} />
+            <input type="password" placeholder="Password" value={user.password} onChange={updateUser("password")} />
+            <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
+          </form>
+        </>
+      )}
     </div>
   );
+  
 }
