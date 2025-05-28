@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, email, password, firstName, lastName } = req.body;
+    const { username, phoneNumber, email, password, firstName, lastName } =
+      req.body;
     const existingUser = await User.findOne({ email });
     if (
       password.length < 8 ||
@@ -19,6 +20,7 @@ router.post("/register", async (req, res) => {
           "Password must be 8-30 characters long and include at least one letter (A-Z).",
       });
     }
+
     if (
       !firstName ||
       !lastName ||
@@ -39,6 +41,7 @@ router.post("/register", async (req, res) => {
 
     const newUser = new User({
       username,
+      phoneNumber,
       email,
       password,
       firstName,
