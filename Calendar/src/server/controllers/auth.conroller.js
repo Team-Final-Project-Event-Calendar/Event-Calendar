@@ -8,7 +8,7 @@ router.post("/register", async (req, res) => {
     const { username, phoneNumber, email, password, firstName, lastName } =
       req.body;
 
-    if (!/^[0-9]{7,15}$/.test(phoneNumber)) {
+    if (!/^(\+|0)?[0-9]{7,15}$/.test(phoneNumber)) {
       return res.status(400).json({
         message: "Phone number must be a valid number with 7 to 15 digits.",
       });

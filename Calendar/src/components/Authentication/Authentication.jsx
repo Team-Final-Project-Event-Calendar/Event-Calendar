@@ -135,7 +135,7 @@ export default function Authentication() {
                 onChange={updateUser("phoneNumber")}
                 name="phoneNumber"
                 id="phoneNumber"
-                pattern="^\d{7,15}$"
+                pattern="^(\+|0)?\d{7,15}$"
                 required
                 placeholder="Enter phone number"
               />
