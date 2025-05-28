@@ -1,10 +1,9 @@
 import React from "react";
 import DrawerComponent from "./Drawer";
 import AvatarComponent from "./AvatarCompont";
+import { Button } from "@chakra-ui/react";
 
-function NavBar() {
-  const signedIn = true;
-
+function NavBar({ isSignedIn, onSignIn }) {
   return (
     <div
       style={{
@@ -21,13 +20,15 @@ function NavBar() {
         className="rightside-navbar"
         style={{ display: "flex", gap: "20px", alignItems: "center" }}
       >
-        {signedIn ? (
+        {isSignedIn ? (
           <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <AvatarComponent />
-            <DrawerComponent />
+            <DrawerComponent onSignIn={onSignIn} />
           </div>
         ) : (
-          <a href="">Sign in</a>
+          <Button onClick={onSignIn} variant="ghost">
+            Sign In
+          </Button>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
 
-function DrawerComponent() {
+function DrawerComponent({ onSignIn }) {
   return (
     <Drawer.Root>
       <Drawer.Trigger asChild>
@@ -20,7 +20,7 @@ function DrawerComponent() {
               <p>My Events</p>
             </Drawer.Body>
             <Drawer.Footer>
-              <Button>Logout</Button>
+              <Button onClick={onSignIn}>Logout</Button>
             </Drawer.Footer>
             <Drawer.CloseTrigger asChild>
               <CloseButton size="sm" />
