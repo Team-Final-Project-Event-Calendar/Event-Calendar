@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Authentication from "./components/Account/Authentication";
+import Authentication from "./components/Authentication/Authentication";
 import Nav from "./components/Nav/Nav";
 function App() {
   return (
