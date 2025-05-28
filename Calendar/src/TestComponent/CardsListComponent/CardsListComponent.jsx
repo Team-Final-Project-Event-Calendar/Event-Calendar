@@ -11,6 +11,7 @@ function CardsListComponent() {
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
+        justifyContent: "center",
       }}
     >
       {Array.from({ length: 10 }).map((el) => (

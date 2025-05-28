@@ -3,6 +3,8 @@ import DrawerComponent from "./Drawer";
 import AvatarComponent from "./AvatarCompont";
 
 function NavBar() {
+  const signedIn = true;
+
   return (
     <div
       style={{
@@ -10,26 +12,23 @@ function NavBar() {
         backgroundColor: "#5565dd",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "20px",
+        padding: "10px 20px",
+        marginBottom: "20px",
       }}
     >
+      <a href="">About</a>
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "60vw",
-          margin: "0 auto",
-          alignItems: "center",
-        }}
+        className="rightside-navbar"
+        style={{ display: "flex", gap: "20px", alignItems: "center" }}
       >
-        <a href="">About</a>
-        <div
-          className="rightside-navbar"
-          style={{ display: "flex", gap: "20px", alignItems: "center" }}
-        >
-          <AvatarComponent />
-          <DrawerComponent />
-        </div>
+        {signedIn ? (
+          <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+            <AvatarComponent />
+            <DrawerComponent />
+          </div>
+        ) : (
+          <a href="">Sign in</a>
+        )}
       </div>
     </div>
   );
