@@ -8,7 +8,7 @@ export default function Authentication() {
   const [mode, setMode] = useState("login");
   const [user, setUser] = useState({
     username: "",
-    phonenumber: "", // use 'phonenumber' as string
+    phoneNumber: "", // <-- use camelCase
     email: "",
     password: "",
     firstName: "",
@@ -43,13 +43,13 @@ export default function Authentication() {
   };
 
   const handleRegister = async () => {
-    const { username, phonenumber, email, password, firstName, lastName } =
+    const { username, phoneNumber, email, password, firstName, lastName } =
       user;
     console.log(user, "hope is currently working");
 
     if (
       !username ||
-      !phonenumber ||
+      !phoneNumber || // <-- check for 'phoneNumber'
       !email ||
       !password ||
       !firstName ||
@@ -57,11 +57,10 @@ export default function Authentication() {
     ) {
       return alert("Please fill in all fields");
     }
-
     try {
       const res = await axios.post("http://localhost:5000/api/auth/register", {
         username,
-        phonenumber, // send as 'phonenumber'
+        phoneNumber, // <-- send as 'phoneNumber'
         email,
         password,
         firstName,
@@ -73,7 +72,7 @@ export default function Authentication() {
       setMode("login");
       setUser({
         username: "",
-        phonenumber: "",
+        phoneNumber: "",
         email: "",
         password: "",
         firstName: "",
@@ -129,13 +128,13 @@ export default function Authentication() {
               />
             </div>
             <div>
-              <label htmlFor="phonenumber">Phone Number</label>
+              <label htmlFor="phoneNumber">Phone Number</label>
               <input
                 type="tel"
-                value={user.phonenumber}
-                onChange={updateUser("phonenumber")}
-                name="phonenumber"
-                id="phonenumber"
+                value={user.phoneNumber}
+                onChange={updateUser("phoneNumber")}
+                name="phoneNumber"
+                id="phoneNumber"
                 pattern="^\d{7,15}$"
                 required
                 placeholder="Enter phone number"
