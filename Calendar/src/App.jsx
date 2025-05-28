@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Nav from "./components/Nav/Nav";
-import Test from "../Test";
 function App() {
   return (
     <>
