@@ -2,28 +2,28 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
-import verifyAdmin from '../verify-token.js';
-import verifyToken from '../verify-token.js';
+import verifyAdmin from "../verify-token.js";
+import verifyToken from "../verify-token.js";
 const router = express.Router();
 
-
-router.get('/admin', verifyAdmin, async (req, res) => {
-  res.json({ message: 'Welcome to the admin page' });
+router.get("/admin", verifyAdmin, async (req, res) => {
+  res.json({ message: "Welcome to the admin page" });
 });
 
 // users will be user later for events
-router.get('/users', verifyToken, async (req, res) => {
+router.get("/users", verifyToken, async (req, res) => {
   try {
-      const users = await User.find({}, '-password');
-      res.json(users);
+    const users = await User.find({}, "-password");
+    res.json(users);
   } catch (err) {
-      res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
-})
+});
 
 router.post("/register", async (req, res) => {
   try {
-    const { username, email, password, firstName, lastName } = req.body;
+    const { username, phoneNumber, email, password, firstName, lastName } =
+      req.body;
     const existingUser = await User.findOne({ email });
     if (
       password.length < 8 ||
@@ -33,6 +33,12 @@ router.post("/register", async (req, res) => {
       return res.status(400).send({
         message:
           "Password must be 8-30 characters long and include at least one letter (A-Z).",
+      });
+    }
+    if (!/^0[0-9]{9}$/.test(phoneNumber)) {
+      return res.status(400).json({
+        message:
+          "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long.",
       });
     }
     if (
@@ -55,11 +61,12 @@ router.post("/register", async (req, res) => {
 
     const newUser = new User({
       username,
+      phoneNumber,
       email,
       password,
       firstName,
       lastName,
-      role: "user", 
+      role: "user",
       isBlocked: false,
     });
     await newUser.save();
@@ -80,24 +87,32 @@ router.post("/login", async (req, res) => {
   if (!user) return res.status(400).json({ msg: "Invalid email!" });
 
   if (user.isBlocked) {
-    return res.status(403).json({ msg: "Your account has been blocked. Please contact the administrator." });
+    return res.status(403).json({
+      msg: "Your account has been blocked. Please contact the administrator.",
+    });
   }
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.status(400).json({ msg: "Invalid password!" });
 
-  const token = jwt.sign({ id: user._id,  role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+  const token = jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    }
+  );
+
+  res.json({
+    token,
+    user: { id: user._id, email: user.email, role: user.role },
   });
-
-  res.json({ token, user: { id: user._id, email: user.email,  role: user.role  } });
 });
-
 
 router.post("/logout", (req, res) => {
   res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
   });
   res.status(200).json({ message: "Logged out successfully" });
 });
@@ -120,7 +135,6 @@ router.post("/unblock/:id", verifyAdmin, async (req, res) => {
   }
 });
 
-
 router.delete("/delete/:id", verifyAdmin, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -132,6 +146,5 @@ router.delete("/delete/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 });
-
 
 export default router;

@@ -10,12 +10,12 @@ import "./index.css";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-    <Provider>
-      <BrowserRouter>
-        {/* <Test></Test> */}
-        <App />
-      </BrowserRouter>
-    </Provider>
+      <Provider>
+        <BrowserRouter>
+          {/* <Test></Test> */}
+          <App />
+        </BrowserRouter>
+      </Provider>
     </AuthProvider>
   </StrictMode>
 );
