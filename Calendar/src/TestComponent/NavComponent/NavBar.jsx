@@ -2,6 +2,7 @@ import React from "react";
 import DrawerComponent from "./Drawer";
 import AvatarComponent from "./AvatarCompont";
 import { Button } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 
 function NavBar({ isSignedIn, onSignIn }) {
   return (
@@ -26,7 +27,12 @@ function NavBar({ isSignedIn, onSignIn }) {
             <DrawerComponent onSignIn={onSignIn} />
           </div>
         ) : (
-          <Button onClick={onSignIn} variant="ghost">
+          <Button
+            as={NavLink}
+            to="/authentication/admin"
+            onClick={onSignIn}
+            variant="ghost"
+          >
             Sign In
           </Button>
         )}
