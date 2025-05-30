@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
+
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+
 const WeatherWidget = () => {
-  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
   const [city, setCity] = useState("Loading...");
+  const [region, setRegion] = useState("")
   const [temperature, setTemperature] = useState(null);
   const [condition, setCondition] = useState("");
   const [iconUrl, setIconUrl] = useState("");
@@ -28,12 +31,20 @@ const WeatherWidget = () => {
           `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
         );
         const geoData = await geoResponse.json();
+        console.log(geoData.address);
         setCity(
+          geoData.address.village ||
+          geoData.address.town ||
           geoData.address.city ||
-            geoData.address.town ||
-            geoData.address.village ||
-            geoData.address.state ||
-            "Unknown"
+          geoData.address.hamlet ||
+          "Unknown"
+        );
+
+        setRegion(
+          geoData.address.state ||
+          geoData.address.region ||
+          geoData.address.county ||
+          ""
         );
       });
     } else {
@@ -44,34 +55,39 @@ const WeatherWidget = () => {
   return (
     <div
       style={{
-        border: "2px solid #ccc",
+        border: "2px solid #90caf9",
         borderRadius: 18,
-        width: 180,
-        height: 200,
+        width: 240,
+        padding: 18,
+        background: "#e3f2fd",
+        color: "#1565c0",
+        fontFamily: "system-ui, sans-serif",
+        boxShadow: "0 2px 12px #90caf9",
+        margin: "1rem auto",
       }}
     >
-      <h2>The weather:</h2>
-      <p>
-        <span style={{ fontSize: 26 }}>🏡:</span>{" "}
-        <strong style={{ fontSize: 20 }}>{city}</strong>
-        <br></br>
-        <span style={{ fontSize: 26 }}>🌡️:</span>{" "}
-        <strong style={{ fontSize: 20 }}>
-          {temperature !== null ? `${temperature} ℃` : "Loading..."}
-        </strong>
-        <br></br>
-        <span style={{ fontSize: 28 }}>
-          🌦️:
-          {iconUrl && (
-            <img
-              src={iconUrl}
-              alt={condition}
-              title={condition}
-              style={{ width: 50, height: 50, verticalAlign: "middle" }}
-            />
-          )}
+      <div style={{ fontWeight: "bold", fontSize: 20, marginBottom: 4 }}>
+        {city}
+      </div>
+      <div style={{ fontSize: 15, color: "#1976d2", marginBottom: 12 }}>
+        {region}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+        {iconUrl && (
+          <img
+            src={iconUrl}
+            alt={condition}
+            title={condition}
+            style={{ width: 48, height: 48, marginRight: 10 }}
+          />
+        )}
+        <span style={{ fontSize: 32, fontWeight: "bold" }}>
+          {temperature !== null ? `${temperature}°C` : "Loading..."}
         </span>
-      </p>
+      </div>
+      <div style={{ fontSize: 18, textTransform: "capitalize" }}>
+        {condition}
+      </div>
     </div>
   );
 };
