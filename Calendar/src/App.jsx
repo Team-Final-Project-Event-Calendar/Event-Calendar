@@ -7,11 +7,9 @@ import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import NavBar from "./components/NavComponent/NavBar";
 import HomePage from "./pages/HomePage/HomePage";
 import { AuthContext } from "./components/Authentication/AuthContext";
-import { useContext } from "react";
 import AboutPage from "./pages/AboutPage/AboutPage";
 
 function App() {
-  const { user, isLogedIn } = useContext(AuthContext);
 
   return (
     <>
