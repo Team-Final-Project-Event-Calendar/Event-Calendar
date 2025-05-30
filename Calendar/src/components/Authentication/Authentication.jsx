@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import "./Authentication.css";
 
-export default function Authentication() {
+function Authentication() {
   const {
     login,
     register,
@@ -164,3 +164,6 @@ export default function Authentication() {
     </div>
   );
 }
+
+
+export default Authentication

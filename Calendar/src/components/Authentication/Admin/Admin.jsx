@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import styles from "./Admin.module.css";
 
-export default function Admin() {
+function Admin() {
   const { isLoggedIn, user } = useContext(AuthContext);
   const [search, setSearch] = useState("");
   const [allUsers, setAllUsers] = useState([]);
@@ -110,3 +110,5 @@ export default function Admin() {
     </div>
   );
 }
+
+export default Admin;
