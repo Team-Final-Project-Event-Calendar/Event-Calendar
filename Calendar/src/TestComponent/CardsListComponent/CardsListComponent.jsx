@@ -14,7 +14,7 @@ function CardsListComponent() {
         justifyContent: "center",
       }}
     >
-      {Array.from({ length: 10 }).map((el) => (
+      {Array.from({ length: 2 }).map((el) => (
         <CardComponent></CardComponent>
       ))}
     </div>
