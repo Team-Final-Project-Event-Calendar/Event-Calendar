@@ -7,8 +7,6 @@ function ProfilePage() {
 
   return (
     <div>
-      <p>Profile Page</p>
-
       <ProfileDetailsComponent userDetails={user} />
     </div>
   );

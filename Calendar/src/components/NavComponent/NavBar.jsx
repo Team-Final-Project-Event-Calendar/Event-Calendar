@@ -25,7 +25,9 @@ function NavBar() {
         marginBottom: "20px",
       }}
     >
-      <a href="">About</a>
+      <Button variant="ghost" onClick={() => navigate("/")}>
+        Home
+      </Button>
       <div
         className="rightside-navbar "
         style={{ display: "flex", gap: "20px", alignItems: "center" }}
