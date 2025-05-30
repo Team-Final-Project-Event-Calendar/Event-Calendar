@@ -11,7 +11,7 @@ function NavBar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/authentication/authentication");
+    navigate("/authentication");
   };
 
   return (
@@ -27,7 +27,7 @@ function NavBar() {
     >
       <a href="">About</a>
       <div
-        className="rightside-navbar"
+        className="rightside-navbar "
         style={{ display: "flex", gap: "20px", alignItems: "center" }}
       >
         {user?.role === "admin" && (

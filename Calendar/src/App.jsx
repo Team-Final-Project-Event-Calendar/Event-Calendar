@@ -6,8 +6,13 @@ import Home from "./components/Home";
 import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import NavBar from "./components/NavComponent/NavBar";
 import HomePage from "./pages/HomePage/HomePage";
+import { AuthContext } from "./components/Authentication/AuthContext";
+import { useContext } from "react";
+import AboutPage from "./pages/AboutPage/AboutPage";
 
 function App() {
+  const { user, isLogedIn } = useContext(AuthContext);
+
   return (
     <>
       <NavBar />
@@ -15,6 +20,7 @@ function App() {
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/authentication" element={<Authentication />}></Route>
         <Route path="/authentication/admin" element={<Admin />}></Route>
+        <Route path="/about" element={<AboutPage />}></Route>
       </Routes>
 
       <WeatherWidget />

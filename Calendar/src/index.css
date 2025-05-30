@@ -89,3 +89,8 @@ button:focus-visible {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+.w-60 {
+  width: 60vw;
+}

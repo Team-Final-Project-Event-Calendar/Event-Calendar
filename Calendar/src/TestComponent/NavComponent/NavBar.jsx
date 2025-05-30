@@ -3,6 +3,7 @@ import DrawerComponent from "./Drawer";
 import AvatarComponent from "./AvatarCompont";
 import { Button } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function NavBar({ isSignedIn, onSignIn }) {
   return (
@@ -16,7 +17,7 @@ function NavBar({ isSignedIn, onSignIn }) {
         marginBottom: "20px",
       }}
     >
-      <a href="">About</a>
+      <NavLink to="/about">About</NavLink>
       <div
         className="rightside-navbar"
         style={{ display: "flex", gap: "20px", alignItems: "center" }}
