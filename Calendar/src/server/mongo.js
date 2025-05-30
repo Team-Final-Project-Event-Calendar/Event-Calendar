@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"], // allow both ports
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -36,7 +36,7 @@ mongoose
         res.status(400).json({ error: err.message });
       }
     });
-    
+
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ userId: req.user.id });
@@ -45,7 +45,6 @@ mongoose
         res.status(500).json({ error: err.message });
       }
     });
-    
 
     app.listen(process.env.PORT, () => {
       console.log(`🚀 Server work with http://localhost:${process.env.PORT}`);

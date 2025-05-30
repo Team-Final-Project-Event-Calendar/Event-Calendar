@@ -8,7 +8,7 @@ function CardComponent() {
         alt="Green double couch with wooden legs"
       />
       <Card.Body gap="2">
-        <Card.Title>Living room Sofa</Card.Title>
+        <Card.Title>Team meeting</Card.Title>
         <Card.Description>
           This sofa is perfect for modern tropical spaces, baroque inspired
           spaces.

@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import "./Authentication.css";
-import axios from "axios";
 
 export default function Authentication() {
   const {
@@ -45,10 +44,11 @@ export default function Authentication() {
   };
 
   const handleRegister = async () => {
-    const { username, phoneNumber, email, password, firstName, lastName } = user;
+    const { username, phoneNumber, email, password, firstName, lastName } =
+      user;
     if (
       !username ||
-      !phoneNumber ||
+      phoneNumber ||
       !email ||
       !password ||
       !firstName ||
@@ -57,14 +57,7 @@ export default function Authentication() {
       return alert("Please fill in all fields");
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
-        username,
-        phoneNumber,
-        email,
-        password,
-        firstName,
-        lastName,
-      });
+      await register({ username, email, password, firstName, lastName });
       alert("Registration successful! Please login.");
       setMode("login");
       setUser({
@@ -115,71 +108,53 @@ export default function Authentication() {
 
             {mode === "register" && (
               <>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={user.username}
+                  onChange={updateUser("username")}
+                />
                 <div>
-                  <label htmlFor="username">Username</label>
-                  <input
-                    id="username"
-                    type="text"
-                    value={user.username}
-                    onChange={updateUser("username")}
-                    placeholder="Enter your username"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phoneNumber">Phone Number</label>
                   <input
                     type="tel"
                     value={user.phoneNumber}
-                    onChange={updateUser("phoneNumber")}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, "");
+                      setUser({ ...user, phoneNumber: val });
+                    }}
                     name="phoneNumber"
                     id="phoneNumber"
-                    pattern="^\d{7,15}$"
+                    pattern="^0\d{9}$"
                     required
                     placeholder="Enter phone number"
                   />
                 </div>
-                <div>
-                  <label htmlFor="firstName">First Name</label>
-                  <input
-                    id="firstName"
-                    type="text"
-                    value={user.firstName}
-                    onChange={updateUser("firstName")}
-                    placeholder="Enter your first name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lastName">Last Name</label>
-                  <input
-                    id="lastName"
-                    type="text"
-                    value={user.lastName}
-                    onChange={updateUser("lastName")}
-                    placeholder="Enter your last name"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={user.firstName}
+                  onChange={updateUser("firstName")}
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={user.lastName}
+                  onChange={updateUser("lastName")}
+                />
               </>
             )}
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                value={user.email}
-                onChange={updateUser("email")}
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                value={user.password}
-                onChange={updateUser("password")}
-                placeholder="Enter your password"
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={updateUser("email")}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={user.password}
+              onChange={updateUser("password")}
+            />
             <button type="submit">
               {mode === "login" ? "Login" : "Register"}
             </button>

@@ -12,8 +12,8 @@ createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <Provider>
         <BrowserRouter>
-          <Test></Test>
-          {/* <App /> */}
+          {/* <Test></Test> */}
+          <App />
         </BrowserRouter>
       </Provider>
     </AuthProvider>
