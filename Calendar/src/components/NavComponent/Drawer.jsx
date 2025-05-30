@@ -1,6 +1,5 @@
 import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-
 function DrawerComponent({ onLogout }) {
   const navigate = useNavigate();
   return (
@@ -18,13 +17,7 @@ function DrawerComponent({ onLogout }) {
               <Drawer.Title style={{ color: "pink" }}>Side menu</Drawer.Title>
             </Drawer.Header>
             <Drawer.Body style={{ justifyItems: "center", color: "white" }}>
-              <Button
-                variant="ghost"
-                colorScheme="blue"
-                width="100%"
-                mb={2}
-                onClick={() => navigate("/profile")}
-              >
+              <Button variant="ghost" onClick={() => navigate("/profile")}>
                 Profile
               </Button>
               <p>My Events</p>

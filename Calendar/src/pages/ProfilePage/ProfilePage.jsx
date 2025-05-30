@@ -1,3 +1,4 @@
+import ProfileDetailsComponent from "../../components/ProfileDetailsComponent/ProfileDetailsComponent";
 import { AuthContext } from "../../components/Authentication/AuthContext";
 import { useContext } from "react";
 
@@ -7,7 +8,8 @@ function ProfilePage() {
   return (
     <div>
       <p>Profile Page</p>
-      <button onClick={() => console.log(user)}>Log user</button>
+
+      <ProfileDetailsComponent userDetails={user} />
     </div>
   );
 }
