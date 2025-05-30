@@ -33,18 +33,7 @@ function NavBar() {
         style={{ display: "flex", gap: "20px", alignItems: "center" }}
       >
         {user?.role === "admin" && (
-          <Button
-            as={NavLink}
-            to="/authentication/admin"
-            colorScheme="purple"
-            variant="outline"
-            mr={4}
-            fontWeight="bold"
-            fontSize="lg"
-            px={6}
-            borderRadius="full"
-            _hover={{ bg: "purple.600", color: "white" }}
-          >
+          <Button as={NavLink} to="/authentication/admin" variant="ghost">
             Admin Panel
           </Button>
         )}
