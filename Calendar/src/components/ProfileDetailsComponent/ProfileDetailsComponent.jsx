@@ -1,11 +1,6 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 
-function ProfileDetailsComponent({ userDetails, onProfileUpdate, token }) {
-  const [avatarPreview, setAvatarPreview] = useState(userDetails?.image || "");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const fileInputRef = useRef();
-  const [uploading, setUploading] = useState(false);
-
+function ProfileDetailsComponent({ userDetails }) {
   if (!userDetails) {
     return null;
   }
@@ -16,36 +11,6 @@ function ProfileDetailsComponent({ userDetails, onProfileUpdate, token }) {
     { key: "adress", label: "Address" },
     { key: "username", label: "Username" },
   ];
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleSaveAvatar = async () => {
-    if (!avatarFile) return;
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("image", avatarFile);
-    try {
-      const res = await fetch("http://localhost:5000/api/auth/profile", {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (!res.ok) throw new Error("Failed to upload avatar");
-      const updated = await res.json();
-      if (onProfileUpdate) onProfileUpdate(updated);
-      setUploading(false);
-      alert("Avatar updated!");
-    } catch {
-      setUploading(false);
-      alert("Failed to upload avatar");
-    }
-  };
 
   return (
     <div
@@ -70,67 +35,6 @@ function ProfileDetailsComponent({ userDetails, onProfileUpdate, token }) {
       >
         Profile Details
       </h2>
-      <div
-        style={{
-          textAlign: "center",
-          marginBottom: 24,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={avatarPreview || "/default-avatar.png"}
-          alt="Avatar"
-          style={{
-            width: 96,
-            height: 96,
-            borderRadius: "50%",
-            objectFit: "cover",
-            border: "2px solid #1976d2",
-          }}
-        />
-        <div style={{ marginTop: 12 }}>
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            onChange={handleAvatarChange}
-          />
-          <button
-            style={{
-              background: "#1976d2",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "6px 16px",
-              fontWeight: 600,
-              cursor: "pointer",
-              marginRight: 8,
-            }}
-            onClick={() => fileInputRef.current.click()}
-            disabled={uploading}
-          >
-            Choose Avatar
-          </button>
-          <button
-            style={{
-              background: uploading ? "#bdbdbd" : "#43a047",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "6px 16px",
-              fontWeight: 600,
-              cursor: uploading ? "not-allowed" : "pointer",
-            }}
-            onClick={handleSaveAvatar}
-            disabled={uploading || !avatarFile}
-          >
-            {uploading ? "Uploading..." : "Save Avatar"}
-          </button>
-        </div>
-      </div>
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {fieldsToShow.map(({ key, label }) => (
           <li key={key} style={{ marginBottom: 20 }}>
