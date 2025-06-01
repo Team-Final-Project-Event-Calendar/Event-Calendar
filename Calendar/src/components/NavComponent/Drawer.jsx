@@ -16,11 +16,20 @@ function DrawerComponent({ onLogout }) {
             <Drawer.Header>
               <Drawer.Title style={{ color: "pink" }}>Side menu</Drawer.Title>
             </Drawer.Header>
-            <Drawer.Body style={{ justifyItems: "center", color: "white" }}>
+            <Drawer.Body
+              style={{
+                justifyItems: "center",
+                color: "white",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <Button variant="ghost" onClick={() => navigate("/profile")}>
                 Profile
               </Button>
-              <p>My Events</p>
+              <Button variant="ghost" onClick={() => navigate("/myevents")}>
+                My Events
+              </Button>
             </Drawer.Body>
             <Drawer.Footer>
               <Button onClick={onLogout}>Logout</Button>
