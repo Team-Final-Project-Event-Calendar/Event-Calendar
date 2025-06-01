@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage/HomePage";
 import { AuthContext } from "./components/Authentication/AuthContext";
 import AboutPage from "./pages/AboutPage/AboutPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import MyEventsPage from "./pages/MyEventsPage/MyEventsPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/authentication/admin" element={<Admin />}></Route>
         <Route path="/about" element={<AboutPage />}></Route>
         <Route path="/profile" element={<ProfilePage></ProfilePage>}></Route>
+        <Route path="/myevents" element={<MyEventsPage></MyEventsPage>}></Route>
       </Routes>
 
       <WeatherWidget />
