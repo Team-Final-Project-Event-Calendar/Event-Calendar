@@ -25,13 +25,29 @@ const EventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      if (!event.title || !event.startDate || !event.description) {
+        alert("All fields required!");
+        return;
+      }
+      if (event.title.length < 3 || event.title.length > 30) {
+        alert(`Title must be betwee 3 - 30 symbols long!`);
+        return;
+      }
+      if (event.description.length > 500) {
+        alert("Event description cannot be longer then 500 symbols!");
+        return;
+      }
 
-    if (!event.title || !event.date || !event.description) {
-      alert(`All fields are required!`);
-      return;
+      await axios.post("http://localhost:5000/api/events", event, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.error(`Error: ${err}`, err.message);
     }
-    // await axios.post("http://localhost:5000/api/events");
-    console.log(event);
   };
 
   return (
@@ -104,7 +120,12 @@ const EventForm = () => {
           </Field.Root>
         </Fieldset.Content>
 
-        <Button type="submit" alignSelf="flex-start">
+        <Button
+          type="submit"
+          variant="outline"
+          color="grey"
+          alignSelf="flex-end"
+        >
           Create
         </Button>
       </Fieldset.Root>
