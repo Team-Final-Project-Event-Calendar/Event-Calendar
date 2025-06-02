@@ -5,12 +5,9 @@ import Searchbar from "../../components/Searchbar/Searchbar";
 function HomePage() {
   return (
     <>
-    <div>
-      <CardsListComponent />
-    </div>
-     <div className="move-to-left">
-      <Searchbar />
-    </div>
+      <div className="move-to-left">
+        <Searchbar />
+      </div>
     </>
   );
 }

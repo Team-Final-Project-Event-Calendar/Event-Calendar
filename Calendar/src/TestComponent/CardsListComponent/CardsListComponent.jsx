@@ -1,8 +1,9 @@
 import React from "react";
 import { Avatar, Button, Card } from "@chakra-ui/react";
+
 import CardComponent from "../CardComponent/CardComponent";
 
-function CardsListComponent() {
+function CardsListComponent({ events = [] }) {
   return (
     <div
       style={{
@@ -14,9 +15,13 @@ function CardsListComponent() {
         justifyContent: "center",
       }}
     >
-      {Array.from({ length: 2 }).map((el) => (
+      {Array.isArray(events) &&
+        events.map((event, index) => (
+          <CardComponent key={event._id || index} event={event} />
+        ))}
+      {/* {Array.from({ length: 2 }).map((el) => (
         <CardComponent></CardComponent>
-      ))}
+      ))} */}
     </div>
   );
 }
