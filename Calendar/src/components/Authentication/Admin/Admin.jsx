@@ -160,11 +160,22 @@ function Admin() {
   return (
     <div
       className={styles.adminContainer}
-      style={{ padding: "1rem", maxWidth: "100vw", overflowX: "hidden" }}
+      style={{
+        width: "60vw",
+        maxWidth: "100%",
+        margin: "0 auto",
+        padding: "1rem",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+      }}
     >
       <h2
         className={styles.adminTitle}
-        style={{ textAlign: "center", fontSize: "2rem", marginBottom: "1rem" }}
+        style={{
+          textAlign: "center",
+          fontSize: "2rem",
+          marginBottom: "1rem",
+        }}
       >
         Administration Hub
       </h2>
