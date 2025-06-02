@@ -128,3 +128,108 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+.eventList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.eventListItem {
+    padding: 16px 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.eventInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #2d3748;
+}
+
+.eventTitle {
+    font-weight: 700;
+    font-size: 1rem;
+    
+}
+
+.eventDescription {
+    font-size: 0.95rem;
+    color: white; 
+}
+
+.eventAction {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.eventAction button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.editButton {
+    background-color: #4299e1;
+    color: white;
+}
+
+.editButton:hover {
+    background-color: #3182ce;
+}
+
+.saveButton {
+    background-color: #38a169;
+    color: white;
+}
+
+.saveButton:hover {
+    background-color: #2f855a;
+}
+
+.cancelButton {
+    background-color: #a0aec0;
+    color: white;
+}
+
+.cancelButton:hover {
+    background-color: #718096;
+}
+
+.eventInput,
+.eventTextarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    
+}
+
+.eventTextarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.editInput{
+    color: white;
+}
+
+.editTextarea {
+    color: white;
+}
