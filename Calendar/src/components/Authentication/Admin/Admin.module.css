@@ -1,235 +1,203 @@
 .adminContainer {
-    max-width: 800px;
+    max-width: 900px;
     margin: 40px auto;
-    padding: 24px;
-    background-color: #7fd5ca;
-    border-radius: 16px;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+    color: #ffffff;
 }
 
 .adminTitle {
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 24px;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    color: #222;
     font-weight: 700;
-    color: #2d3748;
+}
+
+.panel {
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px 25px;
+    margin-bottom: 35px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.panelTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #4f46e5;
+    padding-bottom: 8px;
+    color: #4f46e5;
 }
 
 .searchInput {
     width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 24px;
-    border: 1px solid #fbfbfb;
-    color: white;
-    background-color: #2d3748;
-    border-radius: 8px;
+    padding: 10px 15px;
     font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
+    border: 1.8px solid #d1d5db;
+    border-radius: 5px;
+    margin-bottom: 20px;
     transition: border-color 0.3s ease;
 }
 
 .searchInput:focus {
-    border-color: #3182ce;
-    box-shadow: 0 0 5px rgba(49, 130, 206, 0.5);
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
 }
 
-.userList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.userListItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.userInfo {
-    display: flex;
-    gap: 12px;
-    align-items: baseline;
-}
-
-.userName {
-    font-weight: 700;
-    font-size: 1rem;
-    color: #2d3748;
-}
-
-.userEmail {
-    font-size: 0.875rem;
-    color: #718096;
-}
-
-.userAction {
-    display: flex;
-    gap: 10px;
-}
-
-.userAction button {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-
-.btnBlock {
-    background-color: #e53e3e;
-    color: white;
-}
-
-.btnBlock:hover {
-    background-color: #c53030;
-}
-
-
-.btnUnblock {
-    background-color: #38a169;
-    color: white;
-}
-
-.btnUnblock:hover {
-    background-color: #2f855a;
-}
-
-
-.deleteButton {
-    background-color: #dd6b20;
-    color: white;
-}
-
-.deleteButton:hover {
-    background-color: #c05621;
-}
-
-
-.backButton {
-    background-color: #3781ef;
-    color: white;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
+.userList,
 .eventList {
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 350px;
+    overflow-y: auto;
+    border-top: 1px solid #e5e7eb;
 }
 
+.userListItem,
 .eventListItem {
-    padding: 16px 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.eventInfo {
+.userInfo {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    color: #2d3748;
+    gap: 2px;
 }
 
-.eventTitle {
-    font-weight: 700;
-    font-size: 1rem;
-    
-}
-
-.eventDescription {
-    font-size: 0.95rem;
-    color: white; 
-}
-
-.eventAction {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.eventAction button {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
+.userName {
     font-weight: 600;
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+.userEmail {
     font-size: 0.9rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.userAction button,
+.eventAction button {
+    margin-left: 10px;
+    padding: 7px 14px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 600;
+}
+
+.btnBlock {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btnBlock:hover {
+    background-color: #b91c1c;
+}
+
+.btnUnblock {
+    background-color: #10b981;
+    color: white;
+}
+
+.btnUnblock:hover {
+    background-color: #047857;
+}
+
+.deleteButton {
+    background-color: #6b7280;
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #374151;
 }
 
 .editButton {
-    background-color: #4299e1;
+    background-color: #3b82f6;
     color: white;
 }
 
 .editButton:hover {
-    background-color: #3182ce;
+    background-color: #1e40af;
 }
 
 .saveButton {
-    background-color: #38a169;
+    background-color: #22c55e;
     color: white;
 }
 
 .saveButton:hover {
-    background-color: #2f855a;
+    background-color: #166534;
 }
 
 .cancelButton {
-    background-color: #a0aec0;
+    background-color: #f97316;
     color: white;
 }
 
 .cancelButton:hover {
-    background-color: #718096;
+    background-color: #c2410c;
+
 }
 
-.eventInput,
-.eventTextarea {
+.editInput,
+.editTextarea {
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
+    padding: 8px 12px;
     margin-bottom: 10px;
-    box-sizing: border-box;
-    
-}
-
-.eventTextarea {
-    min-height: 80px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
     resize: vertical;
 }
 
-.editInput{
-    color: white;
+.editTextarea {
+    min-height: 60px;
 }
 
-.editTextarea {
+.eventInfo {
+    flex: 1;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.eventAction {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.backButton {
+    display: block;
+    width: 160px;
+    margin: 0 auto 20px;
+    padding: 10px 20px;
+    background-color: #2563eb;
     color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+    background-color: #1e40af;
 }
