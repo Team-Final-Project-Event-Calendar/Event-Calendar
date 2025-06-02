@@ -161,7 +161,10 @@ function Admin() {
     <div className={styles.adminContainer}>
       <h2 className={styles.adminTitle}>Administration Hub</h2>
 
-      <div className="sections-container w-60" style={{ display: "flex" }}>
+      <div
+        className="sections-container w-60"
+        style={{ display: "flex", justifyContent: "space-around" }}
+      >
         <section className={styles.panel}>
           <h3 className={styles.panelTitle}>Users</h3>
           <input
