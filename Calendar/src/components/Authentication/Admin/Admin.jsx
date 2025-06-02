@@ -158,14 +158,32 @@ function Admin() {
   }
 
   return (
-    <div className={styles.adminContainer}>
-      <h2 className={styles.adminTitle}>Administration Hub</h2>
+    <div
+      className={styles.adminContainer}
+      style={{ padding: "1rem", maxWidth: "100vw", overflowX: "hidden" }}
+    >
+      <h2
+        className={styles.adminTitle}
+        style={{ textAlign: "center", fontSize: "2rem", marginBottom: "1rem" }}
+      >
+        Administration Hub
+      </h2>
 
       <div
-        className="sections-container w-60"
-        style={{ display: "flex", justifyContent: "space-around" }}
+        className="sections-container"
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          flexWrap: "wrap",
+          gap: "2rem",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
       >
-        <section className={styles.panel}>
+        <section
+          className={styles.panel}
+          style={{ flex: "1 1 45%", minWidth: "300px" }}
+        >
           <h3 className={styles.panelTitle}>Users</h3>
           <input
             type="text"
@@ -173,16 +191,28 @@ function Admin() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              boxSizing: "border-box",
+            }}
           />
-
           <ul style={{ padding: "10px 20px" }} className={styles.userList}>
             {filteredUsers.map((u) => (
-              <li key={u._id} className={styles.userListItem}>
+              <li
+                key={u._id}
+                className={styles.userListItem}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  marginBottom: "1rem",
+                }}
+              >
                 <div className={styles.userInfo}>
                   <span className={styles.userName}>{u.firstName}</span>
                   <span className={styles.userEmail}>({u.email})</span>
                 </div>
-
                 <div className={styles.userAction}>
                   <button
                     className={
@@ -204,7 +234,10 @@ function Admin() {
           </ul>
         </section>
 
-        <section className={styles.panel}>
+        <section
+          className={styles.panel}
+          style={{ flex: "1 1 45%", minWidth: "300px" }}
+        >
           <h3 className={styles.panelTitle}>Events</h3>
           <input
             type="text"
@@ -212,11 +245,19 @@ function Admin() {
             value={findEvents}
             onChange={(e) => setFindEvents(e.target.value)}
             className={styles.searchInput}
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              boxSizing: "border-box",
+            }}
           />
-
           <ul style={{ padding: "10px 20px" }} className={styles.eventList}>
             {filteredEvents.map((event) => (
-              <li key={event._id} className={styles.eventListItem}>
+              <li
+                key={event._id}
+                className={styles.eventListItem}
+                style={{ marginBottom: "1rem" }}
+              >
                 {editingEventId === event._id ? (
                   <>
                     <input
@@ -226,6 +267,11 @@ function Admin() {
                         setEventData({ ...eventData, title: e.target.value })
                       }
                       className={styles.editInput}
+                      style={{
+                        width: "100%",
+                        padding: "0.5rem",
+                        marginBottom: "0.5rem",
+                      }}
                     />
                     <textarea
                       value={eventData.description}
@@ -236,6 +282,11 @@ function Admin() {
                         })
                       }
                       className={styles.editTextarea}
+                      style={{
+                        width: "100%",
+                        padding: "0.5rem",
+                        marginBottom: "0.5rem",
+                      }}
                     />
                     <div className={styles.eventAction}>
                       <button className={styles.saveButton} onClick={saveEdit}>
@@ -279,6 +330,7 @@ function Admin() {
       <button
         onClick={() => (window.location.href = "/")}
         className={styles.backButton}
+        style={{ marginTop: "2rem", padding: "0.5rem 1rem", fontSize: "1rem" }}
       >
         Back to Home
       </button>
