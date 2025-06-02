@@ -95,6 +95,19 @@ const EventForm = () => {
 
     if (!validate()) return;
 
+    if (!event.isRecurring) {
+      delete event.recurrenceRule; 
+    } else {
+     
+      if (!["daily", "weekly", "monthly"].includes(event.recurrenceRule.frequency)) {
+        event.recurrenceRule.frequency = undefined; 
+      }
+      if (!event.recurrenceRule.endDate) {
+        delete event.recurrenceRule.endDate;
+      } else {
+        event.recurrenceRule.endDate = new Date(event.recurrenceRule.endDate);
+      }
+    }
     try {
       await axios.post("http://localhost:5000/api/events", event, {
         headers: {
