@@ -33,7 +33,9 @@ function CardComponent({ event, onDelete }) {
           color="gray"
           onClick={(e) => {
             e.stopPropagation();
-            onDelete && onDelete(event);
+            if (window.confirm("Are you sure you want to delete this event?")) {
+              onDelete && onDelete(event);
+            }
           }}
         >
           Delete
