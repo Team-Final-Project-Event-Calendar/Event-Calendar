@@ -19,7 +19,11 @@ function CardComponent({ event, onDelete }) {
         {event.description}
       </Text>
       <Text fontSize="sm" color="gray.500" mb={4}>
-        {new Date(event.startDate).toLocaleString()}
+        {event.startDateTime
+          ? new Date(event.startDateTime).toLocaleString()
+          : event.startDate
+          ? new Date(event.startDate).toLocaleString()
+          : ""}
       </Text>
 
       <Box display="flex" gap="2">
