@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Searchbar from "../../components/Searchbar/Searchbar";
 
 const linkStyle = {
     textDecoration: "underline",
@@ -36,6 +37,7 @@ const PublicPage = () => (
                 </Link>
             </p>
         </div>
+        <div> <Searchbar /> </div>
     </>
 );
 

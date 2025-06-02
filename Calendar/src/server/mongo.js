@@ -46,6 +46,15 @@ mongoose
       }
     });
 
+    app.get("/api/events/public", async (req, res) => {
+      try {
+        const events = await Event.find({ type: "public" });
+        res.json(events);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
     app.listen(process.env.PORT, () => {
       console.log(`🚀 Server work with http://localhost:${process.env.PORT}`);
     });
