@@ -2,7 +2,6 @@ import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 function CardComponent({ event }) {
   return (
     <Box
-      style={{ backgroundColor: "lightblue" }}
       maxW="sm"
       bg="white"
       boxShadow="lg"
