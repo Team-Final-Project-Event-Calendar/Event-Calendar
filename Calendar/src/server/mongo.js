@@ -39,18 +39,12 @@ mongoose
 
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
-        if (req.user.role === "admin") {
-          const allEvents = await Event.find().populate("userId", "email username");
-          return res.json(allEvents);
-        }
-    
-        const userEvents = await Event.find({ userId: req.user.id });
-        res.json(userEvents);
+        const events = await Event.find({ userId: req.user.id });
+        res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
-    
 
     app.get("/api/events/public", async (req, res) => {
       try {
