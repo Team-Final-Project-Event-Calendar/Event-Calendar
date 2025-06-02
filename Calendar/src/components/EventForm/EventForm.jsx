@@ -41,7 +41,10 @@ const EventForm = () => {
         [key]: value,
       },
     });
-    setErrors({ ...errors, recurrenceRule: { ...errors.recurrenceRule, [key]: "" } });
+    setErrors({
+      ...errors,
+      recurrenceRule: { ...errors.recurrenceRule, [key]: "" },
+    });
   };
 
   const validate = () => {
@@ -56,7 +59,8 @@ const EventForm = () => {
       event.description.length < 10 ||
       event.description.length > 500
     ) {
-      newErrors.description = "Description must be between 10 and 500 characters.";
+      newErrors.description =
+        "Description must be between 10 and 500 characters.";
     }
 
     if (!event.type) {
@@ -74,7 +78,8 @@ const EventForm = () => {
     if (event.isRecurring) {
       const recurrenceErrors = {};
       if (!event.recurrenceRule.frequency) {
-        recurrenceErrors.frequency = "Frequency is required for recurring events.";
+        recurrenceErrors.frequency =
+          "Frequency is required for recurring events.";
       }
       if (!event.recurrenceRule.endDate) {
         recurrenceErrors.endDate = "End date is required for recurring events.";
@@ -96,11 +101,12 @@ const EventForm = () => {
     if (!validate()) return;
 
     if (!event.isRecurring) {
-      delete event.recurrenceRule; 
+      delete event.recurrenceRule;
     } else {
-     
-      if (!["daily", "weekly", "monthly"].includes(event.recurrenceRule.frequency)) {
-        event.recurrenceRule.frequency = undefined; 
+      if (
+        !["daily", "weekly", "monthly"].includes(event.recurrenceRule.frequency)
+      ) {
+        event.recurrenceRule.frequency = undefined;
       }
       if (!event.recurrenceRule.endDate) {
         delete event.recurrenceRule.endDate;
@@ -147,7 +153,9 @@ const EventForm = () => {
         </Stack>
 
         {successMessage && (
-          <Text color={successMessage.startsWith("✅") ? "green.500" : "red.500"}>
+          <Text
+            color={successMessage.startsWith("✅") ? "green.500" : "red.500"}
+          >
             {successMessage}
           </Text>
         )}
@@ -163,7 +171,6 @@ const EventForm = () => {
             {errors.title && <Text color="red.500">{errors.title}</Text>}
           </Field.Root>
 
-        
           <Field.Root>
             <Field.Label>Description</Field.Label>
             <Input
@@ -171,10 +178,11 @@ const EventForm = () => {
               onChange={(e) => handleChange("description", e.target.value)}
               isInvalid={!!errors.description}
             />
-            {errors.description && <Text color="red.500">{errors.description}</Text>}
+            {errors.description && (
+              <Text color="red.500">{errors.description}</Text>
+            )}
           </Field.Root>
 
-    
           <Field.Root>
             <Field.Label>Type</Field.Label>
             <NativeSelect.Root>
@@ -191,15 +199,13 @@ const EventForm = () => {
             {errors.type && <Text color="red.500">{errors.type}</Text>}
           </Field.Root>
 
-      
           <Field.Root>
             <Field.Label>Start Date & Time</Field.Label>
             <Input
+              backgroundColor="lightpink"
               type="datetime-local"
               value={event.startDateTime}
-              onChange={(e) =>
-                handleChange("startDateTime", e.target.value)
-              }
+              onChange={(e) => handleChange("startDateTime", e.target.value)}
               isInvalid={!!errors.startDateTime}
             />
             {errors.startDateTime && (
@@ -207,15 +213,13 @@ const EventForm = () => {
             )}
           </Field.Root>
 
-  
           <Field.Root>
             <Field.Label>End Date & Time</Field.Label>
             <Input
+              backgroundColor="lightpink"
               type="datetime-local"
               value={event.endDateTime}
-              onChange={(e) =>
-                handleChange("endDateTime", e.target.value)
-              }
+              onChange={(e) => handleChange("endDateTime", e.target.value)}
               isInvalid={!!errors.endDateTime}
             />
             {errors.endDateTime && (
@@ -223,7 +227,6 @@ const EventForm = () => {
             )}
           </Field.Root>
 
-      
           <Field.Root>
             <Field.Label>Is Recurring?</Field.Label>
             <NativeSelect.Root>
@@ -240,7 +243,6 @@ const EventForm = () => {
             </NativeSelect.Root>
           </Field.Root>
 
-      
           {event.isRecurring && (
             <>
               <Field.Root>
