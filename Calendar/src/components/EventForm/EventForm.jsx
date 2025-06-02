@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { useState } from "react";
 
-const EventForm = () => {
+const EventForm = ({ onEventCreated }) => {
   const [event, setEvent] = useState({
     title: "",
     description: "",
@@ -115,13 +115,13 @@ const EventForm = () => {
       }
     }
     try {
-      await axios.post("http://localhost:5000/api/events", event, {
+      const res = await axios.post("http://localhost:5000/api/events", event, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         withCredentials: true,
       });
-
+      const createdEvent = res.data;
       setSuccessMessage("✅ Event created successfully!");
       setEvent({
         title: "",
@@ -137,6 +137,7 @@ const EventForm = () => {
         },
       });
       setErrors({});
+      if (onEventCreated) onEventCreated(createdEvent);
     } catch (err) {
       console.error(err);
       setSuccessMessage("❌ Failed to create event.");

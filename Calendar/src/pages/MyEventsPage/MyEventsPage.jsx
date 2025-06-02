@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
-import { useState } from "react";
+
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
 
@@ -28,6 +28,11 @@ function MyEventsPage() {
     fetchEvents();
   }, []);
 
+  // Handler to add a new event to the list
+  const handleEventCreated = (newEvent) => {
+    setEvents((prev) => [newEvent, ...prev]);
+  };
+
   return (
     <div
       className="w-60"
@@ -43,7 +48,7 @@ function MyEventsPage() {
         <CardsListComponent events={events} />
       </div>
       <div>
-        <EventForm />
+        <EventForm onEventCreated={handleEventCreated} />
       </div>
     </div>
   );

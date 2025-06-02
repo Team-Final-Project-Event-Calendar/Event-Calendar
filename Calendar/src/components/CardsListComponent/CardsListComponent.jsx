@@ -1,23 +1,48 @@
+import React from "react";
 import CardComponent from "../CardComponent/CardComponent";
 
 function CardsListComponent({ events = [] }) {
   return (
     <div
       style={{
-        flexWrap: "wrap",
         display: "flex",
+        flexWrap: "wrap",
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
+        justifyContent: "center",
       }}
     >
-      {Array.isArray(events) &&
-        events.map((event, index) => (
-          <CardComponent key={event._id || index} event={event} />
-        ))}
-      {/* {Array.from({ length: 2 }).map((el) => (
-        <CardComponent></CardComponent>
-      ))} */}
+      {events.length === 0 ? (
+        <div style={{ color: "#888", fontSize: 18 }}>No events yet.</div>
+      ) : (
+        events.map((event) => (
+          <div key={event._id || event.title + event.startDateTime}>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 12,
+                boxShadow: "0 2px 8px #e0e0e0",
+                padding: 18,
+                minWidth: 220,
+                minHeight: 120,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              <div style={{ fontWeight: 700, fontSize: 20 }}>{event.title}</div>
+              <div style={{ color: "#1976d2", fontSize: 15 }}>{event.type}</div>
+              <div style={{ fontSize: 14 }}>{event.description}</div>
+              <div style={{ fontSize: 13, color: "#888" }}>
+                {event.startDateTime
+                  ? new Date(event.startDateTime).toLocaleString()
+                  : ""}
+              </div>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }
