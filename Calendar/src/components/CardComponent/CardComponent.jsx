@@ -1,5 +1,4 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
-
 function CardComponent({ event }) {
   return (
     <Box

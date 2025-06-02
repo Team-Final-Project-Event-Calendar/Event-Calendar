@@ -1,6 +1,6 @@
 import React from "react";
 import CardComponent from "../CardComponent/CardComponent";
-
+import "./CardsListComponent.css";
 function CardsListComponent({ events = [] }) {
   return (
     <div
@@ -10,7 +10,7 @@ function CardsListComponent({ events = [] }) {
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
-        justifyContent: "center",
+        justifyContent: "flex-start",
       }}
     >
       {events.length === 0 ? (
@@ -19,8 +19,8 @@ function CardsListComponent({ events = [] }) {
         events.map((event) => (
           <div key={event._id || event.title + event.startDateTime}>
             <div
+              className="card-container"
               style={{
-                background: "#fff",
                 borderRadius: 12,
                 boxShadow: "0 2px 8px #e0e0e0",
                 padding: 18,
