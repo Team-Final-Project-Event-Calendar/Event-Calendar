@@ -3,13 +3,7 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import Searchbar from "../../components/Searchbar/Searchbar";
 
 function HomePage() {
-  return (
-    <>
-      <div className="move-to-left">
-        <Searchbar />
-      </div>
-    </>
-  );
+  return <></>;
 }
 
 export default HomePage;

@@ -47,11 +47,11 @@ const Searchbar = () => {
   return (
     <div
       style={{
-        width: "100%",
+        width: "60%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginTop: "50px",
+        // marginTop: "50px",
       }}
     >
       <input
@@ -63,14 +63,14 @@ const Searchbar = () => {
         onFocus={() => setExpanded(true)}
         onBlur={() => setTimeout(() => setExpanded(false), 150)}
         style={{
-          width: expanded ? 380 : 255,
+          width: expanded ? "100%" : 255,
           transition: "width 0.3s",
           padding: "0.5rem 1rem",
           fontSize: "1rem",
           border: "2px solid #1976d2",
           borderRadius: 8,
           outline: "none",
-          background: "#90caf9",
+          background: "white",
           color: "#111",
         }}
       />

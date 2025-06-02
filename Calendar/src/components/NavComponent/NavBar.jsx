@@ -4,7 +4,7 @@ import AvatarComponent from "./AvatarCompont";
 import { Button } from "@chakra-ui/react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
-
+import Searchbar from "../Searchbar/Searchbar";
 function NavBar() {
   const navigate = useNavigate();
   const { isLoggedIn, logout, user } = useContext(AuthContext);
@@ -33,9 +33,12 @@ function NavBar() {
           margin: "0 auto",
         }}
       >
-        <Button variant="ghost" onClick={() => navigate("/")}>
+        <Button variant="plain" onClick={() => navigate("/")}>
           Home
         </Button>
+
+        <Searchbar />
+
         <div
           className="rightside-navbar "
           style={{ display: "flex", gap: "20px", alignItems: "center" }}
