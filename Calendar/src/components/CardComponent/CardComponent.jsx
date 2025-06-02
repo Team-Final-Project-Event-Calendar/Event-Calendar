@@ -1,5 +1,7 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 function CardComponent({ event, onDelete }) {
+  const typeColor = event.type === "public" ? "green.500" : "red.500";
+
   return (
     <Box
       className="card-container"
@@ -18,13 +20,24 @@ function CardComponent({ event, onDelete }) {
       <Text fontSize="md" color="gray.600" mb={3}>
         {event.description}
       </Text>
-      <Text fontSize="sm" color="gray.500" mb={4}>
-        {event.startDateTime
-          ? new Date(event.startDateTime).toLocaleString()
-          : event.startDate
-          ? new Date(event.startDate).toLocaleString()
-          : ""}
-      </Text>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {event.startDateTime
+            ? new Date(event.startDateTime).toLocaleString()
+            : event.startDate
+            ? new Date(event.startDate).toLocaleString()
+            : ""}
+        </Text>
+
+        <Text mb={1} color={typeColor} style={{ marginLeft: "auto" }}>
+          {event.type}
+        </Text>
+      </div>
 
       <Box display="flex" gap="2">
         <Button colorScheme="blue" flex={1}>
