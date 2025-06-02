@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
+import WeatherWidget from "../../components/WeatherWidget/WeatherWidget";
 
 function MyEventsPage() {
   const [events, setEvents] = useState([]);

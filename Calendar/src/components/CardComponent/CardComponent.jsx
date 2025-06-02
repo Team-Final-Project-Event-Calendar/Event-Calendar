@@ -28,9 +28,21 @@ function CardComponent({ event, onDelete }) {
       >
         <Text fontSize="sm" color="gray.500" mb={4}>
           {event.startDateTime
-            ? new Date(event.startDateTime).toLocaleString()
+            ? new Date(event.startDateTime).toLocaleString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
             : event.startDate
-            ? new Date(event.startDate).toLocaleString()
+            ? new Date(event.startDate).toLocaleString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
             : ""}
         </Text>
 

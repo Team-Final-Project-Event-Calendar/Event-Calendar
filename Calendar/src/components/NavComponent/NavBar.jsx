@@ -5,6 +5,7 @@ import { Button } from "@chakra-ui/react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import Searchbar from "../Searchbar/Searchbar";
+import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import "./NavLink.css";
 function NavBar() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ function NavBar() {
         >
           {user?.role === "admin" && (
             <Button as={NavLink} to="/authentication/admin" variant="ghost">
-              Admin Panel
+              Admin Panels
             </Button>
           )}
           {isLoggedIn ? (
