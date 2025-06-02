@@ -5,6 +5,7 @@ import { Button } from "@chakra-ui/react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import Searchbar from "../Searchbar/Searchbar";
+import "./NavLink.css";
 function NavBar() {
   const navigate = useNavigate();
   const { isLoggedIn, logout, user } = useContext(AuthContext);
@@ -33,7 +34,7 @@ function NavBar() {
           margin: "0 auto",
         }}
       >
-        <Button variant="plain" onClick={() => navigate("/")}>
+        <Button variant="ghost" onClick={() => navigate("/")}>
           Home
         </Button>
 
@@ -55,7 +56,10 @@ function NavBar() {
             </>
           ) : (
             <>
-              <a onClick={() => navigate("/authentication")}>
+              <a
+                className="login-register"
+                onClick={() => navigate("/authentication")}
+              >
                 Login / Register
               </a>
             </>

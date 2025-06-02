@@ -47,7 +47,7 @@ const Searchbar = () => {
   return (
     <div
       style={{
-        width: "60%",
+        width: "55%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
