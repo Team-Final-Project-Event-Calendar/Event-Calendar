@@ -2,7 +2,7 @@ import React from "react";
 import CardComponent from "../CardComponent/CardComponent";
 import "./CardsListComponent.css";
 
-function CardsListComponent({ events = [] }) {
+function CardsListComponent({ events = [], onDeleteEvent }) {
   return (
     <div
       style={{
@@ -19,7 +19,7 @@ function CardsListComponent({ events = [] }) {
       ) : (
         events.map((event) => (
           <div key={event._id || event.title + event.startDateTime}>
-            <CardComponent event={event} />
+            <CardComponent event={event} onDelete={onDeleteEvent} />
           </div>
         ))
       )}

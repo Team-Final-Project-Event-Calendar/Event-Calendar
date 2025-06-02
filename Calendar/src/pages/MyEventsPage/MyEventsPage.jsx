@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
+import axios from "axios";
 
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
@@ -28,9 +29,23 @@ function MyEventsPage() {
     fetchEvents();
   }, []);
 
-  // Handler to add a new event to the list
   const handleEventCreated = (newEvent) => {
     setEvents((prev) => [newEvent, ...prev]);
+  };
+
+  const handleDeleteEvent = async (event) => {
+    if (!event._id) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/events/${event._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setEvents((prev) => prev.filter((e) => e._id !== event._id));
+    } catch (err) {
+      alert("Failed to delete event");
+      console.error(err);
+    }
   };
 
   return (
@@ -45,7 +60,7 @@ function MyEventsPage() {
       }}
     >
       <div>
-        <CardsListComponent events={events} />
+        <CardsListComponent events={events} onDeleteEvent={handleDeleteEvent} />
       </div>
       <div>
         <EventForm onEventCreated={handleEventCreated} />

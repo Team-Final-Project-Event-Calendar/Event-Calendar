@@ -1,7 +1,8 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
-function CardComponent({ event }) {
+function CardComponent({ event, onDelete }) {
   return (
     <Box
+      onClick={() => console.log(event)}
       maxW="sm"
       bg="white"
       boxShadow="lg"
@@ -27,7 +28,14 @@ function CardComponent({ event }) {
         <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
           Add To Upcoming
         </Button>
-        <Button variant="ghost" color="gray">
+        <Button
+          variant="ghost"
+          color="gray"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete && onDelete(event);
+          }}
+        >
           Delete
         </Button>
       </Box>
