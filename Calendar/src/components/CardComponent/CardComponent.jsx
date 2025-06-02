@@ -24,8 +24,11 @@ function CardComponent({ event }) {
         <Button colorScheme="blue" flex={1}>
           Join Event
         </Button>
-        <Button variant="outline" colorScheme="blue" color="grey" flex={1}>
+        <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
           Add To Upcoming
+        </Button>
+        <Button variant="ghost" color="gray">
+          Delete
         </Button>
       </Box>
     </Box>
