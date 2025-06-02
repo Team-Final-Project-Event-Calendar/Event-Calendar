@@ -1,21 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
-
+import {useState} from "react";
 function MyEventsPage() {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+  
+    const fetchEvents = async () => {
+      try{
+        const response = await fetch("http://localhost:5000/api/events", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+        const data = await response.json();
+        setEvents(data);
+      }catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    }
+
+    fetchEvents();
+  },[]);
+  
+console.log("Events fetched:", events);
+
   return (
-    <div
-      className="w-60"
-      style={{ display: "flex", gap: "50px", margin: "50px auto" }}
-    >
-      <div>
-        <CardsListComponent></CardsListComponent>
+      <div
+        className="w-60"
+        style={{ display: "flex", gap: "50px", margin: "50px auto" }}
+      >
+        <div>
+          <CardsListComponent events={events} />
+        </div>
+        <div>
+          <EventForm />
+        </div>
       </div>
-      <div>
-        <EventForm></EventForm>
-      </div>
-    </div>
-  );
+    );
+    
+  
 }
 
 export default MyEventsPage;
