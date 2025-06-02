@@ -2,6 +2,7 @@ import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 function CardComponent({ event, onDelete }) {
   return (
     <Box
+      className="card-container"
       onClick={() => console.log(event)}
       maxW="sm"
       bg="white"
