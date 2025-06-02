@@ -39,12 +39,18 @@ mongoose
 
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
-        const events = await Event.find({ userId: req.user.id });
-        res.json(events);
+        if (req.user.role === "admin") {
+          const allEvents = await Event.find().populate("userId", "email username");
+          return res.json(allEvents);
+        }
+    
+        const userEvents = await Event.find({ userId: req.user.id });
+        res.json(userEvents);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
+    
 
     app.get("/api/events/public", async (req, res) => {
       try {
@@ -52,6 +58,31 @@ mongoose
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
+      }
+    });
+
+    app.put("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const updatedEvent = await Event.findByIdAndUpdate(
+          req.params.id,
+          { ...req.body },
+          { new: true }
+        );
+        res.json(updatedEvent);
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    app.delete("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+        if (!deletedEvent) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+        res.json({ message: "Event deleted successfully" });
+      } catch (err) {
+        res.status(400).json({ error: err.message });
       }
     });
 

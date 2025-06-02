@@ -10,7 +10,7 @@ router.get("/admin", verifyAdmin, async (req, res) => {
   res.json({ message: "Welcome to the admin page" });
 });
 
-// users will be user later for events
+
 router.get("/users", verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, "-password");
