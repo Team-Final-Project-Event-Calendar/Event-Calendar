@@ -1,24 +1,35 @@
-import { Button, Card, Image, Text } from "@chakra-ui/react";
+import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 
 function CardComponent({ event }) {
   return (
-    <Card.Root maxW="sm" overflow="hidden">
-      {/* <Image
-        src="https://images.prismic.io/wildgoose/3a553239-8fde-489a-9ae2-cda33cee940b_team-meeting-games-for-the-office.webp?auto=compress,format"
-        alt="Green double couch with wooden legs"
-      /> */}
-      <Card.Body gap="2">
-        <Card.Title>{event.title}</Card.Title>
-        <Card.Description>{event.description}</Card.Description>
-        <Text textStyle="2xl" fontWeight="medium" letterSpacing="tight" mt="2">
-          {event.startDate}
-        </Text>
-      </Card.Body>
-      <Card.Footer gap="2">
-        <Button variant="solid">Join Event</Button>
-        <Button variant="ghost">Add To Upcoming</Button>
-      </Card.Footer>
-    </Card.Root>
+    <Box
+      maxW="sm"
+      bg="white"
+      boxShadow="lg"
+      borderRadius="xl"
+      p={5}
+      transition="all 0.3s"
+      _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
+    >
+      <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.800">
+        {event.title}
+      </Text>
+      <Text fontSize="md" color="gray.600" mb={3}>
+        {event.description}
+      </Text>
+      <Text fontSize="sm" color="gray.500" mb={4}>
+        {new Date(event.startDate).toLocaleString()}
+      </Text>
+
+      <Box display="flex" gap="2">
+        <Button colorScheme="blue" flex={1}>
+          Join Event
+        </Button>
+        <Button variant="outline" colorScheme="blue" color="grey" flex={1}>
+          Add To Upcoming
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
