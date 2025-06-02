@@ -46,6 +46,8 @@ mongoose
       }
     });
 
+
+
     app.get("/api/events/public", async (req, res) => {
       try {
         const events = await Event.find({ type: "public" });
@@ -77,6 +79,21 @@ mongoose
         res.json({ message: "Event deleted successfully" });
       } catch (err) {
         res.status(400).json({ error: err.message });
+      }
+    });
+
+    app.get("/api/events/admin", verifyToken, async (req, res) => {
+      try {
+        const user = await User.findById(req.user.id);
+    
+        if (user.role !== "admin") {
+          return res.status(403).json({ message: "Access denied: not admin" });
+        }
+    
+        const events = await Event.find(); 
+        res.json(events);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
       }
     });
 

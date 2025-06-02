@@ -15,7 +15,7 @@ function Admin() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/events", {
+        const response = await fetch("http://localhost:5000/api/events/admin", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
