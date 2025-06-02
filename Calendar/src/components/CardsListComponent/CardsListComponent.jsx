@@ -4,12 +4,11 @@ function CardsListComponent({ events = [] }) {
   return (
     <div
       style={{
-        display: "flex",
         flexWrap: "wrap",
+        display: "flex",
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
-        justifyContent: "center",
       }}
     >
       {Array.isArray(events) &&

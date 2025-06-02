@@ -25,28 +25,39 @@ function NavBar() {
         marginBottom: "20px",
       }}
     >
-      <Button variant="ghost" onClick={() => navigate("/")}>
-        Home
-      </Button>
       <div
-        className="rightside-navbar "
-        style={{ display: "flex", gap: "20px", alignItems: "center" }}
+        style={{
+          width: "60vw",
+          display: "flex",
+          justifyContent: "space-between",
+          margin: "0 auto",
+        }}
       >
-        {user?.role === "admin" && (
-          <Button as={NavLink} to="/authentication/admin" variant="ghost">
-            Admin Panel
-          </Button>
-        )}
-        {isLoggedIn ? (
-          <>
-            <AvatarComponent />
-            <DrawerComponent onLogout={handleLogout} />
-          </>
-        ) : (
-          <>
-            <a onClick={() => navigate("/authentication")}>Login / Register</a>
-          </>
-        )}
+        <Button variant="ghost" onClick={() => navigate("/")}>
+          Home
+        </Button>
+        <div
+          className="rightside-navbar "
+          style={{ display: "flex", gap: "20px", alignItems: "center" }}
+        >
+          {user?.role === "admin" && (
+            <Button as={NavLink} to="/authentication/admin" variant="ghost">
+              Admin Panel
+            </Button>
+          )}
+          {isLoggedIn ? (
+            <>
+              <AvatarComponent />
+              <DrawerComponent onLogout={handleLogout} />
+            </>
+          ) : (
+            <>
+              <a onClick={() => navigate("/authentication")}>
+                Login / Register
+              </a>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
