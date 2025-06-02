@@ -51,6 +51,7 @@ const Searchbar = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginTop: "50px",
       }}
     >
       <input
@@ -76,7 +77,7 @@ const Searchbar = () => {
       {expanded && searchTerm.trim() !== "" && (
         <div
           style={{
-            marginTop: 48,
+            marginTop: "100px",
             display: "flex",
             width: expanded ? "60vw" : 180,
             background: "#e3f2fd",
