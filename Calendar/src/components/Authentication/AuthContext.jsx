@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 export const AuthContext = createContext();
-const key = import.meta.env.VITE_FRONT_END_URL
+const key = import.meta.env.VITE_FRONT_END_URL || "http://localhost:5000/api/auth/login"
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post(`${key}/api/auth/login` || "http://localhost:5000/api/auth/login", {
+    const res = await axios.post(`${key}/api/auth/login`, {
       email,
       password,
     });
@@ -28,8 +28,7 @@ export default function AuthProvider({ children }) {
     if (fullUser && fullUser.id) {
       try {
         const profileRes = await axios.get(
-         `${key}/api/auth/users` ||
-          `http://localhost:5000/api/auth/users`,
+         `${key}/api/auth/users`,
           {
             headers: { Authorization: `Bearer ${data.token}` },
           }
