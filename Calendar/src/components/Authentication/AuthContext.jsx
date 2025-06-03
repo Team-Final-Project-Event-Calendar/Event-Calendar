@@ -13,17 +13,22 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-
+  
     if (storedToken && storedUser && storedUser !== "undefined") {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       } catch (e) {
-        console.error("Failed to parse stored user:", e);
+        console.error("Invalid stored user:", storedUser, e);
         localStorage.removeItem("user");
       }
+    } else {
+      
+      localStorage.removeItem("user");
+      setUser(null);
     }
   }, []);
+  
 
   const login = async (email, password) => {
     const res = await axios.post(`${key}/api/auth/login`, {
