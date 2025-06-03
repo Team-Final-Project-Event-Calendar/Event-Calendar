@@ -24,6 +24,7 @@ const PublicPage = () => {
         <Stack>
           <Card.Root 
           size="sm" 
+          margin="4.5"
           backgroundColor="white" 
           borderRadius="40px" 
           borderColor="#E5E4E2" 
