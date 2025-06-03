@@ -21,7 +21,7 @@ function NavBar() {
       style={{
         display: "flex",
         backgroundColor: "#5565dd",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         padding: "10px 20px",
         marginBottom: "20px",
@@ -30,20 +30,47 @@ function NavBar() {
       <div
         style={{
           width: "60vw",
-          display: "flex",
-          justifyContent: "space-between",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          justifyContent: "center",
+          alignItems: "center",
           margin: "0 auto",
         }}
       >
-        <Button variant="ghost" fontSize="19px" onClick={() => navigate("/")}>
-          Home
-        </Button>
-<WeatherWidget />
-        <Searchbar />
 
+        {/* Left Side Navbar */}
+        <div className="leftSide-navbar"
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", gap: "5px" }}>
+
+          <span style={{}}>
+            <WeatherWidget />
+          </span>
+          <span>
+            <Button variant="ghost" fontSize="19px" onClick={() => navigate("/")}>
+              Home
+            </Button>
+          </span>
+
+        </div>
+
+        {/* Center Side Navbar */}
+        <div
+          className="centerSide-navbar"
+          style={{
+            width: "100%",
+            flex: "1 1 auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Searchbar />
+        </div>
+
+        {/* Right Side Navbar */}
         <div
           className="rightside-navbar "
-          style={{ display: "flex", gap: "20px", alignItems: "center" }}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", gap: "5px" }}
         >
           {user?.role === "admin" && (
             <Button as={NavLink} to="/authentication/admin" variant="ghost">
