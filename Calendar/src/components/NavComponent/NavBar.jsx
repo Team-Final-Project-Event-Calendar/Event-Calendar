@@ -35,10 +35,10 @@ function NavBar() {
           margin: "0 auto",
         }}
       >
-        <Button variant="ghost" onClick={() => navigate("/")}>
+        <Button variant="ghost" fontSize="19px" onClick={() => navigate("/")}>
           Home
         </Button>
-
+<WeatherWidget />
         <Searchbar />
 
         <div
