@@ -13,7 +13,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      process.env.FRONT_END_URL
+      process.env.FRONT_END_URL,
+      "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
