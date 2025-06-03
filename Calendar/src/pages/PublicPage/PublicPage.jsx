@@ -21,8 +21,14 @@ const PublicPage = () => {
       {/* Welcome Text Section */}
       <div className="public-WelcomeText"
         style={{ alignContent: "center", display: "flex", justifyContent: "center" }}>
-        <Stack style={{}}>
-          <Card.Root size="sm" backgroundColor="#F5F5F5" borderRadius="40px" borderColor="#E5E4E2" textAlign="center">
+        <Stack>
+          <Card.Root 
+          size="sm" 
+          backgroundColor="white" 
+          borderRadius="40px" 
+          borderColor="#E5E4E2" 
+          boxShadow= "0 2px 16px rgba(0, 0, 0, 0.12)" 
+          textAlign="center">
             <Card.Header>
               <Heading size="lg" fontSize="25px" color="black" fontWeight="bold">
                 Welcome to Event Calendar!
