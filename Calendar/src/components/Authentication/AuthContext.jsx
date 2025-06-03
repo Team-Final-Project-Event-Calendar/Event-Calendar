@@ -1,9 +1,11 @@
-//Auth.Context.jsx
+// Auth.Context.jsx
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
 export const AuthContext = createContext();
-const key = import.meta.env.VITE_FRONT_END_URL || "http://localhost:5000/api/auth/login"
+
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -11,9 +13,15 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+
+    if (storedToken && storedUser && storedUser !== "undefined") {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Failed to parse stored user:", e);
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 
@@ -27,21 +35,25 @@ export default function AuthProvider({ children }) {
     let fullUser = data.user;
     if (fullUser && fullUser.id) {
       try {
-        const profileRes = await axios.get(
-         `${key}/api/auth/users`,
-          {
-            headers: { Authorization: `Bearer ${data.token}` },
-          }
-        );
+        const profileRes = await axios.get(`${key}/api/auth/users`, {
+          headers: { Authorization: `Bearer ${data.token}` },
+        });
         const found = Array.isArray(profileRes.data)
           ? profileRes.data.find((u) => u._id === fullUser.id)
           : null;
         if (found) fullUser = found;
       } catch (e) {
+        console.error("Fetching full user failed", e);
       }
     }
+
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(fullUser));
+    if (fullUser) {
+      localStorage.setItem("user", JSON.stringify(fullUser));
+    } else {
+      localStorage.removeItem("user");
+    }
+
     setToken(data.token);
     setUser(fullUser);
     return fullUser;
