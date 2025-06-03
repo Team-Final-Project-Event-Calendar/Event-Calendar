@@ -1,3 +1,11 @@
+.public-link {
+  text-decoration: underline;
+  color: #1976d2;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
 .public-link:hover {
-    cursor: pointer;
+  color: #0d47a1 !important;
+  cursor: pointer;
 }
