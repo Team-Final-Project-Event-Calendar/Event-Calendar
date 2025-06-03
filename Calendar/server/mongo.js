@@ -12,7 +12,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"], // allow both ports
+    origin: [
+      "http://localhost:5173","http://localhost:5174",
+      "https://your-frontend.onrender.com"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -97,8 +100,22 @@ mongoose
       }
     });
 
-    app.listen(process.env.PORT, () => {
-      console.log(`🚀 Server work with http://localhost:${process.env.PORT}`);
+
+    app.use("*", (req, res) => {
+      res.status(404).json({ error: "Route not found" });
+    });
+
+    app.use((req, res, next) => {
+      console.log(`[${req.method}] ${req.url}`);
+      next();
+    });
+    
+    
+
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
