@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post(`${key}` || "http://localhost:5000/api/auth/login", {
+    const res = await axios.post(`${key}/api/auth/login` || "http://localhost:5000/api/auth/login", {
       email,
       password,
     });
@@ -28,6 +28,7 @@ export default function AuthProvider({ children }) {
     if (fullUser && fullUser.id) {
       try {
         const profileRes = await axios.get(
+         `${key}/api/auth/users` ||
           `http://localhost:5000/api/auth/users`,
           {
             headers: { Authorization: `Bearer ${data.token}` },
@@ -38,7 +39,6 @@ export default function AuthProvider({ children }) {
           : null;
         if (found) fullUser = found;
       } catch (e) {
-        // fallback to what we have
       }
     }
     localStorage.setItem("token", data.token);
