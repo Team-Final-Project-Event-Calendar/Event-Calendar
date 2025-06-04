@@ -12,14 +12,18 @@ function Authentication() {
     user: loggedUser,
   } = useContext(AuthContext);
   const [mode, setMode] = useState("login");
-  const [user, setUser] = useState({
+  setUser({
     username: "",
     phoneNumber: "",
     email: "",
     password: "",
     firstName: "",
     lastName: "",
+    isBlocked: false,
   });
+
+  const [error, setError] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,6 +45,35 @@ function Authentication() {
         "Login failed!";
       alert(message);
     }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!user.username) {
+      newErrors.username = 'Username does not match the required format.';
+    }
+    if (!user.phoneNumber) {
+      newErrors.phoneNumber = "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long."
+    }
+
+    if (!user.email) {
+      newErrors.email = 'Email does not match the required format.';
+    }
+    if (!user.password) {
+      newErrors.password = 'Password must be 8-30 characters long and include at least one letter (A-Z)';
+    }
+
+    if (!user.firstName) {
+      newErrors.firstName = "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z)."
+    };
+    if (!user.lastName) {
+      newErrors.lastName = 'Last name is required';
+    }
+    if (user.isBlocked) {
+      newErrors.isBlocked = "Your account has been blocked. Please contact the administrator."
+    };
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleRegister = async () => {
@@ -70,7 +103,7 @@ function Authentication() {
         firstName,
         lastName,
       });
-      alert("Registration successful! Please login.");
+      setSuccessMessage("Registration successful! Please login.");
       setMode("login");
       setUser({
         username: "",
@@ -88,6 +121,7 @@ function Authentication() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (mode === "register" && !validate()) return;
     mode === "login" ? handleLogin() : handleRegister();
   };
 
@@ -126,6 +160,7 @@ function Authentication() {
                   value={user.username}
                   onChange={updateUser("username")}
                 />
+                {error.username && <div className="error">{error.username}</div>}
                 <div>
                   <input
                     type="tel"
@@ -140,6 +175,7 @@ function Authentication() {
                     required
                     placeholder="Enter phone number"
                   />
+                  {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
                 </div>
                 <input
                   type="text"
@@ -147,12 +183,16 @@ function Authentication() {
                   value={user.firstName}
                   onChange={updateUser("firstName")}
                 />
+                {error.firstName && <div className="error">{error.firstName}</div>}
+
                 <input
                   type="text"
                   placeholder="Last Name"
                   value={user.lastName}
                   onChange={updateUser("lastName")}
                 />
+                {error.lastName && <div className="error">{error.lastName}</div>}
+
               </>
             )}
             <input
@@ -161,12 +201,16 @@ function Authentication() {
               value={user.email}
               onChange={updateUser("email")}
             />
+            {error.email && <div className="error">{error.email}</div>}
             <input
               type="password"
               placeholder="Password"
               value={user.password}
               onChange={updateUser("password")}
             />
+            {successMessage && <div className="success">{successMessage}</div>}
+
+            {error.password && <div className="error">{error.password}</div>}
             <button type="submit">
               {mode === "login" ? "Login" : "Register"}
             </button>

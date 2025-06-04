@@ -84,3 +84,17 @@
 .auth-form button[type="submit"]:hover {
     background: #125ea2;
 }
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+  }
+  
+  .success {
+    color: green;
+    font-size: 1em;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
