@@ -11,7 +11,6 @@ function Authentication() {
     isLoggedIn,
     user: loggedUser,
   } = useContext(AuthContext);
-
   const [mode, setMode] = useState("login");
   const [user, setUser] = useState({
     username: "",
@@ -22,7 +21,6 @@ function Authentication() {
     lastName: "",
     isBlocked: false,
   });
-
   const [error, setError] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
@@ -30,6 +28,23 @@ function Authentication() {
 
   const updateUser = (prop) => (e) =>
     setUser({ ...user, [prop]: e.target.value });
+
+  const handleLogin = async () => {
+    if (!user.email || !user.password)
+      return alert("Please enter email and password");
+    try {
+      await login(user.email, user.password);
+      alert("Login successful!");
+      navigate(location.state?.from?.pathname ?? "/");
+    } catch (err) {
+      console.error("Login failed:", err);
+      const message =
+        err?.response?.data?.msg ||
+        err?.response?.data?.message ||
+        "Login failed!";
+      alert(message);
+    }
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -47,7 +62,11 @@ function Authentication() {
       newErrors.email = "Please enter a valid email address.";
     }
 
-    if (!user.password || user.password.length < 8 || !/[A-Za-z]/.test(user.password)) {
+    if (
+      !user.password ||
+      user.password.length < 8 ||
+      !/[A-Za-z]/.test(user.password)
+    ) {
       newErrors.password =
         "Password must be 8+ characters and include at least one letter.";
     }
@@ -71,28 +90,21 @@ function Authentication() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async () => {
-    if (!user.email || !user.password)
-      return alert("Please enter email and password");
-    try {
-      await login(user.email, user.password);
-      alert("Login successful!");
-      navigate(location.state?.from?.pathname ?? "/");
-    } catch (err) {
-      console.error("Login failed:", err);
-      const message =
-        err?.response?.data?.msg ||
-        err?.response?.data?.message ||
-        "Login failed!";
-      setError({ general: message });
-    }
-  };
 
   const handleRegister = async () => {
     if (!validate()) return;
+    const { username, phoneNumber, email, password, firstName, lastName } = user;
 
     try {
-      await register(user);
+      await register({
+        username,
+        phoneNumber,
+        email,
+        password,
+        firstName,
+        lastName,
+      });
+
       setSuccessMessage("✅ Registration successful! Please login.");
       setMode("login");
       setUser({
@@ -114,6 +126,7 @@ function Authentication() {
       setError({ general: msg });
     }
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,13 +151,13 @@ function Authentication() {
               Register
             </button>
           </div>
-  
+
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
-  
-            {/* Show general error (non-field) */}
-            {error.general && <div className="error-summary">{error.general}</div>}
-  
+
+            {successMessage && <div className="success">{successMessage}</div>}
+
+            
             {mode === "register" && (
               <>
                 <div>
@@ -156,22 +169,24 @@ function Authentication() {
                   />
                   {error.username && <div className="error">{error.username}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="tel"
                     value={user.phoneNumber}
-                    onChange={(e) =>
-                      setUser({ ...user, phoneNumber: e.target.value.replace(/[^0-9]/g, "") })
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, "");
+                      setUser({ ...user, phoneNumber: val });
+                    }}
                     name="phoneNumber"
+                    id="phoneNumber"
                     pattern="^0\d{9}$"
                     required
                     placeholder="Enter phone number"
                   />
                   {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="text"
@@ -181,7 +196,7 @@ function Authentication() {
                   />
                   {error.firstName && <div className="error">{error.firstName}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="text"
@@ -193,7 +208,8 @@ function Authentication() {
                 </div>
               </>
             )}
-  
+
+    
             <div>
               <input
                 type="email"
@@ -203,7 +219,7 @@ function Authentication() {
               />
               {error.email && <div className="error">{error.email}</div>}
             </div>
-  
+
             <div>
               <input
                 type="password"
@@ -213,15 +229,18 @@ function Authentication() {
               />
               {error.password && <div className="error">{error.password}</div>}
             </div>
-  
+
+         
+            {error.general && <div className="error">{error.general}</div>}
+
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
-            {successMessage && <div className="success">{successMessage}</div>}
           </form>
+
         </>
       )}
     </div>
   );
-  
+
 }
 
 export default Authentication;
