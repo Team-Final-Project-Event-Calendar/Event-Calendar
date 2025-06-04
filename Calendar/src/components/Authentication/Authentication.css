@@ -87,14 +87,21 @@
 
 .error {
     color: red;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     margin-top: 4px;
+  }
+  
+  .error-summary {
+    background: #ffe5e5;
+    border: 1px solid #cc0000;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
   }
   
   .success {
     color: green;
-    font-size: 1em;
-    margin-top: 10px;
     font-weight: bold;
+    margin-top: 1rem;
   }
   
