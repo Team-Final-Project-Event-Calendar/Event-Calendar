@@ -21,7 +21,7 @@ const PublicPage = () => {
       {/* Welcome Text Section */}
       <div className="public-Welcome-container">
         <Stack>
-          <Card.Root className="public-welcome-chakra_Card-Root" size="sm" margin="4.5">
+          <Card.Root className="public-welcome-chakra_Card-Root" size="sm">
             <Card.Header>
               <Heading className="public-welcome-chakra_Card-heading" size="lg">
                 Welcome to Event Calendar!<hr />

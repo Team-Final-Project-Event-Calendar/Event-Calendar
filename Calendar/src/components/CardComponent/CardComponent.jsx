@@ -1,4 +1,6 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
+import "./CardComponent.css";
+
 function CardComponent({ event, onDelete }) {
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
