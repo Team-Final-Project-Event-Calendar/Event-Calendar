@@ -48,51 +48,53 @@ function Authentication() {
 
   const validate = () => {
     const newErrors = {};
-    if(!user.username) {
-      newErrors.username = 'Username does not match the required format.';
+  
+    if (!user.username || user.username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters.";
     }
-    if(!user.phoneNumber) {
-      newErrors.phoneNumber = "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long."
+  
+    if (!/^0\d{9}$/.test(user.phoneNumber)) {
+      newErrors.phoneNumber =
+        "Phone number must start with 0, contain only digits, and be exactly 10 digits.";
     }
-
-    if(!user.email) {
-      newErrors.email = 'Email does not match the required format.';
+  
+    if (!user.email || !/^\S+@\S+\.\S+$/.test(user.email)) {
+      newErrors.email = "Please enter a valid email address.";
     }
-    if (!user.password) {
-      newErrors.password = 'Password must be 8-30 characters long and include at least one letter (A-Z)';
+  
+    if (
+      !user.password ||
+      user.password.length < 8 ||
+      !/[A-Za-z]/.test(user.password)
+    ) {
+      newErrors.password =
+        "Password must be 8+ characters and include at least one letter.";
     }
-    
-    if(!user.firstName) {
-      newErrors.firstName =  "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z)."
-    };
-    if(!user.lastName) {
-      newErrors.lastName = 'Last name is required';
+  
+    if (!user.firstName || !/^[A-Za-z]{1,30}$/.test(user.firstName)) {
+      newErrors.firstName =
+        "First name must be 1-30 characters and contain only letters.";
     }
-    if(user.isBlocked) { 
-      newErrors.isBlocked = "Your account has been blocked. Please contact the administrator."
-    };
+  
+    if (!user.lastName || !/^[A-Za-z]{1,30}$/.test(user.lastName)) {
+      newErrors.lastName =
+        "Last name must be 1-30 characters and contain only letters.";
+    }
+  
+    if (user.isBlocked) {
+      newErrors.isBlocked =
+        "Your account has been blocked. Please contact the administrator.";
+    }
+  
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
 
   const handleRegister = async () => {
-    const { username, phoneNumber, email, password, firstName, lastName } =
-      user;
-    if (
-      !username ||
-      !phoneNumber ||
-      !email ||
-      !password ||
-      !firstName ||
-      !lastName
-    ) {
-      return alert("Please fill in all fields");
-    }
-    if (!/^0\d{9}$/.test(phoneNumber)) {
-      return alert(
-        "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long."
-      );
-    }
+    if (!validate()) return;
+    const { username, phoneNumber, email, password, firstName, lastName } = user;
+  
     try {
       await register({
         username,
@@ -102,7 +104,8 @@ function Authentication() {
         firstName,
         lastName,
       });
-      setSuccessMessage("Registration successful! Please login.");
+  
+      setSuccessMessage("✅ Registration successful! Please login.");
       setMode("login");
       setUser({
         username: "",
@@ -111,12 +114,19 @@ function Authentication() {
         password: "",
         firstName: "",
         lastName: "",
+        isBlocked: false,
       });
+      setError({});
     } catch (err) {
-      console.error("Registration failed:", err.message);
-      alert(err.message);
+      console.error("❌ Failed to register:", err);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.msg ||
+        "❌ Failed to register.";
+      setError({ general: msg });
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -216,7 +226,8 @@ function Authentication() {
               {error.password && <div className="error">{error.password}</div>}
             </div>
   
-            {successMessage && <div className="success">{successMessage}</div>}
+            {error.general && <div className="error">{error.general}</div>}
+
   
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
           </form>
