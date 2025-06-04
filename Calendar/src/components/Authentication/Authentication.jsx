@@ -134,32 +134,29 @@ function Authentication() {
       ) : (
         <>
           <div className="auth-toggle">
-            <button
-              onClick={() => setMode("login")}
-              disabled={mode === "login"}
-            >
+            <button onClick={() => setMode("login")} disabled={mode === "login"}>
               Login
             </button>
-            <button
-              onClick={() => setMode("register")}
-              disabled={mode === "register"}
-            >
+            <button onClick={() => setMode("register")} disabled={mode === "register"}>
               Register
             </button>
           </div>
-
+  
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
-
+  
             {mode === "register" && (
               <>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={user.username}
-                  onChange={updateUser("username")}
-                />
-                {error.username && <div className="error">{error.username}</div>}
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    value={user.username}
+                    onChange={updateUser("username")}
+                  />
+                  {error.username && <div className="error">{error.username}</div>}
+                </div>
+  
                 <div>
                   <input
                     type="tel"
@@ -176,48 +173,58 @@ function Authentication() {
                   />
                   {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
                 </div>
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  value={user.firstName}
-                  onChange={updateUser("firstName")}
-                />
-                {error.firstName && <div className="error">{error.firstName}</div>}
-
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  value={user.lastName}
-                  onChange={updateUser("lastName")}
-                />
-                {error.lastName && <div className="error">{error.lastName}</div>}
-
+  
+                <div>
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    value={user.firstName}
+                    onChange={updateUser("firstName")}
+                  />
+                  {error.firstName && <div className="error">{error.firstName}</div>}
+                </div>
+  
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={user.lastName}
+                    onChange={updateUser("lastName")}
+                  />
+                  {error.lastName && <div className="error">{error.lastName}</div>}
+                </div>
               </>
             )}
-            <input
-              type="email"
-              placeholder="Email"
-              value={user.email}
-              onChange={updateUser("email")}
-            />
-            {error.email && <div className="error">{error.email}</div>}
-            <input
-              type="password"
-              placeholder="Password"
-              value={user.password}
-              onChange={updateUser("password")}
-            />
+  
+            <div>
+              <input
+                type="email"
+                placeholder="Email"
+                value={user.email}
+                onChange={updateUser("email")}
+              />
+              {error.email && <div className="error">{error.email}</div>}
+            </div>
+  
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={user.password}
+                onChange={updateUser("password")}
+              />
+              {error.password && <div className="error">{error.password}</div>}
+            </div>
+  
             {successMessage && <div className="success">{successMessage}</div>}
-
-            {error.password && <div className="error">{error.password}</div>}
-            <button type="submit">
-              {mode === "login" ? "Login" : "Register"}
-            </button>
+  
+            <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
           </form>
         </>
       )}
     </div>
   );
+  
 }
 
 export default Authentication;
