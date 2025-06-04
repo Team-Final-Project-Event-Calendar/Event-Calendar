@@ -138,19 +138,13 @@ function Authentication() {
               Register
             </button>
           </div>
-
+  
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
-
-          
-            {Object.values(error).length > 0 && (
-              <div className="error-summary">
-                {Object.entries(error).map(([key, val]) => (
-                  <div key={key} className="error">{val}</div>
-                ))}
-              </div>
-            )}
-
+  
+            {/* Show general error (non-field) */}
+            {error.general && <div className="error-summary">{error.general}</div>}
+  
             {mode === "register" && (
               <>
                 <div>
@@ -160,8 +154,9 @@ function Authentication() {
                     value={user.username}
                     onChange={updateUser("username")}
                   />
+                  {error.username && <div className="error">{error.username}</div>}
                 </div>
-
+  
                 <div>
                   <input
                     type="tel"
@@ -174,8 +169,9 @@ function Authentication() {
                     required
                     placeholder="Enter phone number"
                   />
+                  {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
                 </div>
-
+  
                 <div>
                   <input
                     type="text"
@@ -183,8 +179,9 @@ function Authentication() {
                     value={user.firstName}
                     onChange={updateUser("firstName")}
                   />
+                  {error.firstName && <div className="error">{error.firstName}</div>}
                 </div>
-
+  
                 <div>
                   <input
                     type="text"
@@ -192,10 +189,11 @@ function Authentication() {
                     value={user.lastName}
                     onChange={updateUser("lastName")}
                   />
+                  {error.lastName && <div className="error">{error.lastName}</div>}
                 </div>
               </>
             )}
-
+  
             <div>
               <input
                 type="email"
@@ -203,8 +201,9 @@ function Authentication() {
                 value={user.email}
                 onChange={updateUser("email")}
               />
+              {error.email && <div className="error">{error.email}</div>}
             </div>
-
+  
             <div>
               <input
                 type="password"
@@ -212,8 +211,9 @@ function Authentication() {
                 value={user.password}
                 onChange={updateUser("password")}
               />
+              {error.password && <div className="error">{error.password}</div>}
             </div>
-
+  
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
             {successMessage && <div className="success">{successMessage}</div>}
           </form>
@@ -221,6 +221,7 @@ function Authentication() {
       )}
     </div>
   );
+  
 }
 
 export default Authentication;
