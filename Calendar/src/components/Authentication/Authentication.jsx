@@ -213,6 +213,7 @@ function Authentication() {
                 value={user.password}
                 onChange={updateUser("password")}
               />
+                {error.password && <div className="error">{error.password}</div>}
             </div>
 
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
