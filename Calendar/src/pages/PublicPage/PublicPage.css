@@ -55,6 +55,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
 }
 
 /* Public Events_Section: (CHAKRA_UI Box) <h2 style> */
@@ -73,5 +74,11 @@
 /* Public Events_Section: (CHAKRA_UI Box) <CardsListComponent> */
 .public-events-chakra_Box-list {
   margin-top: 2rem;
+  margin-bottom: 1rem;
   padding: 0px 10px 10px;
+  display: grid;
+  grid-template-columns: repeat(3);
+  grid-template-rows: repeat(2);
+  max-height: 395px;
+  max-width: 1200px;
 }
