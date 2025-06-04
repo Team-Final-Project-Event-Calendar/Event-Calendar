@@ -2,7 +2,7 @@ import "../PublicPage/PublicPage.css";
 import { Box } from "@chakra-ui/react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { useState, useEffect } from "react";
-const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const key = import.meta.env.BACK_END_URL || "http://localhost:5000";
 function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
