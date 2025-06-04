@@ -1,3 +1,37 @@
+/* Public Section: -Welcome & -Events containers */
+.public-Welcome-container,
+.public-Events-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-bottom: 1.5rem;
+}
+
+
+/*_____________________*** Welcome Text Section ***______________________*/
+/* Public Welcome_Section: (CHAKRA_UI Card) .Root */
+.public-welcome-chakra_Card-Root {
+  text-align: center;
+  background-color: white;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.69);
+  border-radius: 40px;
+  border-color: #E5E4E2;
+}
+
+/* Public Welcome_Section: (CHAKRA_UI Card) .Header-heading */
+.public-welcome-chakra_Card-heading {
+  font-size: 25px;
+  color: black;
+  font-weight: bold;
+}
+
+/* Public Welcome_Section: (CHAKRA_UI Card) .Body */
+.public-welcome-chakra_Card-Body {
+  color: black;
+  padding: 13px;
+}
+
+/* Public Welcome_Section: Login-Register text style */
 .public-link {
   text-decoration: underline;
   color: #1976d2;
@@ -5,7 +39,39 @@
   transition: color 0.2s;
 }
 
+/* Public Welcome_Section: Login-Register text style */
 .public-link:hover {
   color: #0d47a1 !important;
   cursor: pointer;
+}
+
+
+/*_____________________*** Public Events Section ***______________________*/
+/* Public Events_Section: (CHAKRA_UI Box) */
+.public-events-chakra_Box {
+  background: white;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.69);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Public Events_Section: (CHAKRA_UI Box) <h2 style> */
+.public-events-chakra_Box-title {
+  color: rgb(2, 153, 2);
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 18px;
+  background-color: #e2f1ff;
+  padding: 3px 10rem;
+  margin-top: 3px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Public Events_Section: (CHAKRA_UI Box) <CardsListComponent> */
+.public-events-chakra_Box-list {
+  margin-top: 2rem;
+  padding: 0px 10px 10px;
 }

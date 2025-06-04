@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./PublicPage.css";
 import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
-import { Card, Heading, Stack } from "@chakra-ui/react";
+import { Card, Heading, Stack, Box } from "@chakra-ui/react";
 
 
 const PublicPage = () => {
@@ -19,24 +19,15 @@ const PublicPage = () => {
   return (
     <>
       {/* Welcome Text Section */}
-      <div className="public-WelcomeText"
-        style={{ alignContent: "center", display: "flex", justifyContent: "center" }}>
+      <div className="public-Welcome-container">
         <Stack>
-          <Card.Root 
-          size="sm" 
-          margin="4.5"
-          backgroundColor="white" 
-          borderRadius="40px" 
-          borderColor="#E5E4E2" 
-          boxShadow= "0 2px 16px rgba(0, 0, 0, 0.12)" 
-          textAlign="center">
+          <Card.Root className="public-welcome-chakra_Card-Root" size="sm" margin="4.5">
             <Card.Header>
-              <Heading size="lg" fontSize="25px" color="black" fontWeight="bold">
-                Welcome to Event Calendar!
-                 <hr/>
+              <Heading className="public-welcome-chakra_Card-heading" size="lg">
+                Welcome to Event Calendar!<hr />
               </Heading>
             </Card.Header>
-            <Card.Body color="black" padding={3}>
+            <Card.Body className="public-welcome-chakra_Card-Body">
               <p>
                 We've noticed that you're currently an Anonymous user.
                 <br />
@@ -51,15 +42,20 @@ const PublicPage = () => {
             </Card.Body>
           </Card.Root>
         </Stack>
-
-
       </div>
 
       {/* Public Events Section */}
-      <div className="public-Events" style={{ margin: "2rem auto", maxWidth: "1100px" }}>
-        <h2 style={{ textAlign: "center", color: "green", fontSize: 25 }}>Public Events</h2>
-        <CardsListComponent events={publicEvents} />
-      </div>
+      <div className="public-Events-container">
+        <Box className="public-events-chakra_Box" borderRadius="xl">
+          <h2 className="public-events-chakra_Box-title">
+            Public Events
+          </h2>
+          <span className="public-events-chakra_Box-list">
+            <CardsListComponent events={publicEvents} />
+          </span>
+        </Box>
+      </div >
+
 
     </>
   );

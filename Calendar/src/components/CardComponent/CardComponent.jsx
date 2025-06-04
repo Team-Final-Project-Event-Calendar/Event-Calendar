@@ -8,7 +8,7 @@ function CardComponent({ event, onDelete }) {
       onClick={() => console.log(event)}
       maxW="sm"
       bg="white"
-      boxShadow="lg"
+      boxShadow="md"
       borderRadius="xl"
       p={5}
       transition="all 0.3s"
