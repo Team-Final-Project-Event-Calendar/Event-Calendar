@@ -11,10 +11,10 @@ function DrawerComponent({ onLogout }) {
       </Drawer.Trigger>
       <Portal>
         <Drawer.Backdrop />
-        <Drawer.Positioner padding="4">
+        <Drawer.Positioner padding="7vh 8vw">
           <Drawer.Content
             rounded="md"
-            maxH="400px"
+            maxH="70vh"
           >
             <Drawer.Header>
               <Drawer.Title alignItems={"center"} display="flex" justifyContent="center">
@@ -39,10 +39,10 @@ function DrawerComponent({ onLogout }) {
                 flexDirection: "column",
               }}>
               <Button variant="ghost" fontSize={18} onClick={() => navigate("/profile")}>
-                👤 Profile
+                 Profile
               </Button>
               <Button variant="ghost" fontSize={18} onClick={() => navigate("/myevents")}>
-                🗓 My Events
+                 My Events
               </Button>
             </Drawer.Body>
 
