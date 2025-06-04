@@ -12,7 +12,7 @@ function Authentication() {
     user: loggedUser,
   } = useContext(AuthContext);
   const [mode, setMode] = useState("login");
-  setUser({
+  const [user, setUser] = useState({
     username: "",
     phoneNumber: "",
     email: "",
@@ -21,7 +21,6 @@ function Authentication() {
     lastName: "",
     isBlocked: false,
   });
-
   const [error, setError] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
@@ -49,27 +48,27 @@ function Authentication() {
 
   const validate = () => {
     const newErrors = {};
-    if (!user.username) {
+    if(!user.username) {
       newErrors.username = 'Username does not match the required format.';
     }
-    if (!user.phoneNumber) {
+    if(!user.phoneNumber) {
       newErrors.phoneNumber = "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long."
     }
 
-    if (!user.email) {
+    if(!user.email) {
       newErrors.email = 'Email does not match the required format.';
     }
     if (!user.password) {
       newErrors.password = 'Password must be 8-30 characters long and include at least one letter (A-Z)';
     }
-
-    if (!user.firstName) {
-      newErrors.firstName = "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z)."
+    
+    if(!user.firstName) {
+      newErrors.firstName =  "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z)."
     };
-    if (!user.lastName) {
+    if(!user.lastName) {
       newErrors.lastName = 'Last name is required';
     }
-    if (user.isBlocked) {
+    if(user.isBlocked) { 
       newErrors.isBlocked = "Your account has been blocked. Please contact the administrator."
     };
     setError(newErrors);
