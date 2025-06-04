@@ -48,20 +48,20 @@ function Authentication() {
 
   const validate = () => {
     const newErrors = {};
-  
+
     if (!user.username || user.username.length < 3) {
       newErrors.username = "Username must be at least 3 characters.";
     }
-  
+
     if (!/^0\d{9}$/.test(user.phoneNumber)) {
       newErrors.phoneNumber =
         "Phone number must start with 0, contain only digits, and be exactly 10 digits.";
     }
-  
+
     if (!user.email || !/^\S+@\S+\.\S+$/.test(user.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
-  
+
     if (
       !user.password ||
       user.password.length < 8 ||
@@ -70,31 +70,31 @@ function Authentication() {
       newErrors.password =
         "Password must be 8+ characters and include at least one letter.";
     }
-  
+
     if (!user.firstName || !/^[A-Za-z]{1,30}$/.test(user.firstName)) {
       newErrors.firstName =
         "First name must be 1-30 characters and contain only letters.";
     }
-  
+
     if (!user.lastName || !/^[A-Za-z]{1,30}$/.test(user.lastName)) {
       newErrors.lastName =
         "Last name must be 1-30 characters and contain only letters.";
     }
-  
+
     if (user.isBlocked) {
       newErrors.isBlocked =
         "Your account has been blocked. Please contact the administrator.";
     }
-  
+
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
 
   const handleRegister = async () => {
     if (!validate()) return;
     const { username, phoneNumber, email, password, firstName, lastName } = user;
-  
+
     try {
       await register({
         username,
@@ -104,7 +104,7 @@ function Authentication() {
         firstName,
         lastName,
       });
-  
+
       setSuccessMessage("✅ Registration successful! Please login.");
       setMode("login");
       setUser({
@@ -126,7 +126,7 @@ function Authentication() {
       setError({ general: msg });
     }
   };
-  
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -151,10 +151,13 @@ function Authentication() {
               Register
             </button>
           </div>
-  
+
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
-  
+
+            {successMessage && <div className="success">{successMessage}</div>}
+
+            
             {mode === "register" && (
               <>
                 <div>
@@ -166,7 +169,7 @@ function Authentication() {
                   />
                   {error.username && <div className="error">{error.username}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="tel"
@@ -183,7 +186,7 @@ function Authentication() {
                   />
                   {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="text"
@@ -193,7 +196,7 @@ function Authentication() {
                   />
                   {error.firstName && <div className="error">{error.firstName}</div>}
                 </div>
-  
+
                 <div>
                   <input
                     type="text"
@@ -205,7 +208,8 @@ function Authentication() {
                 </div>
               </>
             )}
-  
+
+    
             <div>
               <input
                 type="email"
@@ -215,7 +219,7 @@ function Authentication() {
               />
               {error.email && <div className="error">{error.email}</div>}
             </div>
-  
+
             <div>
               <input
                 type="password"
@@ -225,17 +229,18 @@ function Authentication() {
               />
               {error.password && <div className="error">{error.password}</div>}
             </div>
-  
+
+        
             {error.general && <div className="error">{error.general}</div>}
 
-  
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
           </form>
+
         </>
       )}
     </div>
   );
-  
+
 }
 
 export default Authentication;
