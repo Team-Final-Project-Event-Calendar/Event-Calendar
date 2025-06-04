@@ -1,4 +1,3 @@
-// Auth.Context.jsx
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -67,7 +66,7 @@ export default function AuthProvider({ children }) {
   const register = async (userData) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${key}/api/auth/register`,
         userData
       );
       return res.data;
@@ -79,7 +78,7 @@ export default function AuthProvider({ children }) {
   const logout = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    await fetch("http://localhost:5000/api/auth/logout", {
+    await fetch(`${key}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });

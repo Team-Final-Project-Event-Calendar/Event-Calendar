@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import styles from "./Admin.module.css";
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 function Admin() {
   const { isLoggedIn, user } = useContext(AuthContext);
   const [search, setSearch] = useState("");
@@ -15,7 +15,7 @@ function Admin() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/events/admin", {
+        const response = await fetch(`${key}/api/events/admin`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -36,7 +36,7 @@ function Admin() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/auth/users", {
+    fetch(`${key}/api/auth/users`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -55,7 +55,7 @@ function Admin() {
   );
 
   const toggleBlock = async (id, block) => {
-    const endpoint = `http://localhost:5000/api/auth/${
+    const endpoint = `${key}/api/auth/${
       block ? "block" : "unblock"
     }/${id}`;
     const res = await fetch(endpoint, {
@@ -72,7 +72,7 @@ function Admin() {
   };
 
   const deleteUser = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/auth/delete/${id}`, {
+    const res = await fetch(`${key}/api/auth/delete/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -96,7 +96,7 @@ function Admin() {
 
   const deleteEvent = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/events/${id}`, {
+      const res = await fetch(`${key}/api/events/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -128,7 +128,7 @@ function Admin() {
   const saveEdit = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/events/${editingEventId}`,
+        `${key}/api/events/${editingEventId}`,
         {
           method: "PUT",
           headers: {

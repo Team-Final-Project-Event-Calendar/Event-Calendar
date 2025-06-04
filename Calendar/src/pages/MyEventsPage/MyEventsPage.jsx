@@ -3,14 +3,14 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
 import WeatherWidget from "../../components/WeatherWidget/WeatherWidget";
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/events", {
+        const response = await fetch(`${key}/api/events`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -37,7 +37,7 @@ function MyEventsPage() {
   const handleDeleteEvent = async (event) => {
     if (!event._id) return;
     try {
-      await axios.delete(`http://localhost:5000/api/events/${event._id}`, {
+      await axios.delete(`${key}/api/events/${event._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

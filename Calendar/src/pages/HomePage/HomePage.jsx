@@ -2,7 +2,7 @@ import "../PublicPage/PublicPage.css";
 import { Box } from "@chakra-ui/react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { useState, useEffect } from "react";
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
@@ -16,13 +16,13 @@ function HomePage() {
       : {};
 
     // Fetch all public events
-    fetch("http://localhost:5000/api/events/public")
+    fetch(`${key}/api/events/public`)
       .then((res) => res.json())
       .then((data) => setPublicEvents(data))
       .catch((err) => console.error("Failed to fetch public events:", err));
 
     // Fetch events created by the user
-    fetch("http://localhost:5000/api/events", { headers: authHeaders })
+    fetch(`${key}/api/events`, { headers: authHeaders })
       .then((res) => res.ok ? res.json() : [])
       .then((data) => Array.isArray(data) ? setMyEvents(data) : setMyEvents([]))
       .catch((err) => {
@@ -31,7 +31,7 @@ function HomePage() {
       });
 
     // Fetch events where user is a participant
-    fetch("http://localhost:5000/api/events/participating", { headers: authHeaders })
+    fetch(`${key}/api/events/participating`, { headers: authHeaders })
       .then((res) => res.ok ? res.json() : [])
       .then((data) => Array.isArray(data) ? setParticipatingEvents(data) : setParticipatingEvents([]))
       .catch((err) => {

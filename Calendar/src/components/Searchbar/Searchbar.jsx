@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import CardsListComponent from "../CardsListComponent/CardsListComponent";
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const Searchbar = () => {
   const [query, setQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,8 +13,8 @@ const Searchbar = () => {
       setSearchTerm(query);
       const token = localStorage.getItem("token");
       const url = token
-        ? "http://localhost:5000/api/events"
-        : "http://localhost:5000/api/events/public";
+        ? `${key}/api/events`
+        : `${key}/api/events/public`;
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       try {
         const res = await axios.get(url, { headers });

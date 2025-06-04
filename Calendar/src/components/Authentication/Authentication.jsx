@@ -56,7 +56,6 @@ function Authentication() {
     ) {
       return alert("Please fill in all fields");
     }
-    // Phone number validation (frontend, matches backend)
     if (!/^0\d{9}$/.test(phoneNumber)) {
       return alert(
         "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long."

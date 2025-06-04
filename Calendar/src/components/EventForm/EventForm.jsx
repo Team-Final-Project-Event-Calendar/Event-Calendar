@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const EventForm = ({ onEventCreated }) => {
   const [event, setEvent] = useState({
     title: "",
@@ -115,7 +115,7 @@ const EventForm = ({ onEventCreated }) => {
       }
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/events", event, {
+      const res = await axios.post(`${key}/api/events`, event, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { Card, Heading, Stack, Box } from "@chakra-ui/react";
 
-
+const key = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/events/public")
+    fetch(`${key}/api/events/public`)
       .then((res) => res.json())
       .then((data) => setPublicEvents(data))
       .catch((err) => console.error("Failed to fetch public events:", err));
