@@ -142,7 +142,7 @@ function Authentication() {
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
-
+          
             {Object.values(error).length > 0 && (
               <div className="error-summary">
                 {Object.entries(error).map(([key, val]) => (
@@ -170,11 +170,10 @@ function Authentication() {
                       setUser({ ...user, phoneNumber: e.target.value.replace(/[^0-9]/g, "") })
                     }
                     name="phoneNumber"
+                    pattern="^0\d{9}$"
                     required
                     placeholder="Enter phone number"
                   />
-
-
                 </div>
 
                 <div>
@@ -213,7 +212,6 @@ function Authentication() {
                 value={user.password}
                 onChange={updateUser("password")}
               />
-                {error.password && <div className="error">{error.password}</div>}
             </div>
 
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
