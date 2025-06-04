@@ -3,7 +3,7 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
 import WeatherWidget from "../../components/WeatherWidget/WeatherWidget";
-const key = import.meta.env.BACK_END_URL || "http://localhost:5000";
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
 

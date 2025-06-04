@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { Card, Heading, Stack, Box } from "@chakra-ui/react";
 
-const key = import.meta.env.BACK_END_URL|| "http://localhost:5000";
+const key = import.meta.env.VITE_BACK_END_URL|| "http://localhost:5000";
 const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
 

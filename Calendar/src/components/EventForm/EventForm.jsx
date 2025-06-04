@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-const key = import.meta.env.BACK_END_URL || "http://localhost:5000";
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const EventForm = ({ onEventCreated }) => {
   const [event, setEvent] = useState({
     title: "",

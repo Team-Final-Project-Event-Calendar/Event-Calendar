@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import styles from "./Admin.module.css";
-const key = import.meta.env.BACK_END_URL || "http://localhost:5000";
+const key = import.meta.env.VITE_BACK_END_URL|| "http://localhost:5000";
 function Admin() {
   const { isLoggedIn, user } = useContext(AuthContext);
   const [search, setSearch] = useState("");
