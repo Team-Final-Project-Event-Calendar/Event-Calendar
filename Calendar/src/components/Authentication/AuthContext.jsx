@@ -3,9 +3,11 @@ import axios from "axios";
 
 export const AuthContext = createContext();
 
-const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+const key = import.meta.env.BACK_END_URL || "http://localhost:5000";
+
 
 export default function AuthProvider({ children }) {
+  
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
