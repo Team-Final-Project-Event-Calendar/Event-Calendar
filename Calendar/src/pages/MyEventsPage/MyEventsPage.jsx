@@ -51,12 +51,13 @@ function MyEventsPage() {
 
   return (
     <div
+      className="w-60"
       style={{
         display: "flex",
         gap: "50px",
         margin: "50px auto",
         justifyContent: "space-between",
-        width: "20vw",
+        width: "60vw",
       }}
     >
       <div>

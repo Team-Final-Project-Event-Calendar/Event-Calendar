@@ -78,7 +78,7 @@ function NavBar() {
 
         {/* Right Side Navbar */}
         <div
-          className="rightside-navbar "
+          className="rightside-navbar"
           style={{
             display: "flex",
             alignItems: "center",
