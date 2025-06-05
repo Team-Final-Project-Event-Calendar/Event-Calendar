@@ -43,9 +43,9 @@ function NavBar() {
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             flex: "0 0 auto",
-            gap: "5px",
+            gap: "10px",
           }}
         >
           <span style={{}}>
