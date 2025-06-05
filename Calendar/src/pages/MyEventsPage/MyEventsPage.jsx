@@ -51,7 +51,6 @@ function MyEventsPage() {
 
   return (
     <div
-      className="w-60"
       style={{
         display: "flex",
         gap: "50px",
