@@ -37,20 +37,29 @@ function NavBar() {
           margin: "0 auto",
         }}
       >
-
         {/* Left Side Navbar */}
-        <div className="leftSide-navbar"
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", gap: "5px" }}>
-
+        <div
+          className="leftSide-navbar"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: "0 0 auto",
+            gap: "5px",
+          }}
+        >
           <span style={{}}>
             <WeatherWidget />
           </span>
           <span>
-            <Button variant="ghost" fontSize="19px" onClick={() => navigate("/")}>
+            <Button
+              variant="ghost"
+              fontSize="19px"
+              onClick={() => navigate("/")}
+            >
               Home
             </Button>
           </span>
-
         </div>
 
         {/* Center Side Navbar */}
@@ -70,7 +79,13 @@ function NavBar() {
         {/* Right Side Navbar */}
         <div
           className="rightside-navbar "
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", gap: "5px" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            flex: "0 0 auto",
+            gap: "5px",
+          }}
         >
           {user?.role === "admin" && (
             <Button as={NavLink} to="/authentication/admin" variant="ghost">
