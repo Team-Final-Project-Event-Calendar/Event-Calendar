@@ -2,18 +2,15 @@ import "../PublicPage/PublicPage.css";
 import { Box } from "@chakra-ui/react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { useState, useEffect } from "react";
-const key = import.meta.env.VITE_BACK_END_URL|| "http://localhost:5000";
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [participatingEvents, setParticipatingEvents] = useState([]);
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const authHeaders = token
-      ? { Authorization: `Bearer ${token}` }
-      : {};
+    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
     // Fetch all public events
     fetch(`${key}/api/events/public`)
@@ -23,8 +20,10 @@ function HomePage() {
 
     // Fetch events created by the user
     fetch(`${key}/api/events`, { headers: authHeaders })
-      .then((res) => res.ok ? res.json() : [])
-      .then((data) => Array.isArray(data) ? setMyEvents(data) : setMyEvents([]))
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) =>
+        Array.isArray(data) ? setMyEvents(data) : setMyEvents([])
+      )
       .catch((err) => {
         setMyEvents([]);
         console.error("Failed to fetch my events:", err);
@@ -32,8 +31,12 @@ function HomePage() {
 
     // Fetch events where user is a participant
     fetch(`${key}/api/events/participating`, { headers: authHeaders })
-      .then((res) => res.ok ? res.json() : [])
-      .then((data) => Array.isArray(data) ? setParticipatingEvents(data) : setParticipatingEvents([]))
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) =>
+        Array.isArray(data)
+          ? setParticipatingEvents(data)
+          : setParticipatingEvents([])
+      )
       .catch((err) => {
         setParticipatingEvents([]);
         console.error("Failed to fetch participating events:", err);
@@ -42,7 +45,7 @@ function HomePage() {
 
   // Iterate through all events to remove "duplicated" events
   const allEventsMap = new Map();
-  [...publicEvents, ...myEvents, ...participatingEvents].forEach(event => {
+  [...publicEvents, ...myEvents, ...participatingEvents].forEach((event) => {
     if (event && event._id) {
       allEventsMap.set(event._id, event);
     }
@@ -51,20 +54,20 @@ function HomePage() {
 
   return (
     <>
-
       <div className="public-Events-container">
-        <Box className="public-events-chakra_Box" borderRadius="xl">
-          <h2 className="public-events-chakra_Box-title">
-            All Events
-          </h2>
+        <Box
+          className="public-events-chakra_Box"
+          borderRadius="xl"
+          style={{ width: "60vw" }}
+        >
+          <h2 className="public-events-chakra_Box-title">All Events</h2>
           <span className="public-events-chakra_Box-list">
             <CardsListComponent events={uniqueEvents} />
           </span>
         </Box>
-      </div >
-
+      </div>
     </>
-  )
+  );
 }
 
 export default HomePage;
