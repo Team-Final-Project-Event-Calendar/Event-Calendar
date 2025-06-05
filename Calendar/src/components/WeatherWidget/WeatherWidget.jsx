@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/react";
-
+import "./WeatherWidget.css";
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const spinnerCustom = () => (
   <Spinner color="red.500" animationDuration="0.8s" borderWidth="3px" />
-)
-
+);
 
 const WeatherWidget = () => {
-
   const [city, setCity] = useState(spinnerCustom());
   // const [region, setRegion] = useState("")
   const [temperature, setTemperature] = useState(null);
@@ -39,10 +37,10 @@ const WeatherWidget = () => {
         console.log(geoData.address);
         setCity(
           geoData.address.village ||
-          geoData.address.town ||
-          geoData.address.city ||
-          geoData.address.hamlet ||
-          "Unknown"
+            geoData.address.town ||
+            geoData.address.city ||
+            geoData.address.hamlet ||
+            "Unknown"
         );
 
         // setRegion(
@@ -59,31 +57,34 @@ const WeatherWidget = () => {
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        border: "3px solid #90caf9",
-        borderRadius: 22,
-        background: "#90caf9",
-        color: "#1565c0",
-        fontFamily: "system-ui, sans-serif"
-      }}
+      className="weather-widget"
+      style={
+        {
+          // display: "flex",
+          // flexWrap: "wrap",
+          // alignItems: "center",
+          // border: "3px solid #90caf9",
+          // borderRadius: 22,
+          // background: "#90caf9",
+          // color: "#1565c0",
+          // fontFamily: "system-ui, sans-serif",
+        }
+      }
     >
       <span style={{ fontWeight: "bold", fontSize: 16, marginLeft: 5 }}>
         {city}
-          </span>
-        {iconUrl && (
-          <img
-            src={iconUrl}
-            alt={condition}
-            title={condition}
-            style={{ width: 38, height: 38}}
-          />
-        )}
-        <span style={{ fontWeight: "bold", fontSize: 18, marginRight: 5 }}>
-          {temperature !== null ? `${temperature}°C` : spinnerCustom()}
-        </span>
+      </span>
+      {iconUrl && (
+        <img
+          src={iconUrl}
+          alt={condition}
+          title={condition}
+          style={{ width: 38, height: 38 }}
+        />
+      )}
+      <span style={{ fontWeight: "bold", fontSize: 18, marginRight: 5 }}>
+        {temperature !== null ? `${temperature}°C` : spinnerCustom()}
+      </span>
     </div>
   );
 };
