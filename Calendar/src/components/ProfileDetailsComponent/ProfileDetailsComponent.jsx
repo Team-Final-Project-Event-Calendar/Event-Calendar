@@ -132,7 +132,9 @@ function ProfileDetailsComponent() {
               />
             </li>
           ))}
-          <Button type={"submit"}>Save</Button>
+          <Button variant="ghost" color={"grey"} type={"submit"}>
+            Save
+          </Button>
         </form>
       </ul>
     </div>
