@@ -78,8 +78,12 @@ function HomePage() {
       <Text textAlign="center" fontSize="lg" mb={12} color="#555">
         Discover and manage events effortlessly
       </Text>
-      <div className="public-events-container">
+      <div
+        className="public-events-container"
+        style={{ display: "flex", alignItems: "center" }}
+      >
         <Box
+          justifyItems={"center"}
           className="public-events-box"
           borderRadius="xl"
           style={{ width: "80vw", margin: "0 auto" }}
@@ -93,6 +97,7 @@ function HomePage() {
           <CardsListComponent
             events={uniqueEvents}
             onDelete={handleDeleteEvent}
+            justify="center"
           />
         </Box>
       </div>

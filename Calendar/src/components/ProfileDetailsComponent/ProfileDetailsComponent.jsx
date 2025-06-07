@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
+import { AuthContext } from "../../components/Authentication/AuthContext";
 
 const API_BASE_URL =
   import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-function ProfileDetailsComponent({ userDetails }) {
-  const [formData, setFormData] = useState(userDetails || {});
+function ProfileDetailsComponent() {
+  const { user } = useContext(AuthContext);
+
+  const [formData, setFormData] = useState(user || {});
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });

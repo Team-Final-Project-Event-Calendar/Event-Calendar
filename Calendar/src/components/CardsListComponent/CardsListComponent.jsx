@@ -2,7 +2,7 @@ import React from "react";
 import CardComponent from "../CardComponent/CardComponent";
 import "./CardsListComponent.css";
 
-function CardsListComponent({ events = [], onDelete }) {
+function CardsListComponent({ events = [], onDelete, justify = "flex-start" }) {
   return (
     <div
       style={{
@@ -11,7 +11,7 @@ function CardsListComponent({ events = [], onDelete }) {
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
-        justifyContent: "flex-start",
+        justifyContent: { justify },
       }}
     >
       {events.length === 0 ? (
