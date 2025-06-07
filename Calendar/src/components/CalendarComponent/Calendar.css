@@ -1,5 +1,5 @@
 .calendar-component {
-    max-width: 900px;
+    max-width: 1500px;
     margin: 2rem auto;
     padding: 1rem 2rem;
     background: #fff;
@@ -12,14 +12,13 @@
     text-align: center;
     font-size: 2.5rem;
     color: #333;
-    margin-bottom: 1rem;
     font-weight: 700;
 }
 
 .calendar-controls {
     display: flex;
     gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: -4.5rem;
     justify-content: center;
     flex-wrap: wrap;
 }
@@ -34,6 +33,7 @@
     cursor: pointer;
     transition: background-color 0.25s ease;
     box-shadow: 0 3px 6px rgba(0, 123, 255, 0.4);
+    margin-top: -2.5rem
 }
 
 .calendar-controls button:hover {
@@ -41,40 +41,46 @@
 }
 
 .view-dropdown {
-    position: relative;
+    position: absolute;
+    margin-top: 6px;
     display: inline-block;
     margin: 0 auto 2rem auto;
     text-align: center;
     width: 140px;
+    z-index: 10;
 }
+
 
 .view-dropdown button {
     width: 100%;
     padding: 0.5rem 1rem;
     border: 1px solid #ccc;
-    background-color: #f8f9fa;
+    background-color: #007bff;
     cursor: pointer;
     border-radius: 6px;
     font-weight: 600;
-    color: #333;
+    color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.25s ease;
 }
 
 .view-dropdown button:hover {
-    background-color: #e9ecef;
+    background-color: #2a53f7;
 }
 
 .view-dropdown-content {
-    display: none;
     position: absolute;
+    top: 100%;
+    left: 0;
     background-color: white;
-    min-width: 140px;
-    border: 1px solid #ccc;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-    border-radius: 6px;
-    margin-top: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    min-width: 100%;
+}
+
+.view-dropdown:hover .view-dropdown-content {
+    display: block;
 }
 
 .view-dropdown-content button {
@@ -96,6 +102,20 @@
 .view-dropdown:hover .view-dropdown-content {
     display: block;
 }
+
+.calendar-controls-container {
+    margin-bottom: 1rem;
+}
+
+.view-dropdown-container {
+    margin-left: 0;
+    margin-top: 30px;
+}
+
+.calendar-matrix-container {
+    margin-top: 2rem;
+}
+
 
 
 .event-form-container {
@@ -174,4 +194,3 @@
 .create-button:hover {
     background-color: #1e7e34;
 }
-

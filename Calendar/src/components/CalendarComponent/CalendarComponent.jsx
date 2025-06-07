@@ -42,7 +42,7 @@ function CalendarComponent() {
         setCurrentDate(new Date(createdEvent.startDateTime || createdEvent.date));
         setView("day");
         setShowEventForm(false);
-      };
+    };
 
     const handleDayClick = (day) => {
         setCurrentDate(day);
@@ -51,34 +51,38 @@ function CalendarComponent() {
 
     return (
         <div className="calendar-component">
-            <h1 className="calendar-title">Calendar</h1>
-
-            <div className="calendar-controls">
-                <button onClick={goToPrevious}>← Previous</button>
-                <button onClick={goToToday}>Today</button>
-                <button onClick={goToNext}>Next →</button>
-                <button onClick={openEventForm}>Add Event</button>
-            </div>
-
-            <div className="view-dropdown">
-                <button>
-                    View: {view.charAt(0).toUpperCase() + view.slice(1)}
-                </button>
-                <div className="view-dropdown-content">
-                    <button onClick={() => setView("month")}>Month</button>
-                    <button onClick={() => setView("week")}>Week</button>
-                    <button onClick={() => setView("workWeek")}>Work Week</button>
-                    <button onClick={() => setView("day")}>Day</button>
+            <div className="calendar-controls-container">
+                <div className="calendar-controls">
+                    <button onClick={goToPrevious}>← Previous</button>
+                    <button onClick={goToToday}>Today</button>
+                    <button onClick={goToNext}>Next →</button>
+                    <button onClick={openEventForm}>Add Event</button>
                 </div>
             </div>
-
+    
+            <div className="view-dropdown-container">
+                <div className="view-dropdown">
+                    <button>
+                        View: {view.charAt(0).toUpperCase() + view.slice(1)}
+                    </button>
+                    <div className="view-dropdown-content">
+                        <button onClick={() => setView("month")}>Month</button>
+                        <button onClick={() => setView("week")}>Week</button>
+                        <button onClick={() => setView("workWeek")}>Work Week</button>
+                        <button onClick={() => setView("day")}>Day</button>
+                    </div>
+                </div>
+            </div>
+    
             {!showEventForm && (
-                <CalendarMatrix
-                    currentDate={currentDate}
-                    view={view}
-                    events={events}
-                    onDayClick={handleDayClick}
-                />
+                <div className="calendar-matrix-container">
+                    <CalendarMatrix
+                        currentDate={currentDate}
+                        view={view}
+                        events={events}
+                        onDayClick={handleDayClick}
+                    />
+                </div>
             )}
 
             {showEventForm && (
@@ -118,6 +122,7 @@ function CalendarComponent() {
             )}
         </div>
     );
+    
 }
 
 export default CalendarComponent;
