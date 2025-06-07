@@ -4,12 +4,12 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import verifyAdmin from "../verify-token.js";
 import verifyToken from "../verify-token.js";
+import mongoose from "mongoose";
 const router = express.Router();
 
 router.get("/admin", verifyAdmin, async (req, res) => {
   res.json({ message: "Welcome to the admin page" });
 });
-
 
 router.get("/users", verifyToken, async (req, res) => {
   try {
@@ -19,7 +19,27 @@ router.get("/users", verifyToken, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Edit user details
+router.put("/users/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
 
+  const user = req.body;
+
+  // If the id that the user is sending us is not a valide one
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid id" });
+  }
+
+  try {
+    await User.findByIdAndUpdate({ _id: id }, user, {
+      new: true,
+      runValidators: true,
+    });
+    return res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 router.post("/register", async (req, res) => {
   try {
     const { username, phoneNumber, email, password, firstName, lastName } =

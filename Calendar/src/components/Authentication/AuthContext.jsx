@@ -5,9 +5,7 @@ export const AuthContext = createContext();
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-
 export default function AuthProvider({ children }) {
-  
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +13,7 @@ export default function AuthProvider({ children }) {
     const initializeAuth = async () => {
       const storedToken = localStorage.getItem("token");
       const storedUser = localStorage.getItem("user");
-    
+
       if (storedToken && storedUser && storedUser !== "undefined") {
         try {
           setToken(storedToken);
@@ -70,10 +68,7 @@ export default function AuthProvider({ children }) {
 
   const register = async (userData) => {
     try {
-      const res = await axios.post(
-        `${key}/api/auth/register`,
-        userData
-      );
+      const res = await axios.post(`${key}/api/auth/register`, userData);
       return res.data;
     } catch (err) {
       throw new Error(err.response?.data?.message || "Registration failed");
@@ -95,7 +90,7 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, register, logout, isLoggedIn,loading }}
+      value={{ user, token, login, register, logout, isLoggedIn, loading }}
     >
       {children}
     </AuthContext.Provider>

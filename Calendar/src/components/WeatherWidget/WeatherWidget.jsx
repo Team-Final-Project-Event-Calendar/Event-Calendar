@@ -34,7 +34,6 @@ const WeatherWidget = () => {
           `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
         );
         const geoData = await geoResponse.json();
-        console.log(geoData.address);
         setCity(
           geoData.address.village ||
             geoData.address.town ||

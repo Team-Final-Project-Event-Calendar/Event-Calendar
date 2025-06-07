@@ -6,7 +6,6 @@ import { AuthContext } from "../Authentication/AuthContext";
 
 function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
-  console.log(user);
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   return (

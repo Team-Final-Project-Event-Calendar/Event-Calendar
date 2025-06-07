@@ -12,7 +12,6 @@ function HomePage() {
   const [participatingEvents, setParticipatingEvents] = useState([]);
 
   const handleDeleteEvent = async (event) => {
-    debugger;
     if (!event._id) return;
     try {
       await axios.delete(`${key}/api/events/${event._id}`, {
