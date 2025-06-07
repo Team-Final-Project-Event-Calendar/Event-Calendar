@@ -5,6 +5,8 @@ import { useContext } from "react";
 import { AuthContext } from "../Authentication/AuthContext";
 
 function CardComponent({ event, onDelete }) {
+  const { user } = useContext(AuthContext);
+  console.log(user);
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   return (
@@ -63,18 +65,22 @@ function CardComponent({ event, onDelete }) {
         <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
           Add To Upcoming
         </Button>
-        <Button
-          variant="ghost"
-          color="gray"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (window.confirm("Are you sure you want to delete this event?")) {
-              onDelete && onDelete(event);
-            }
-          }}
-        >
-          Delete
-        </Button>
+        {event.userId === user._id ? (
+          <Button
+            variant="ghost"
+            color="gray"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (
+                window.confirm("Are you sure you want to delete this event?")
+              ) {
+                onDelete && onDelete(event);
+              }
+            }}
+          >
+            Delete
+          </Button>
+        ) : null}
       </Box>
     </Box>
   );
