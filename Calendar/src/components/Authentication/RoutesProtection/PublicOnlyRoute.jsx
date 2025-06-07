@@ -9,7 +9,7 @@ const PublicOnlyRoute = ({ children }) => {
   const { isLoggedIn } = useContext(AuthContext);
 
   if (isLoggedIn) {
-    return <Navigate to="/public" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

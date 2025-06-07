@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useContext(AuthContext);
 
   if (!isLoggedIn) {
-    return <Navigate to={window.location.pathname} replace />
+    return <Navigate to="/public" replace />;
   }
 
   return children;
