@@ -8,7 +8,7 @@ const PublicOnlyRoute = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>; // Or your custom loading component
+    return <div>Loading...</div>; 
   }
 
   if (isLoggedIn) {
