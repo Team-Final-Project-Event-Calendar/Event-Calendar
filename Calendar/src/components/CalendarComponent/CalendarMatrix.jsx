@@ -1,11 +1,37 @@
-import React from 'react';
-import { Box, SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 
-function CalendarMatrix({ currentDate, view, events, onDayClick }) {
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+
+function CalendarMatrix({ currentDate, view, onDayClick }) {
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch(`${key}/api/events`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch events");
+                }
+                const data = await response.json();
+                setEvents(data);
+            } catch (error) {
+                console.error("Error fetching events:", error);
+            }
+        };
+
+        fetchEvents();
+    }, []);
+
     const getMonthDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
-
         const end = new Date(year, month + 1, 0);
         return Array.from({ length: end.getDate() }, (_, i) => new Date(year, month, i + 1));
     };
@@ -19,8 +45,8 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
 
     const getEventsForDay = (date) =>
         events.filter(e => {
-          const eventDate = e.date || e.startDateTime;
-          return new Date(eventDate).toDateString() === date.toDateString();
+            const eventDate = e.date || e.startDateTime;
+            return new Date(eventDate).toDateString() === date.toDateString();
         });
 
     const getMonthName = (date) =>
@@ -32,7 +58,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderRadius: 'md',
-        p: 4,
+        p: 2,
         cursor: 'pointer',
         minH: '110px',
         _hover: { bg: 'blue.50' },
@@ -40,13 +66,15 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
+        overflow: 'hidden'
     };
 
-
-    const EventDot = () => (
-        <Box mt="auto" display="flex" justifyContent="center">
-            <Box boxSize="8px" bg="blue.500" borderRadius="full" />
-        </Box>
+    const renderEventTitles = (eventList) => (
+        eventList.slice(0, 2).map((e, i) => (
+            <Text key={i} fontSize="xs" isTruncated color="blue.600">
+                • {e.title}
+            </Text>
+        ))
     );
 
     if (view === 'month') {
@@ -60,7 +88,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                     {getMonthName(currentDate)} {currentDate.getFullYear()}
                 </Text>
 
-                <SimpleGrid columns={7} spacing={3}>
+                <SimpleGrid columns={7} spacing={2}>
                     {weekdayShortNames.map(day => (
                         <Box key={day} textAlign="center" fontWeight="semibold" color="gray.600">
                             {day}
@@ -71,16 +99,19 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                         <Box key={`blank-${i}`} />
                     ))}
 
-                    {days.map((day, i) => (
-                        <Box
-                            key={i}
-                            {...dayCellStyle}
-                            onClick={() => onDayClick(day)}
-                        >
-                            <Text fontWeight="bold" mb={2}>{day.getDate()}</Text>
-                            {getEventsForDay(day).length > 0 && <EventDot />}
-                        </Box>
-                    ))}
+                    {days.map((day, i) => {
+                        const dayEvents = getEventsForDay(day);
+                        return (
+                            <Box
+                                key={i}
+                                {...dayCellStyle}
+                                onClick={() => onDayClick(day)}
+                            >
+                                <Text fontWeight="bold" mb={1}>{day.getDate()}</Text>
+                                {renderEventTitles(dayEvents)}
+                            </Box>
+                        );
+                    })}
                 </SimpleGrid>
             </Box>
         );
@@ -95,7 +126,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                     Week of {days[0].toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                 </Text>
 
-                <SimpleGrid columns={7} spacing={3}>
+                <SimpleGrid columns={7} spacing={2}>
                     {days.map((day, i) => (
                         <Box
                             key={`header-${i}`}
@@ -107,20 +138,24 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                             borderColor="blue.400"
                             userSelect="none"
                         >
-                            {day.toLocaleDateString(undefined, { weekday: 'short', month: 'long', day: 'numeric' })}
+                            {day.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                         </Box>
                     ))}
 
-                    {days.map((day, i) => (
-                        <Box
-                            key={i}
-                            {...dayCellStyle}
-                            onClick={() => onDayClick(day)}
-                            minH="130px"
-                        >
-                            {getEventsForDay(day).length > 0 && <EventDot />}
-                        </Box>
-                    ))}
+                    {days.map((day, i) => {
+                        const dayEvents = getEventsForDay(day);
+                        return (
+                            <Box
+                                key={i}
+                                {...dayCellStyle}
+                                onClick={() => onDayClick(day)}
+                                minH="130px"
+                            >
+                                <Text fontWeight="bold" mb={1}>{day.getDate()}</Text>
+                                {renderEventTitles(dayEvents)}
+                            </Box>
+                        );
+                    })}
                 </SimpleGrid>
             </Box>
         );
@@ -135,7 +170,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                     Work Week: {days[0].toLocaleDateString(undefined, { month: 'long', day: 'numeric' })} - {days[days.length - 1].toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                 </Text>
 
-                <SimpleGrid columns={5} spacing={5}>
+                <SimpleGrid columns={5} spacing={4}>
                     {days.map((day, i) => (
                         <Box
                             key={`header-${i}`}
@@ -147,44 +182,43 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                             pb={2}
                             userSelect="none"
                         >
-                            {day.toLocaleDateString(undefined, { weekday: 'short', month: 'long', day: 'numeric' })}
+                            {day.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                         </Box>
                     ))}
 
-                    {days.map((day, i) => (
-                        <Box
-                            key={i}
-                            {...dayCellStyle}
-                            onClick={() => onDayClick(day)}
-                            minH="140px"
-                            bg="white"
-                            boxShadow="sm"
-                            _hover={{ bg: 'blue.100' }}
-                            display="flex"
-                            flexDirection="column"
-                        >
-                            <Text fontWeight="bold" mb={3} color="gray.700">
-                                {day.getDate()}
-                            </Text>
-                            {getEventsForDay(day).length > 0 && <EventDot />}
-                        </Box>
-                    ))}
+                    {days.map((day, i) => {
+                        const dayEvents = getEventsForDay(day);
+                        return (
+                            <Box
+                                key={i}
+                                {...dayCellStyle}
+                                onClick={() => onDayClick(day)}
+                                minH="140px"
+                                bg="white"
+                                boxShadow="sm"
+                                _hover={{ bg: 'blue.100' }}
+                            >
+                                <Text fontWeight="bold" mb={1} color="gray.700">
+                                    {day.getDate()}
+                                </Text>
+                                {renderEventTitles(dayEvents)}
+                            </Box>
+                        );
+                    })}
                 </SimpleGrid>
             </Box>
         );
-
     }
 
     if (view === 'day') {
-    
         const dayEvents = getEventsForDay(currentDate);
-    
+
         return (
             <Box p={4}>
                 <Text fontSize="2xl" fontWeight="bold" mb={4}>
                     {currentDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </Text>
-    
+
                 {dayEvents.length === 0 ? (
                     <Text>No events for this day.</Text>
                 ) : (
