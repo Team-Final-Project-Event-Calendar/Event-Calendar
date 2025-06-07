@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import Authentication from "./components/Authentication/Authentication";
 import Admin from "./components/Authentication/Admin/Admin";
-import Home from "./components/Home";
 import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import NavBar from "./components/NavComponent/NavBar";
 import HomePage from "./pages/HomePage/HomePage";
@@ -31,8 +30,7 @@ function App() {
         <Route path="/myevents" element={<ProtectedRoute> <MyEventsPage /> </ProtectedRoute>}></Route>
         <Route path='/' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
 
-        {/* Catches-all non-existant routes and redirects them to / (HomePage) or /public (PublicPage)
-         e.g. /exampleroute-asdasd */}
+      
         <Route
           path="*"
           element={
