@@ -4,11 +4,28 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import { useState, useEffect } from "react";
 import "./HomePage.css";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+import axios from "axios";
 
 function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [participatingEvents, setParticipatingEvents] = useState([]);
+
+  const handleDeleteEvent = async (event) => {
+    debugger;
+    if (!event._id) return;
+    try {
+      await axios.delete(`${key}/api/events/${event._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setMyEvents((prev) => prev.filter((e) => e._id !== event._id));
+    } catch (err) {
+      alert("Failed to delete event");
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -43,7 +60,7 @@ function HomePage() {
         setParticipatingEvents([]);
         console.error("Failed to fetch participating events:", err);
       });
-  }, []);
+  }, [myEvents]);
 
   // Iterate through all events to remove "duplicated" events
   const allEventsMap = new Map();
@@ -74,7 +91,10 @@ function HomePage() {
           <Heading as="h2" size="lg" mb={4} color="#1976d2" textAlign="center">
             All Events
           </Heading>
-          <CardsListComponent events={uniqueEvents} />
+          <CardsListComponent
+            events={uniqueEvents}
+            onDelete={handleDeleteEvent}
+          />
         </Box>
       </div>
     </div>
