@@ -155,7 +155,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         return (
             <Box>
-                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="center">
+                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
                     Week of {days[0].toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                 </Text>
 
@@ -178,7 +178,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         return (
                             <Box
                                 key={i}
-                                {...dayCellStyle}
+                                {...(isToday(day) ? todayStyle : dayCellStyle)}
                                 onClick={() => onDayClick(day)}
                             >
                                 <Text fontWeight="bold" mb={2}>{day.getDate()}</Text>
@@ -196,7 +196,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         return (
             <Box bg="gray.50" p={6} borderRadius="lg">
-                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="center">
+                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
                     Work Week: {days[0].toLocaleDateString(undefined, { month: 'long', day: 'numeric' })} - {days[days.length - 1].toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}
                 </Text>
 
@@ -219,7 +219,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         return (
                             <Box
                                 key={i}
-                                {...dayCellStyle}
+                                {...(isToday(day) ? todayStyle : dayCellStyle)}
                                 onClick={() => onDayClick(day)}
                                 minH="170px"
                             >
@@ -238,7 +238,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         return (
             <Box p={6}>
-                <Text fontSize="3xl" fontWeight="bold" mb={6}>
+                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
                     {currentDate.toLocaleDateString(undefined, {
                         weekday: 'long',
                         year: 'numeric',
@@ -248,7 +248,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                 </Text>
 
                 {dayEvents.length === 0 ? (
-                    <Text fontSize="md">No events for this day.</Text>
+                    <Text fontSize="md" textAlign="center">No events for this day.</Text>
                 ) : (
                     dayEvents.map((e, idx) => (
                         <Box
