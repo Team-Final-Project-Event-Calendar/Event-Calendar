@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import Searchbar from "../Searchbar/Searchbar";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
+import CalendarComponent from "../CalendarComponent/CalendarComponent";
 import "./NavLink.css";
 function NavBar() {
   const navigate = useNavigate();
@@ -76,38 +77,43 @@ function NavBar() {
           <Searchbar />
         </div>
 
-        {/* Right Side Navbar */}
-        <div
-          className="rightside-navbar"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            flex: "0 0 auto",
-            gap: "5px",
-          }}
-        >
-          {user?.role === "admin" && (
-            <Button as={NavLink} to="/authentication/admin" variant="ghost">
-              Admin Panels
-            </Button>
-          )}
-          {isLoggedIn ? (
-            <>
-              <AvatarComponent />
-              <DrawerComponent onLogout={handleLogout} />
-            </>
-          ) : (
-            <>
-              <a
-                className="login-register"
-                onClick={() => navigate("/authentication")}
-              >
-                Login / Register
-              </a>
-            </>
-          )}
-        </div>
+        <Button as={NavLink} to="/calendarcomponent" variant="ghost">
+          Calendar</Button>
+      </div>
+      {/* Right Side Navbar */}
+      <div
+        className="rightside-navbar"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          flex: "0 0 auto",
+          gap: "5px",
+        }}
+      >
+        {user?.role === "admin" && (
+          <Button as={NavLink} to="/authentication/admin" variant="ghost">
+            Admin Panels
+          </Button>
+        )}
+        {isLoggedIn ? (
+          <>
+            <AvatarComponent />
+            <DrawerComponent onLogout={handleLogout} />
+          </>
+        ) : (
+          <>
+            <a
+              className="login-register"
+              onClick={() => navigate("/authentication")}
+            >
+              Login / Register
+            </a>
+          </>
+        )}
+      </div>
+
+      <div >
       </div>
     </div>
   );

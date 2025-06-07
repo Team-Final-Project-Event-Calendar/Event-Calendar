@@ -14,7 +14,7 @@ import MyEventsPage from "./pages/MyEventsPage/MyEventsPage";
 import PublicPage from "./pages/PublicPage/PublicPage";
 import PublicOnlyRoute from "./components/Authentication/RoutesProtection/PublicOnlyRoute";
 import ProtectedRoute from "./components/Authentication/RoutesProtection/ProtectedRoute";
-
+import CalendarComponent from "./components/CalendarComponent/CalendarComponent";
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -29,6 +29,7 @@ function App() {
         <Route path="/about" element={<AboutPage />}></Route>
         <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>}></Route>
         <Route path="/myevents" element={<ProtectedRoute> <MyEventsPage /> </ProtectedRoute>}></Route>
+        <Route path='/calendarcomponent' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
 
         {/* Catches-all non-existant routes and redirects them to / (HomePage) or /public (PublicPage)
          e.g. /exampleroute-asdasd */}
