@@ -34,7 +34,17 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
         minH: '110px',
         _hover: { bg: 'blue.50' },
         userSelect: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
     };
+
+    // Малка синя точка индикатор за събитие
+    const EventDot = () => (
+        <Box mt="auto" display="flex" justifyContent="center">
+            <Box boxSize="8px" bg="blue.500" borderRadius="full" />
+        </Box>
+    );
 
     if (view === 'month') {
         const days = getMonthDays();
@@ -65,13 +75,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                             onClick={() => onDayClick(day)}
                         >
                             <Text fontWeight="bold" mb={2}>{day.getDate()}</Text>
-                            <VStack spacing={1} align="start" maxH="70px" overflowY="auto">
-                                {getEventsForDay(day).map((e, idx) => (
-                                    <Text key={idx} fontSize="sm" color="blue.600" noOfLines={1}>
-                                        • {e.title}
-                                    </Text>
-                                ))}
-                            </VStack>
+                            {getEventsForDay(day).length > 0 && <EventDot />}
                         </Box>
                     ))}
                 </SimpleGrid>
@@ -111,13 +115,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                             onClick={() => onDayClick(day)}
                             minH="130px"
                         >
-                            <VStack spacing={1} align="start" maxH="100px" overflowY="auto">
-                                {getEventsForDay(day).map((e, idx) => (
-                                    <Text key={idx} fontSize="sm" color="blue.600" noOfLines={1}>
-                                        • {e.title}
-                                    </Text>
-                                ))}
-                            </VStack>
+                            {getEventsForDay(day).length > 0 && <EventDot />}
                         </Box>
                     ))}
                 </SimpleGrid>
@@ -165,13 +163,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
                             <Text fontWeight="bold" mb={3} color="gray.700">
                                 {day.getDate()}
                             </Text>
-                            <VStack spacing={1} align="start" flexGrow={1} overflowY="auto">
-                                {getEventsForDay(day).map((e, idx) => (
-                                    <Text key={idx} fontSize="sm" color="blue.600" noOfLines={1}>
-                                        • {e.title}
-                                    </Text>
-                                ))}
-                            </VStack>
+                            {getEventsForDay(day).length > 0 && <EventDot />}
                         </Box>
                     ))}
                 </SimpleGrid>
