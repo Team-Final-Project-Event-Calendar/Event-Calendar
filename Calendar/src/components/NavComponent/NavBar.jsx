@@ -80,7 +80,6 @@ function NavBar() {
         <Button as={NavLink} to="/calendarcomponent" variant="ghost">
           Calendar</Button>
       </div>
-      {/* Right Side Navbar */}
       <div
         className="rightside-navbar"
         style={{

@@ -1,0 +1,176 @@
+.calendar-component {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.calendar-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.calendar-controls button {
+    padding: 0.6rem 1.2rem;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    box-shadow: 0 3px 6px rgba(0, 123, 255, 0.4);
+}
+
+.calendar-controls button:hover {
+    background-color: #0056b3;
+}
+
+.view-dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto 2rem auto;
+    text-align: center;
+    width: 140px;
+}
+
+.view-dropdown button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.25s ease;
+}
+
+.view-dropdown button:hover {
+    background-color: #e9ecef;
+}
+
+.view-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 140px;
+    border: 1px solid #ccc;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    border-radius: 6px;
+    margin-top: 6px;
+}
+
+.view-dropdown-content button {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 500;
+    color: #444;
+    transition: background-color 0.2s ease;
+}
+
+.view-dropdown-content button:hover {
+    background-color: #f1f1f1;
+}
+
+.view-dropdown:hover .view-dropdown-content {
+    display: block;
+}
+
+
+.event-form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 450px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%);
+    padding: 2rem 2.5rem;
+    z-index: 50;
+    animation: fadeInScale 0.3s ease forwards;
+}
+
+
+.event-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 45;
+}
+
+
+.cancel-button {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1.4rem;
+    background-color: #dc3545;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    display: block;
+    width: 100%;
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.5);
+}
+
+.cancel-button:hover {
+    background-color: #a71d2a;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.create-button {
+    margin-top: 1.5rem;
+    padding: 0.6rem 1.4rem;
+    background-color: #28a745;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    display: block;
+    width: 100%;
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.5);
+}
+
+.create-button:hover {
+    background-color: #1e7e34;
+}
