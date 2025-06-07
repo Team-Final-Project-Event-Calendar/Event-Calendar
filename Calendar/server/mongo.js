@@ -12,15 +12,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      process.env.VITE_FRONT_END_URL,
-      "http://localhost:5173",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [process.env.VITE_FRONT_END_URL, "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "UPDATE"],
     credentials: true,
   })
 );
-
 
 app.use(express.json());
 
@@ -108,7 +104,6 @@ mongoose
       }
     });
 
-
     app.use("/*splat", (req, res) => {
       res.status(404).json({ error: "Route not found" });
     });
@@ -117,8 +112,6 @@ mongoose
       console.log(`[${req.method}] ${req.url}`);
       next();
     });
-
-
 
     const PORT = process.env.PORT || 5000;
 

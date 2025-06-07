@@ -1,5 +1,8 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 import "./CardComponent.css";
+import { useContext } from "react";
+
+import { AuthContext } from "../Authentication/AuthContext";
 
 function CardComponent({ event, onDelete }) {
   const typeColor = event.type === "public" ? "green.500" : "red.500";
