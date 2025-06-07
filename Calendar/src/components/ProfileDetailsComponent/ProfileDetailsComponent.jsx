@@ -19,7 +19,7 @@ function ProfileDetailsComponent({ userDetails }) {
       !formData.firstName ||
       !formData.lastName ||
       !formData.phoneNumber ||
-      !formData.adress
+      !formData.address
     ) {
       alert("All fields must be filled out");
       return;
