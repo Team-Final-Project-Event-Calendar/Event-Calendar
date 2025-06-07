@@ -65,7 +65,8 @@ function CardComponent({ event, onDelete }) {
         <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
           Add To Upcoming
         </Button>
-        {event.userId === user._id ? (
+
+        {user && user._id && event.userId === user._id ? (
           <Button
             variant="ghost"
             color="gray"
