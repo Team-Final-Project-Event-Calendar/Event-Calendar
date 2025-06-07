@@ -15,8 +15,13 @@ function ProfileDetailsComponent({ userDetails }) {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.phoneNumber) {
-      alert("Field cannot be empty");
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.phoneNumber ||
+      !formData.adress
+    ) {
+      alert("All fields must be filled out");
       return;
     }
 
@@ -61,7 +66,7 @@ function ProfileDetailsComponent({ userDetails }) {
     { key: "firstName", label: "First Name" },
     { key: "lastName", label: "Last Name" },
     { key: "phoneNumber", label: "Phone Number" },
-    { key: "adress", label: "Address" },
+    { key: "address", label: "Address" },
     { key: "username", label: "Username" },
   ];
 
