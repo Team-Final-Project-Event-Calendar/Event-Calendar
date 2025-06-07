@@ -18,7 +18,10 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
     };
 
     const getEventsForDay = (date) =>
-        events.filter(e => new Date(e.date).toDateString() === date.toDateString());
+        events.filter(e => {
+          const eventDate = e.date || e.startDateTime;
+          return new Date(eventDate).toDateString() === date.toDateString();
+        });
 
     const getMonthName = (date) =>
         date.toLocaleDateString(undefined, { month: 'long' });
@@ -39,7 +42,7 @@ function CalendarMatrix({ currentDate, view, events, onDayClick }) {
         justifyContent: 'flex-start',
     };
 
-    // Малка синя точка индикатор за събитие
+
     const EventDot = () => (
         <Box mt="auto" display="flex" justifyContent="center">
             <Box boxSize="8px" bg="blue.500" borderRadius="full" />

@@ -42,7 +42,7 @@ function CalendarComponent() {
         setCurrentDate(new Date(createdEvent.startDateTime || createdEvent.date));
         setView("day");
         setShowEventForm(false);
-    };
+      };
 
     const handleDayClick = (day) => {
         setCurrentDate(day);
