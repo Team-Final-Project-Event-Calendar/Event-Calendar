@@ -31,14 +31,9 @@ function App() {
         <Route path='/' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
 
       
-        <Route
-          path="*"
-          element={
-            isLoggedIn
-              ? <Navigate to="/" replace />
-              : <Navigate to="/public" replace />
-          }
-        />
+        <Route path="*" element={<Navigate to="/public" replace />} />
+      
+
       </Routes>
     </>
   );
