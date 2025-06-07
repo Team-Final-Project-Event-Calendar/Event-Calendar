@@ -31,11 +31,25 @@ router.put("/users/:id", verifyToken, async (req, res) => {
   }
 
   try {
-    await User.findByIdAndUpdate({ _id: id }, user, {
-      new: true,
-      runValidators: true,
-    });
-    return res.status(200).json({ message: "User updated successfully" });
+    const updateFields = { ...user };
+
+    // Ensure the address field is updated or added
+    if (user.adress) {
+      updateFields.adress = user.adress;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: id },
+      updateFields,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
