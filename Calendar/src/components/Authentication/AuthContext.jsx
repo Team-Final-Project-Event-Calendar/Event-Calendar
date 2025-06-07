@@ -10,26 +10,29 @@ export default function AuthProvider({ children }) {
   
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-  
-    if (storedToken && storedUser && storedUser !== "undefined") {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Invalid stored user:", storedUser, e);
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+    
+      if (storedToken && storedUser && storedUser !== "undefined") {
+        try {
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+        } catch (e) {
+          console.error("Invalid stored user:", storedUser, e);
+          localStorage.removeItem("user");
+        }
+      } else {
         localStorage.removeItem("user");
+        setUser(null);
       }
-    } else {
-      
-      localStorage.removeItem("user");
-      setUser(null);
-    }
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
-  
 
   const login = async (email, password) => {
     const res = await axios.post(`${key}/api/auth/login`, {
@@ -92,7 +95,7 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, register, logout, isLoggedIn }}
+      value={{ user, token, login, register, logout, isLoggedIn,loading }}
     >
       {children}
     </AuthContext.Provider>

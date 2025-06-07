@@ -1,15 +1,19 @@
+// PublicOnlyRoute.jsx
 import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 
-
-//For routes only for anonymous users.
-// Usage: <PublicOnlyRoute><YourComponent /></PublicOnlyRoute>
 const PublicOnlyRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, loading } = useContext(AuthContext);
+  const location = useLocation();
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
 
   if (isLoggedIn) {
-    return <Navigate to="/" replace />;
+    const from = location.state?.from?.pathname || "/";
+    return <Navigate to={from} replace />;
   }
 
   return children;
