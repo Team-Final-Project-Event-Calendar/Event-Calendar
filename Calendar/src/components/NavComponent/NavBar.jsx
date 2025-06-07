@@ -33,7 +33,6 @@ function NavBar() {
           width: "60vw",
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
-          justifyContent: "center",
           alignItems: "center",
           margin: "0 auto",
         }}
@@ -45,11 +44,10 @@ function NavBar() {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
-            flex: "0 0 auto",
             gap: "10px",
           }}
         >
-          <span style={{}}>
+          <span>
             <WeatherWidget />
           </span>
           <span>
@@ -68,13 +66,15 @@ function NavBar() {
           className="centerSide-navbar"
           style={{
             width: "100%",
-            flex: "1 1 auto",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <Searchbar />
+          <Button as={NavLink} to="/calendarcomponent" variant="ghost">
+            Calendar
+          </Button>
         </div>
 
         <Button as={NavLink} to="/calendarcomponent" variant="ghost">
