@@ -50,10 +50,10 @@ function App() {
           </ProtectedRoute>
         } />
         
-        {/* About page is public */}
+
         <Route path="/about" element={<AboutPage />} />
         
-        {/* Catch-all route */}
+    
         <Route path="*" element={
           <ProtectedRoute>
             <CalendarComponent />
