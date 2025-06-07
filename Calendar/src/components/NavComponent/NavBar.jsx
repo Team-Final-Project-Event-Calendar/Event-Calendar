@@ -54,7 +54,7 @@ function NavBar() {
             <Button
               variant="ghost"
               fontSize="19px"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/homepage")}
             >
               Home
             </Button>
@@ -72,7 +72,7 @@ function NavBar() {
           }}
         >
           <Searchbar />
-          <Button as={NavLink} to="/calendarcomponent" variant="ghost">
+          <Button as={NavLink} to="/" variant="ghost">
             Calendar
           </Button>
         </div>

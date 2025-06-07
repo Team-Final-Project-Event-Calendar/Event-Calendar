@@ -22,14 +22,14 @@ function App() {
     <>
       <NavBar />
       <Routes>
-        <Route path="/" element={<ProtectedRoute> <HomePage /> </ProtectedRoute>}></Route>
+        <Route path="/homepage" element={<ProtectedRoute> <HomePage /> </ProtectedRoute>}></Route>
         <Route path="/public" element={<PublicOnlyRoute> <PublicPage /> </PublicOnlyRoute>}></Route>
         <Route path="/authentication" element={<PublicOnlyRoute> <Authentication /> </PublicOnlyRoute>}></Route>
         <Route path="/authentication/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
         <Route path="/about" element={<AboutPage />}></Route>
         <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>}></Route>
         <Route path="/myevents" element={<ProtectedRoute> <MyEventsPage /> </ProtectedRoute>}></Route>
-        <Route path='/calendarcomponent' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
+        <Route path='/' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
 
         {/* Catches-all non-existant routes and redirects them to / (HomePage) or /public (PublicPage)
          e.g. /exampleroute-asdasd */}
