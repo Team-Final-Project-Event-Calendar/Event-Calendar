@@ -1,12 +1,9 @@
-// app.jsx
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useContext } from "react";
+// App.jsx
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Admin from "./components/Authentication/Admin/Admin";
-import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import NavBar from "./components/NavComponent/NavBar";
 import HomePage from "./pages/HomePage/HomePage";
-import { AuthContext } from "./components/Authentication/AuthContext";
 import AboutPage from "./pages/AboutPage/AboutPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import MyEventsPage from "./pages/MyEventsPage/MyEventsPage";
@@ -14,26 +11,54 @@ import PublicPage from "./pages/PublicPage/PublicPage";
 import PublicOnlyRoute from "./components/Authentication/RoutesProtection/PublicOnlyRoute";
 import ProtectedRoute from "./components/Authentication/RoutesProtection/ProtectedRoute";
 import CalendarComponent from "./components/CalendarComponent/CalendarComponent";
-function App() {
-  const { isLoggedIn } = useContext(AuthContext);
 
+function App() {
   return (
     <>
       <NavBar />
       <Routes>
-        <Route path="/homepage" element={<ProtectedRoute> <HomePage /> </ProtectedRoute>}></Route>
-        <Route path="/public" element={<PublicOnlyRoute> <PublicPage /> </PublicOnlyRoute>}></Route>
-        <Route path="/authentication" element={<PublicOnlyRoute> <Authentication /> </PublicOnlyRoute>}></Route>
-        <Route path="/authentication/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
-        <Route path="/about" element={<AboutPage />}></Route>
-        <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>}></Route>
-        <Route path="/myevents" element={<ProtectedRoute> <MyEventsPage /> </ProtectedRoute>}></Route>
-        <Route path='/' element={<ProtectedRoute> <CalendarComponent /> </ProtectedRoute>}></Route>
-
+        <Route path="/authentication" element={
+          <PublicOnlyRoute>
+            <Authentication />
+          </PublicOnlyRoute>
+        } />
+        <Route path="/public" element={<PublicPage />} />
       
-        <Route path="*" element={<Navigate to="/public" replace />} />
-      
-
+        <Route path="/" element={
+          <ProtectedRoute>
+            <CalendarComponent />
+          </ProtectedRoute>
+        } />
+        <Route path="/homepage" element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/authentication/admin" element={
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/myevents" element={
+          <ProtectedRoute>
+            <MyEventsPage />
+          </ProtectedRoute>
+        } />
+        
+        {/* About page is public */}
+        <Route path="/about" element={<AboutPage />} />
+        
+        {/* Catch-all route */}
+        <Route path="*" element={
+          <ProtectedRoute>
+            <CalendarComponent />
+          </ProtectedRoute>
+        } />
       </Routes>
     </>
   );
