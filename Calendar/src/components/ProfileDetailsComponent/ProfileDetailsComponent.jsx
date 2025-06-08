@@ -64,6 +64,10 @@ function ProfileDetailsComponent() {
         return;
       }
 
+      const updatedUser = await response.json();
+
+      // Update the user context and local state
+      setFormData(updatedUser.user);
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
