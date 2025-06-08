@@ -124,7 +124,7 @@ function ProfileDetailsComponent() {
           >
             <img
               src={user.avatar}
-              style={{ width: "200px", borderRadius: "50%" }}
+              style={{ width: "200px", height: "200px", borderRadius: "50%" }}
             ></img>
             {user.role === "admin" && (
               <h1 style={{ fontWeight: "bold" }}>Admin</h1>
@@ -135,6 +135,7 @@ function ProfileDetailsComponent() {
             <img
               style={{
                 width: "200px",
+                heigh: "200px",
                 borderRadius: "50%",
                 alignSelf: "center",
               }}
