@@ -266,7 +266,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         return (
             <Box>
-                <Text fontSize="3xl" fontWeight="bold" mb={4}>
+                <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign='right'>
                     {day.toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",
