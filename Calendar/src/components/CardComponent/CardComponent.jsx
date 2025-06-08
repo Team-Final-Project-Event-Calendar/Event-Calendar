@@ -59,7 +59,7 @@ function CardComponent({ event, onDelete }) {
       </div>
 
       <Box display="flex" gap="2">
-        {user._id === event.userId ? (
+        {user && user._id === event.userId ? (
           <Button variant={"ghost"} color={"grey"}>
             Invite
           </Button>
