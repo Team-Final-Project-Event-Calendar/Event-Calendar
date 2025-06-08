@@ -60,7 +60,7 @@ const WeatherWidget = () => {
       style={
         {
           // display: "flex",
-          // flexWrap: "wrap",
+          flexWrap: "wrap",
           // alignItems: "center",
           // border: "3px solid #90caf9",
           // borderRadius: 22,
