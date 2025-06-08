@@ -161,7 +161,7 @@ function Admin() {
     <div
       className={styles.adminContainer}
       style={{
-        width: "60vw",
+        width: "100vw",
         maxWidth: "100%",
         margin: "0 auto",
         padding: "1rem",
