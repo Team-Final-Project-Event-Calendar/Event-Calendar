@@ -187,9 +187,11 @@ function ProfileDetailsComponent() {
                 />
               </li>
             ))}
-            <Button variant="ghost" color={"grey"} type={"submit"}>
-              Save
-            </Button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button variant="ghost" color={"grey"} type={"submit"}>
+                Save
+              </Button>
+            </div>
           </form>
         </ul>
       </div>
