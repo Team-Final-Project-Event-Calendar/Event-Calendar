@@ -37,6 +37,10 @@ router.put("/users/:id", verifyToken, async (req, res) => {
     if (user.adress) {
       updateFields.adress = user.adress;
     }
+    // Ensure the avatar field is updated or added
+    if (user.avatar) {
+      updateFields.avatar = user.avatar;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       { _id: id },

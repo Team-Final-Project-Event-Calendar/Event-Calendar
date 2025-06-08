@@ -34,6 +34,11 @@ function ProfileDetailsComponent() {
       return;
     }
 
+    if (!formData.avatar) {
+      alert("Avatar URL must be provided");
+      return;
+    }
+
     console.log("Form Data:", formData);
 
     console.log(
@@ -98,65 +103,69 @@ function ProfileDetailsComponent() {
       >
         Profile Details
       </h2>
+      <div>
+        {user.avatar ? (
+          <img
+            src={user.avatar}
+            style={{ width: "200px", borderRadius: "50%" }}
+          ></img>
+        ) : (
+          <img
+            style={{ width: "200px", borderRadius: "50%", alignSelf: "center" }}
+            src="https://t4.ftcdn.net/jpg/08/23/95/89/360_F_823958944_1c9covIC7Tl7eyJtWoTiXc0L4vP6f43q.jpg"
+          ></img>
+        )}
 
-      {user.avatar ? (
-        <img src={user.avatar} style={{ width: "px" }}></img>
-      ) : (
-        <img
-          style={{ width: "100px", borderRadius: "50%", alignSelf: "center" }}
-          src="https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740"
-        ></img>
-      )}
-
-      <ul
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-          width: "50%",
-          justifySelf: "flex-end",
-        }}
-      >
-        <form onSubmit={(e) => onSubmit(e)}>
-          {fieldsToShow.map(({ key, label }) => (
-            <li key={key} style={{ marginBottom: 20 }}>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: 6,
-                  color: "#444",
-                  fontWeight: 600,
-                  fontSize: 15,
-                }}
-              >
-                {label}
-              </label>
-              <input
-                type={key !== "phoneNumber" ? "text" : "number"}
-                value={formData[key] || ""}
-                onChange={(e) => {
-                  if (key !== "username")
-                    return handleChange(key, e.target.value);
-                }}
-                style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  border: "1px solid #bdbdbd",
-                  borderRadius: 8,
-                  background: "#f7f7f7",
-                  fontSize: 16,
-                  color: "#222",
-                  fontWeight: 500,
-                  outline: "none",
-                }}
-              />
-            </li>
-          ))}
-          <Button variant="ghost" color={"grey"} type={"submit"}>
-            Save
-          </Button>
-        </form>
-      </ul>
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            width: "50%",
+            justifySelf: "flex-end",
+          }}
+        >
+          <form onSubmit={(e) => onSubmit(e)}>
+            {fieldsToShow.map(({ key, label }) => (
+              <li key={key} style={{ marginBottom: 20 }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: 6,
+                    color: "#444",
+                    fontWeight: 600,
+                    fontSize: 15,
+                  }}
+                >
+                  {label}
+                </label>
+                <input
+                  type={key !== "phoneNumber" ? "text" : "number"}
+                  value={formData[key] || ""}
+                  onChange={(e) => {
+                    if (key !== "username")
+                      return handleChange(key, e.target.value);
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    border: "1px solid #bdbdbd",
+                    borderRadius: 8,
+                    background: "#f7f7f7",
+                    fontSize: 16,
+                    color: "#222",
+                    fontWeight: 500,
+                    outline: "none",
+                  }}
+                />
+              </li>
+            ))}
+            <Button variant="ghost" color={"grey"} type={"submit"}>
+              Save
+            </Button>
+          </form>
+        </ul>
+      </div>
     </div>
   );
 }
