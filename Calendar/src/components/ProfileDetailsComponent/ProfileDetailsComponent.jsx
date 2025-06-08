@@ -124,8 +124,19 @@ function ProfileDetailsComponent() {
           >
             <img
               src={user.avatar}
-              style={{ width: "200px", height: "200px", borderRadius: "50%" }}
-            ></img>
+              alt="Avatar"
+              style={{
+                width: "200px",
+                height: "200px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "4px solid #1976d2",
+                boxShadow: "0 2px 12px rgba(25, 118, 210, 0.15)",
+                background: "#f0f0f0",
+                display: "block",
+                margin: "0 auto",
+              }}
+            />
             {user.role === "admin" && (
               <h1 style={{ fontWeight: "bold" }}>Admin</h1>
             )}
@@ -135,12 +146,18 @@ function ProfileDetailsComponent() {
             <img
               style={{
                 width: "200px",
-                heigh: "200px",
+                height: "200px",
                 borderRadius: "50%",
-                alignSelf: "center",
+                objectFit: "cover",
+                border: "4px solid #bdbdbd",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
+                background: "#f0f0f0",
+                display: "block",
+                margin: "0 auto",
               }}
               src="https://t4.ftcdn.net/jpg/08/23/95/89/360_F_823958944_1c9covIC7Tl7eyJtWoTiXc0L4vP6f43q.jpg"
-            ></img>
+              alt="Default Avatar"
+            />
           </div>
         )}
 
