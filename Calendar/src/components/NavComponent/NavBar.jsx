@@ -72,7 +72,12 @@ function NavBar() {
           }}
         >
           <Searchbar />
-          <Button as={NavLink} to="/" variant="ghost">
+          <Button
+            as={NavLink}
+            to="/"
+            variant="ghost"
+            style={{ marginLeft: "10px" }}
+          >
             Calendar
           </Button>
         </div>
