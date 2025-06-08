@@ -103,17 +103,30 @@ function ProfileDetailsComponent() {
       >
         Profile Details
       </h2>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         {user.avatar ? (
-          <img
-            src={user.avatar}
-            style={{ width: "200px", borderRadius: "50%" }}
-          ></img>
+          <div className="image-container" style={{ margin: "0px auto" }}>
+            <img
+              src={user.avatar}
+              style={{ width: "200px", borderRadius: "50%" }}
+            ></img>
+          </div>
         ) : (
-          <img
-            style={{ width: "200px", borderRadius: "50%", alignSelf: "center" }}
-            src="https://t4.ftcdn.net/jpg/08/23/95/89/360_F_823958944_1c9covIC7Tl7eyJtWoTiXc0L4vP6f43q.jpg"
-          ></img>
+          <div className="image-container">
+            <img
+              style={{
+                width: "200px",
+                borderRadius: "50%",
+                alignSelf: "center",
+              }}
+              src="https://t4.ftcdn.net/jpg/08/23/95/89/360_F_823958944_1c9covIC7Tl7eyJtWoTiXc0L4vP6f43q.jpg"
+            ></img>
+          </div>
         )}
 
         <ul
