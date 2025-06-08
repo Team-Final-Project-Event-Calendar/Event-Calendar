@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { AuthContext } from "../../components/Authentication/AuthContext";
+import { Avatar, Code, Stack, useAvatar } from "@chakra-ui/react";
 
 const API_BASE_URL =
   import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
@@ -66,6 +67,7 @@ function ProfileDetailsComponent() {
   };
 
   const fieldsToShow = [
+    { key: "avatar", label: "Avatar" },
     { key: "firstName", label: "First Name" },
     { key: "lastName", label: "Last Name" },
     { key: "phoneNumber", label: "Phone Number" },
@@ -76,7 +78,7 @@ function ProfileDetailsComponent() {
   return (
     <div
       style={{
-        maxWidth: 400,
+        maxWidth: "60vw",
         margin: "40px auto",
         padding: 32,
         borderRadius: 16,
@@ -96,7 +98,25 @@ function ProfileDetailsComponent() {
       >
         Profile Details
       </h2>
-      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+
+      {user.avatar ? (
+        <img src={user.avatar} style={{ width: "px" }}></img>
+      ) : (
+        <img
+          style={{ width: "100px", borderRadius: "50%", alignSelf: "center" }}
+          src="https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740"
+        ></img>
+      )}
+
+      <ul
+        style={{
+          listStyle: "none",
+          padding: 0,
+          margin: 0,
+          width: "50%",
+          justifySelf: "flex-end",
+        }}
+      >
         <form onSubmit={(e) => onSubmit(e)}>
           {fieldsToShow.map(({ key, label }) => (
             <li key={key} style={{ marginBottom: 20 }}>
