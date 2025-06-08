@@ -13,6 +13,7 @@ function CardComponent({ event, onDelete }) {
       className="card-container"
       onClick={() => console.log(event)}
       maxW="sm"
+      minW="400px"
       bg="white"
       boxShadow="md"
       borderRadius="xl"
@@ -58,12 +59,19 @@ function CardComponent({ event, onDelete }) {
       </div>
 
       <Box display="flex" gap="2">
-        <Button colorScheme="blue" flex={1}>
-          Join Event
-        </Button>
-        <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
+        {user._id === event.userId ? (
+          <Button variant={"ghost"} color={"grey"}>
+            Invite
+          </Button>
+        ) : (
+          <Button colorScheme="blue" flex={1}>
+            Join Event
+          </Button>
+        )}
+
+        {/* <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
           Add To Upcoming
-        </Button>
+        </Button> */}
 
         {user && user._id && event.userId === user._id ? (
           <Button
