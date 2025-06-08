@@ -8,7 +8,7 @@ const API_BASE_URL =
   import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 function ProfileDetailsComponent() {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
 
   const [formData, setFormData] = useState(user || {});
 
@@ -66,6 +66,10 @@ function ProfileDetailsComponent() {
 
       const updatedUser = await response.json();
 
+      setFormData(updatedUser.user);
+      setUser(updatedUser.user);
+      localStorage.setItem("user", JSON.stringify(updatedUser.user));
+
       // Update the user context and local state
       setFormData(updatedUser.user);
       alert("Profile updated successfully!");
@@ -114,11 +118,17 @@ function ProfileDetailsComponent() {
         }}
       >
         {user.avatar ? (
-          <div className="image-container" style={{ margin: "0px auto" }}>
+          <div
+            className="image-container"
+            style={{ margin: "0px auto", textAlign: "center" }}
+          >
             <img
               src={user.avatar}
               style={{ width: "200px", borderRadius: "50%" }}
             ></img>
+            {user.role === "admin" && (
+              <h1 style={{ fontWeight: "bold" }}>Admin</h1>
+            )}
           </div>
         ) : (
           <div className="image-container">
