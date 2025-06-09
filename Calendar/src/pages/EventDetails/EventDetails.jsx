@@ -7,7 +7,9 @@ import {
     Spinner,
     Container,
     Badge,
+    Image,
 } from '@chakra-ui/react';
+import { MdPerson } from 'react-icons/md';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../components/Authentication/AuthContext';
@@ -43,7 +45,11 @@ function EventDetails() {
                     userId: data.userId,
                     start: data.startDateTime || data.startDate,
                     end: data.endDateTime || data.endDate,
+                    coverPhoto: data.coverPhoto,
+                    location: data.location,
+                    participants: data.participants,
                 });
+
             } catch (error) {
                 console.error('Error fetching event details:', error);
             } finally {
@@ -80,26 +86,72 @@ function EventDetails() {
                 color={'blue.500'}
                 p={8}
             >
-                <VStack spacing={20} align="start">
+                <VStack spacing={10} align="start">
                     <Badge colorScheme="teal" color={'blue.500'} background={'black'}>
                         {event.userId === user._id ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
 
                     <Heading size="lg">{event.title}</Heading>
 
-                    <Stack spacing={1}>
+                    {event.coverPhoto && (
+                        <Box w="100%" maxH="400px" overflow="hidden" borderRadius="md" mb={5}>
+                            <Image
+                                src={event.coverPhoto}
+                                alt={`Cover for ${event.title}`}
+                                objectFit="cover"
+                                w="100%"
+                                h="100%"
+                            />
+                        </Box>
+                    )}
+
+                    <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Start:</Text>
                         <Text>{new Date(event.start).toLocaleString()}</Text>
                     </Stack>
 
-                    <Stack spacing={1}>
+                    <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">End:</Text>
                         <Text>{new Date(event.end).toLocaleString()}</Text>
                     </Stack>
 
-                    <Stack spacing={1}>
+                    {event.location && (
+                        <Stack spacing={1} w="100%">
+                            <Text fontWeight="bold">Location:</Text>
+                            <Text>
+                                {event.location.address ? event.location.address + ', ' : ''}
+                                {event.location.city ? event.location.city + ', ' : ''}
+                                {event.location.country || ''}
+                            </Text>
+                        </Stack>
+                    )}
+
+                    <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Description:</Text>
                         <Text>{event.description}</Text>
+                    </Stack>
+
+                    <Stack spacing={1} w="100%">
+                        <Text fontWeight="bold">Participants:</Text>
+                        {event.participants && event.participants.length > 0 ? (
+                            <Box as="ul" style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                                {event.participants.map((participant) => (
+                                    <Box
+                                        as="li"
+                                        key={participant._id || participant}
+                                        display="flex"
+                                        alignItems="center"
+                                        mb={1}
+                                        color="blue.500"
+                                    >
+                                        <MdPerson style={{ marginRight: 6 }} />
+                                        <Text as="span">{participant.username || participant}</Text>
+                                    </Box>
+                                ))}
+                            </Box>
+                        ) : (
+                            <Text>No participants yet.</Text>
+                        )}
                     </Stack>
                 </VStack>
             </Box>

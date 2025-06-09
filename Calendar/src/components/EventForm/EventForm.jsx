@@ -9,7 +9,9 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+
 const EventForm = ({ onEventCreated }) => {
   const [event, setEvent] = useState({
     title: "",
@@ -18,6 +20,11 @@ const EventForm = ({ onEventCreated }) => {
     startDateTime: "",
     endDateTime: "",
     isRecurring: false,
+    location: {
+      address: "",
+      city: "",
+      country: "",
+    },
     recurrenceRule: {
       frequency: "",
       interval: 1,
@@ -31,6 +38,26 @@ const EventForm = ({ onEventCreated }) => {
   const handleChange = (prop, value) => {
     setEvent({ ...event, [prop]: value });
     setErrors({ ...errors, [prop]: "" });
+  };
+
+  const handleLocationChange = (field, value) => {
+    setEvent({
+      ...event,
+      location: {
+        ...event.location,
+        [field]: value,
+      },
+    });
+
+    if (errors.location) {
+      setErrors({
+        ...errors,
+        location: {
+          ...errors.location,
+          [field]: "",
+        },
+      });
+    }
   };
 
   const handleRecurrenceChange = (key, value) => {
@@ -75,6 +102,25 @@ const EventForm = ({ onEventCreated }) => {
       newErrors.endDateTime = "End date and time is required.";
     }
 
+    const locErrors = {};
+    const { address, city, country } = event.location;
+
+    if (address && (address.length < 5 || address.length > 100)) {
+      locErrors.address = "Address must be between 5 and 100 characters.";
+    }
+
+    if (city && (city.length < 2 || city.length > 50)) {
+      locErrors.city = "City must be between 2 and 50 characters.";
+    }
+
+    if (country && (country.length < 2 || country.length > 50)) {
+      locErrors.country = "Country must be between 2 and 50 characters.";
+    }
+
+    if (Object.keys(locErrors).length > 0) {
+      newErrors.location = locErrors;
+    }
+
     if (event.isRecurring) {
       const recurrenceErrors = {};
       if (!event.recurrenceRule.frequency) {
@@ -100,22 +146,28 @@ const EventForm = ({ onEventCreated }) => {
 
     if (!validate()) return;
 
-    if (!event.isRecurring) {
-      delete event.recurrenceRule;
+    const preparedEvent = { ...event };
+    if (!preparedEvent.isRecurring) {
+      delete preparedEvent.recurrenceRule;
     } else {
       if (
-        !["daily", "weekly", "monthly"].includes(event.recurrenceRule.frequency)
+        !["daily", "weekly", "monthly"].includes(
+          preparedEvent.recurrenceRule.frequency
+        )
       ) {
-        event.recurrenceRule.frequency = undefined;
+        preparedEvent.recurrenceRule.frequency = undefined;
       }
-      if (!event.recurrenceRule.endDate) {
-        delete event.recurrenceRule.endDate;
+      if (!preparedEvent.recurrenceRule.endDate) {
+        delete preparedEvent.recurrenceRule.endDate;
       } else {
-        event.recurrenceRule.endDate = new Date(event.recurrenceRule.endDate);
+        preparedEvent.recurrenceRule.endDate = new Date(
+          preparedEvent.recurrenceRule.endDate
+        );
       }
     }
+
     try {
-      const res = await axios.post(`${key}/api/events`, event, {
+      const res = await axios.post(`${key}/api/events`, preparedEvent, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -130,6 +182,11 @@ const EventForm = ({ onEventCreated }) => {
         startDateTime: "",
         endDateTime: "",
         isRecurring: false,
+        location: {
+          address: "",
+          city: "",
+          country: "",
+        },
         recurrenceRule: {
           frequency: "",
           interval: 1,
@@ -144,174 +201,229 @@ const EventForm = ({ onEventCreated }) => {
     }
   };
 
-return (
-  <form onSubmit={handleSubmit}>
-    <Fieldset.Root size="lg" maxW="md">
-      <Stack>
-        <Fieldset.Legend style={{ color: "black" }}>
-          Create New Event
-        </Fieldset.Legend>
-      </Stack>
+  return (
+    <form onSubmit={handleSubmit}>
+      <Fieldset.Root size="lg" maxW="md">
+        <Stack>
+          <Fieldset.Legend style={{ color: "black" }}>
+            Create New Event
+          </Fieldset.Legend>
+        </Stack>
 
-      {successMessage && (
-        <Text
-          color={successMessage.startsWith("✅") ? "green.500" : "red.500"}
-        >
-          {successMessage}
-        </Text>
-      )}
-
-      <Fieldset.Content>
-        <Field.Root>
-          <Field.Label>Title</Field.Label>
-          <Input
-            value={event.title}
-            onChange={(e) => handleChange("title", e.target.value)}
-            isInvalid={!!errors.title}
-          />
-          {errors.title && <Text color="red.500">{errors.title}</Text>}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Description</Field.Label>
-          <Input
-            value={event.description}
-            onChange={(e) => handleChange("description", e.target.value)}
-            isInvalid={!!errors.description}
-          />
-          {errors.description && (
-            <Text color="red.500">{errors.description}</Text>
-          )}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Type</Field.Label>
-          <NativeSelect.Root>
-            <NativeSelect.Field
-              value={event.type}
-              onChange={(e) => handleChange("type", e.target.value)}
-            >
-              <option value="">Select type</option>
-              <option value="private">Private</option>
-              <option value="public">Public</option>
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
-          {errors.type && <Text color="red.500">{errors.type}</Text>}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Start Date & Time</Field.Label>
-          <Input
-            backgroundColor="lightpink"
-            type="datetime-local"
-            value={event.startDateTime}
-            onChange={(e) => handleChange("startDateTime", e.target.value)}
-            isInvalid={!!errors.startDateTime}
-          />
-          {errors.startDateTime && (
-            <Text color="red.500">{errors.startDateTime}</Text>
-          )}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>End Date & Time</Field.Label>
-          <Input
-            backgroundColor="lightpink"
-            type="datetime-local"
-            value={event.endDateTime}
-            onChange={(e) => handleChange("endDateTime", e.target.value)}
-            isInvalid={!!errors.endDateTime}
-          />
-          {errors.endDateTime && (
-            <Text color="red.500">{errors.endDateTime}</Text>
-          )}
-        </Field.Root>
-
-        <Field.Root>
-          <Field.Label>Is Recurring?</Field.Label>
-          <NativeSelect.Root>
-            <NativeSelect.Field
-              value={event.isRecurring ? "yes" : "no"}
-              onChange={(e) =>
-                handleChange("isRecurring", e.target.value === "yes")
-              }
-            >
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
-        </Field.Root>
-
-        {event.isRecurring && (
-          <>
-            <Field.Root>
-              <Field.Label>Frequency</Field.Label>
-              <NativeSelect.Root>
-                <NativeSelect.Field
-                  value={event.recurrenceRule.frequency}
-                  onChange={(e) =>
-                    handleRecurrenceChange("frequency", e.target.value)
-                  }
-                >
-                  <option value="">Select frequency</option>
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                </NativeSelect.Field>
-                <NativeSelect.Indicator />
-              </NativeSelect.Root>
-              {errors.recurrenceRule?.frequency && (
-                <Text color="red.500">{errors.recurrenceRule.frequency}</Text>
-              )}
-            </Field.Root>
-
-            <Field.Root>
-              <Field.Label>Interval</Field.Label>
-              <Input
-                type="number"
-                min={1}
-                value={event.recurrenceRule.interval}
-                onChange={(e) =>
-                  handleRecurrenceChange("interval", e.target.value)
-                }
-              />
-            </Field.Root>
-
-            <Field.Root>
-              <Field.Label>Recurrence End Date</Field.Label>
-              <Input
-                type="date"
-                value={event.recurrenceRule.endDate}
-                onChange={(e) =>
-                  handleRecurrenceChange("endDate", e.target.value)
-                }
-              />
-              {errors.recurrenceRule?.endDate && (
-                <Text color="red.500">{errors.recurrenceRule.endDate}</Text>
-              )}
-            </Field.Root>
-          </>
+        {successMessage && (
+          <Text
+            color={successMessage.startsWith("✅") ? "green.500" : "red.500"}
+          >
+            {successMessage}
+          </Text>
         )}
-      </Fieldset.Content>
 
-      <Button
-        type="submit"
-        variant="outline"
-        bg="green.500"
-        color="white"
-        size="lg"
-        mt={4}
-        _hover={{ bg: "green.900" }}
-        _active={{ bg: "green.900" }}
-      >
-        Create
-      </Button>
-    </Fieldset.Root>
-  </form>
-);
+        <Fieldset.Content>
+          <Field.Root>
+            <Field.Label>Title</Field.Label>
+            <Input
+              value={event.title}
+              onChange={(e) => handleChange("title", e.target.value)}
+              isInvalid={!!errors.title}
+            />
+            {errors.title && <Text color="red.500">{errors.title}</Text>}
+          </Field.Root>
 
+          <Field.Root>
+            <Field.Label>Description</Field.Label>
+            <Input
+              value={event.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              isInvalid={!!errors.description}
+            />
+            {errors.description && (
+              <Text color="red.500">{errors.description}</Text>
+            )}
+          </Field.Root>
+
+          <Field.Root>
+  <Field.Label>Is Location?</Field.Label>
+  <NativeSelect.Root>
+    <NativeSelect.Field
+      value={event.isLocation ? "yes" : "no"}
+      onChange={(e) =>
+        handleChange("isLocation", e.target.value === "yes")
+      }
+    >
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </NativeSelect.Field>
+    <NativeSelect.Indicator />
+  </NativeSelect.Root>
+</Field.Root>
+
+{event.isLocation && (
+  <>
+    <Field.Root>
+      <Field.Label>Address</Field.Label>
+      <Input
+        value={event.location.address}
+        onChange={(e) => handleLocationChange("address", e.target.value)}
+        isInvalid={!!errors.location?.address}
+      />
+      {errors.location?.address && (
+        <Text color="red.500">{errors.location.address}</Text>
+      )}
+    </Field.Root>
+
+    <Field.Root>
+      <Field.Label>City</Field.Label>
+      <Input
+        value={event.location.city}
+        onChange={(e) => handleLocationChange("city", e.target.value)}
+        isInvalid={!!errors.location?.city}
+      />
+      {errors.location?.city && (
+        <Text color="red.500">{errors.location.city}</Text>
+      )}
+    </Field.Root>
+
+    <Field.Root>
+      <Field.Label>Country</Field.Label>
+      <Input
+        value={event.location.country}
+        onChange={(e) => handleLocationChange("country", e.target.value)}
+        isInvalid={!!errors.location?.country}
+      />
+      {errors.location?.country && (
+        <Text color="red.500">{errors.location.country}</Text>
+      )}
+    </Field.Root>
+  </>
+)}
+
+          <Field.Root>
+            <Field.Label>Type</Field.Label>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                value={event.type}
+                onChange={(e) => handleChange("type", e.target.value)}
+              >
+                <option value="">Select type</option>
+                <option value="private">Private</option>
+                <option value="public">Public</option>
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+            {errors.type && <Text color="red.500">{errors.type}</Text>}
+          </Field.Root>
+
+          <Field.Root>
+            <Field.Label>Start Date & Time</Field.Label>
+            <Input
+              backgroundColor="lightpink"
+              type="datetime-local"
+              value={event.startDateTime}
+              onChange={(e) => handleChange("startDateTime", e.target.value)}
+              isInvalid={!!errors.startDateTime}
+            />
+            {errors.startDateTime && (
+              <Text color="red.500">{errors.startDateTime}</Text>
+            )}
+          </Field.Root>
+
+          <Field.Root>
+            <Field.Label>End Date & Time</Field.Label>
+            <Input
+              backgroundColor="lightpink"
+              type="datetime-local"
+              value={event.endDateTime}
+              onChange={(e) => handleChange("endDateTime", e.target.value)}
+              isInvalid={!!errors.endDateTime}
+            />
+            {errors.endDateTime && (
+              <Text color="red.500">{errors.endDateTime}</Text>
+            )}
+          </Field.Root>
+
+          <Field.Root>
+            <Field.Label>Is Recurring?</Field.Label>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                value={event.isRecurring ? "yes" : "no"}
+                onChange={(e) =>
+                  handleChange("isRecurring", e.target.value === "yes")
+                }
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+          </Field.Root>
+
+          {event.isRecurring && (
+            <>
+              <Field.Root>
+                <Field.Label>Frequency</Field.Label>
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    value={event.recurrenceRule.frequency}
+                    onChange={(e) =>
+                      handleRecurrenceChange("frequency", e.target.value)
+                    }
+                  >
+                    <option value="">Select frequency</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </NativeSelect.Field>
+                  <NativeSelect.Indicator />
+                </NativeSelect.Root>
+                {errors.recurrenceRule?.frequency && (
+                  <Text color="red.500">{errors.recurrenceRule.frequency}</Text>
+                )}
+              </Field.Root>
+
+              <Field.Root>
+                <Field.Label>Interval</Field.Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={event.recurrenceRule.interval}
+                  onChange={(e) =>
+                    handleRecurrenceChange("interval", e.target.value)
+                  }
+                />
+              </Field.Root>
+
+              <Field.Root>
+                <Field.Label>Recurrence End Date</Field.Label>
+                <Input
+                  type="date"
+                  value={event.recurrenceRule.endDate}
+                  onChange={(e) =>
+                    handleRecurrenceChange("endDate", e.target.value)
+                  }
+                />
+                {errors.recurrenceRule?.endDate && (
+                  <Text color="red.500">{errors.recurrenceRule.endDate}</Text>
+                )}
+              </Field.Root>
+            </>
+          )}
+        </Fieldset.Content>
+
+        <Button
+          type="submit"
+          variant="outline"
+          bg="green.500"
+          color="white"
+          size="lg"
+          mt={4}
+          _hover={{ bg: "green.900" }}
+          _active={{ bg: "green.900" }}
+        >
+          Create
+        </Button>
+      </Fieldset.Root>
+    </form>
+  );
 };
 
 export default EventForm;

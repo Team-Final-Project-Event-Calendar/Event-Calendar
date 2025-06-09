@@ -57,7 +57,7 @@ mongoose
 
     app.get("/api/events/:id", verifyToken, async (req, res) => {
       try {
-        const event = await Event.findById(req.params.id);
+        const event = await Event.findById(req.params.id).populate('participants', 'username email');
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
@@ -66,7 +66,7 @@ mongoose
         res.status(500).json({ error: err.message });
       }
     });
-
+    
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ participants: req.user.id });

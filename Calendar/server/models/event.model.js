@@ -23,6 +23,17 @@ const eventSchema = new mongoose.Schema({
     startDateTime: { type: Date, required: true },
     endDateTime: { type: Date, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    coverPhoto: { type: String },
+    location: {
+        address: String,
+        city: String,
+        country: String,
+    },
+    participants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    }],
     participants: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
