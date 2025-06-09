@@ -11,7 +11,7 @@ import PublicPage from "./pages/PublicPage/PublicPage";
 import PublicOnlyRoute from "./components/Authentication/RoutesProtection/PublicOnlyRoute";
 import ProtectedRoute from "./components/Authentication/RoutesProtection/ProtectedRoute";
 import CalendarComponent from "./components/CalendarComponent/CalendarComponent";
-
+import EventDetails from "./pages/EventDetails/EventDetails";
 function App() {
   return (
     <>
@@ -49,6 +49,8 @@ function App() {
             <MyEventsPage />
           </ProtectedRoute>
         } />
+
+        <Route path='/eventdetails/:id' element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
         
 
         <Route path="/about" element={<AboutPage />} />

@@ -55,6 +55,18 @@ mongoose
       }
     });
 
+    app.get("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const event = await Event.findById(req.params.id);
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+        res.json(event);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ participants: req.user.id });

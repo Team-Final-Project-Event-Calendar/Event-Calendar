@@ -1,14 +1,16 @@
 import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
 import "./CardComponent.css";
 import { useContext } from "react";
-
+import {Link} from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 
 function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
+
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   return (
+    <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
     <Box
       className="card-container"
       onClick={() => console.log(event)}
@@ -91,6 +93,7 @@ function CardComponent({ event, onDelete }) {
         ) : null}
       </Box>
     </Box>
+    </Link>
   );
 }
 
