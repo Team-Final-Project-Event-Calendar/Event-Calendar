@@ -209,7 +209,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
 
     if (view === "workWeek") {
-        const days = getWeekDays().slice(1, 6); 
+        const days = getWeekDays().slice(1, 6);
 
         return (
             <Box>
@@ -264,9 +264,19 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         const day = new Date(currentDate);
         const dayEvents = getEventsForDay(day);
 
+        const dayViewStyle = {
+            borderWidth: "1px",
+            borderColor: "blue.300",
+            borderRadius: "lg",
+            p: 6,
+            bg: "blue.50",
+            boxShadow: "xl",
+            transition: "all 0.2s",
+        };
+
         return (
             <Box>
-                <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign='right'>
+                <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign="right">
                     {day.toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",
@@ -275,8 +285,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                     })}
                 </Text>
 
-                <Box {...todayStyle}>
-                    <Text fontWeight="bold" mb={2}>
+                <Box {...dayViewStyle}>
+                    <Text fontWeight="bold" mb={4}>
                         Events:
                     </Text>
                     {dayEvents.length === 0 ? (
@@ -284,12 +294,32 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                             No events for this day.
                         </Text>
                     ) : (
-                        renderEventTitles(dayEvents)
+                        dayEvents.map((e, i) => (
+                            <Box
+                                key={i}
+                                bg="green.300"
+                                color="black.800"
+                                px={4}
+                                py={5}
+                                borderRadius="md"
+                                fontSize="sm"
+                                mt={3}
+                                boxShadow="md"
+                            >
+                                <Text fontWeight="bold">• {e.title}</Text>
+                                {e.description && (
+                                    <Text fontSize="xs" mt={1} color="blue.700">
+                                        {e.description}
+                                    </Text>
+                                )}
+                            </Box>
+                        ))
                     )}
                 </Box>
             </Box>
         );
     }
+
 
     return null;
 }
