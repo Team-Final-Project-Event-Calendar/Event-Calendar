@@ -290,7 +290,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         Events:
                     </Text>
                     {dayEvents.length === 0 ? (
-                        <Text fontSize="sm" color="gray.500">
+                        <Text fontSize="sm" color="gray.600">
                             No events for this day.
                         </Text>
                     ) : (
@@ -298,7 +298,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                             <Box
                                 key={i}
                                 bg="green.300"
-                                color="black.800"
+                                color="black.900"
                                 px={4}
                                 py={5}
                                 borderRadius="md"
@@ -308,8 +308,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                             >
                                 <Text fontWeight="bold">• {e.title}</Text>
                                 {e.description && (
-                                    <Text fontSize="xs" mt={1} color="blue.700">
-                                        {e.description}
+                                    <Text fontSize="xs" mt={1} color="black.900">
+                                    •  {e.description}
                                     </Text>
                                 )}
                             </Box>
