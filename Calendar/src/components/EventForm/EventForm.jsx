@@ -20,6 +20,7 @@ const EventForm = ({ onEventCreated }) => {
     startDateTime: "",
     endDateTime: "",
     isRecurring: false,
+    isLocation: false,
     location: {
       address: "",
       city: "",
@@ -182,6 +183,7 @@ const EventForm = ({ onEventCreated }) => {
         startDateTime: "",
         endDateTime: "",
         isRecurring: false,
+        isLocation: false,
         location: {
           address: "",
           city: "",
