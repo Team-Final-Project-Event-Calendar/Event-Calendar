@@ -102,34 +102,6 @@ mongoose
       }
     });
 
-    app.post('/api/events/participating', verifyToken, async (req, res) => {
-
-      try{
-        const { eventId } = req.body;
-
-        if (!eventId) {
-          return res.status(400).json({ error: "Event ID is required" });
-        }
-
-        const event = await Event.findById(eventId);
-
-        if (!event) {
-          return res.status(404).json({ error: "Event not found" });
-        }
-
-        if (event.participants.includes(req.user.id)) {
-          return res.status(400).json({ error: "Already participating in this event" });
-        }
-
-        event.participants.push(req.user.id);
-        await event.save();
-
-        res.json(event);
-      }catch (err) {
-        return res.status(500).json({ error: err.message });
-      }
-    })
-
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {
         const user = await User.findById(req.user.id);
