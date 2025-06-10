@@ -1,19 +1,25 @@
-import { Button, Card, Image, Text, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  Image,
+  Text,
+  Box,
+  useDisclosure,
+} from "@chakra-ui/react";
 import "./CardComponent.css";
 import { useContext } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 
 function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
+  const { onOpen } = useDisclosure();
 
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   return (
-    <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
     <Box
       className="card-container"
-      onClick={() => console.log(event)}
       maxW="sm"
       minW="400px"
       bg="white"
@@ -24,11 +30,17 @@ function CardComponent({ event, onDelete }) {
       _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
     >
       <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.800">
-        {event.title}
+        <Link
+          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
+        >
+          {event.title}
+        </Link>
       </Text>
+
       <Text fontSize="md" color="gray.600" mb={3}>
         {event.description}
       </Text>
+
       <div
         style={{
           display: "flex",
@@ -62,7 +74,14 @@ function CardComponent({ event, onDelete }) {
 
       <Box display="flex" gap="2">
         {user && user._id === event.userId ? (
-          <Button variant={"ghost"} color={"grey"}>
+          <Button
+            variant="ghost"
+            color="grey"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+          >
             Invite
           </Button>
         ) : (
@@ -70,10 +89,6 @@ function CardComponent({ event, onDelete }) {
             Join Event
           </Button>
         )}
-
-        {/* <Button variant="ghost" colorScheme="blue" color="gray" flex={1}>
-          Add To Upcoming
-        </Button> */}
 
         {user && user._id && event.userId === user._id ? (
           <Button
@@ -93,7 +108,6 @@ function CardComponent({ event, onDelete }) {
         ) : null}
       </Box>
     </Box>
-    </Link>
   );
 }
 
