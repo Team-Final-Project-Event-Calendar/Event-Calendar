@@ -8,8 +8,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
-
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../Authentication/AuthContext";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const EventForm = ({ onEventCreated }) => {
@@ -34,6 +34,9 @@ const EventForm = ({ onEventCreated }) => {
     },
   });
 
+  const { user } = useContext(AuthContext);
+  const [users, setUsers ] = useState([]);
+
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -41,7 +44,23 @@ const EventForm = ({ onEventCreated }) => {
 
   const [participantName, setParticipantName] = useState("");
 
-
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`${key}/api/auth/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setUsers(response.data); 
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+  
+    fetchUsers();
+  }, []);
+  
   const addParticipant = () => {
     const trimmedName = participantName.trim();
     if (trimmedName) {
@@ -213,7 +232,7 @@ const handleParticipantChange = (index, value) => {
     }
 
     try {
-      console.log(preparedEvent);
+
 
       const res = await axios.post(`${key}/api/events`, preparedEvent, {
         headers: {
@@ -350,34 +369,43 @@ const handleParticipantChange = (index, value) => {
 <Field.Root>
   <Field.Label>Participants</Field.Label>
   <Stack direction="row" spacing={2} mb={2}>
-    <Input
-      placeholder="Name"
-      value={participantName}
-      onChange={(e) => setParticipantName(e.target.value)}
-    />
+    <NativeSelect.Root>
+      <NativeSelect.Field
+        value={participantName}
+        onChange={(e) => setParticipantName(e.target.value)}
+      >
+        <option value="">Select a user</option>
+        {users
+          .filter((u) => u._id !== user?._id) // изключваме текущия потребител
+          .map((u) => (
+            <option key={u._id} value={u.username}>
+              {u.username}
+            </option>
+          ))}
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
     <Button onClick={addParticipant} size="sm" variant="outline">
-      + Add Participant
+      + Add
     </Button>
   </Stack>
 
   {event.participants.map((participant, index) => (
-  <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
-    <Input
-      placeholder={`Participant #${index + 1} name`}
-      value={participant}
-      onChange={(e) => handleParticipantChange(index, e.target.value)}
-      isInvalid={!!errors.participants}
-    />
-    <Button
-      colorScheme="red"
-      onClick={() => removeParticipant(index)}
-      size="sm"
-    >
-      Remove
-    </Button>
-  </Stack>
-))}
-
+    <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
+      <Input
+        value={participant}
+        onChange={(e) => handleParticipantChange(index, e.target.value)}
+        isInvalid={!!errors.participants}
+      />
+      <Button
+        colorScheme="red"
+        onClick={() => removeParticipant(index)}
+        size="sm"
+      >
+        Remove
+      </Button>
+    </Stack>
+  ))}
 
   {errors.participants && (
     <Text color="red.500" mt={1}>
@@ -385,6 +413,7 @@ const handleParticipantChange = (index, value) => {
     </Text>
   )}
 </Field.Root>
+
           <Field.Root>
             <Field.Label>Type</Field.Label>
             <NativeSelect.Root>
