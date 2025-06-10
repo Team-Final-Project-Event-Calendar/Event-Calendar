@@ -11,7 +11,7 @@ function CardsListComponent({ events = [], onDelete, justify = "flex-start" }) {
         maxWidth: "70vw",
         margin: "0 auto",
         gap: "20px",
-        justifyContent: { justify },
+        justifyContent: `${justify}`,
       }}
     >
       {events.length === 0 ? (
