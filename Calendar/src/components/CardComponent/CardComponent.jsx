@@ -36,6 +36,13 @@ function CardComponent({ event, onDelete }) {
           {event.title}
         </Link>
       </Text>
+      <Text fontSize="sm" color="blue" mb={1} ml={2}>
+        <Link
+          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
+        >
+          See Details
+        </Link>
+      </Text>
 
       <Text fontSize="md" color="gray.600" mb={3}>
         {event.description}
