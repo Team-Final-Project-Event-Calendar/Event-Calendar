@@ -4,7 +4,7 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import { useState, useEffect, useMemo } from "react";
 import "./HomePage.css";
 import axios from "axios";
-
+import { useLocation } from "react-router-dom";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -12,6 +12,10 @@ function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
   const [myEvents, setMyEvents] = useState([]);
   const [participatingEvents, setParticipatingEvents] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const location = useLocation()
 
   const handleDeleteEvent = async (event) => {
     if (!event._id) return;
@@ -22,11 +26,46 @@ function HomePage() {
         },
       });
       setMyEvents((prev) => prev.filter((e) => e._id !== event._id));
+
+      if (searchResults) {
+        setSearchResults((prev) => prev.filter((e) => e._id !== event._id));
+      }
     } catch (err) {
       alert("Failed to delete event");
       console.error(err);
     }
   };
+
+    useEffect(() => {
+    if (location.state?.searchResults && location.state?.searchTerm) {
+      setSearchResults(location.state.searchResults);
+      setSearchTerm(location.state.searchTerm);
+      // Clear the navigation state to prevent re-triggering
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  // Listen for search events from NavComponent
+  useEffect(() => {
+    const handleGlobalSearch = (event) => {
+      const { results, term } = event.detail;
+      setSearchResults(results);
+      setSearchTerm(term);
+    };
+
+    const handleGlobalClearSearch = () => {
+      setSearchResults(null);
+      setSearchTerm("");
+    };
+
+    window.addEventListener('homepageSearch', handleGlobalSearch);
+    window.addEventListener('homepageClearSearch', handleGlobalClearSearch);
+
+    return () => {
+      window.removeEventListener('homepageSearch', handleGlobalSearch);
+      window.removeEventListener('homepageClearSearch', handleGlobalClearSearch);
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -56,9 +95,6 @@ function HomePage() {
       // Fetch events where user is a participant
       fetch(`${key}/api/events/participating`, { headers: authHeaders })
         .then((res) => {
-          console.log("Participating events response status:", res.status);
-          console.log("Response headers:", res.headers);
-
           if (res.status === 500) {
             // Get the actual error message from the server
             return res.json().then(errorData => {
@@ -66,18 +102,16 @@ function HomePage() {
               setParticipatingEvents([]);
               return [];
             }).catch(() => {
-              console.error("500 Error but no JSON response");
+
               setParticipatingEvents([]);
               return [];
             });
           }
 
           if (res.status === 403) {
-            console.log("403 Forbidden - token might be invalid");
             setParticipatingEvents([]);
             return [];
           }
-
           return res.ok ? res.json() : [];
         })
         .then((data) => {
@@ -108,6 +142,20 @@ function HomePage() {
     return Array.from(allEventsMap.values());
   }, [publicEvents, myEvents, participatingEvents]);
 
+  // Determine what events to display
+  const eventsToDisplay = searchResults !== null ? searchResults : uniqueEvents;
+  const displayTitle = searchResults !== null
+    ? `Search Results for "${searchTerm}"`
+    : "All Events";
+
+  const clearSearch = () => {
+    setSearchResults(null);
+    setSearchTerm("");
+    // Also clear the search in NavComponent
+    window.dispatchEvent(new CustomEvent('clearNavSearch'));
+  };
+
+
   return (
     <div className="home-page-container">
       <Heading as="h1" size="xl" textAlign="center" mb={8} color="#1976d2">
@@ -116,6 +164,7 @@ function HomePage() {
       <Text textAlign="center" fontSize="lg" mb={12} color="#555">
         Discover and manage events effortlessly
       </Text>
+
       <div
         className="public-events-container"
         style={{ display: "flex", alignItems: "center" }}
@@ -130,13 +179,40 @@ function HomePage() {
           boxShadow="0 4px 24px rgba(0,0,0,0.1)"
         >
           <Heading as="h2" size="lg" mb={4} color="#1976d2" textAlign="center">
-            All Events
+            {displayTitle}
+            {searchResults !== null && (
+              <button
+                onClick={clearSearch}
+                style={{
+                  marginLeft: "1rem",
+                  background: "#1976d2",
+                  color: "white",
+                  border: "none",
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "0.8rem"
+                }}
+              >
+                Clear
+              </button>
+            )}
           </Heading>
-          <CardsListComponent
-            events={uniqueEvents}
-            onDelete={handleDeleteEvent}
-            justify="center"
-          />
+
+          {eventsToDisplay.length > 0 ? (
+            <CardsListComponent
+              events={eventsToDisplay}
+              onDelete={handleDeleteEvent}
+              justify="center"
+            />
+          ) : (
+            <Text textAlign="center" color="#666">
+              {searchResults !== null
+                ? `No events found for "${searchTerm}"`
+                : "No events available"
+              }
+            </Text>
+          )}
         </Box>
       </div>
     </div>
