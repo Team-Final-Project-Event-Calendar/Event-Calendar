@@ -34,11 +34,6 @@ const eventSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     }],
-    participants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    }],
     isRecurring: {
         type: Boolean,
         default: false,
@@ -53,16 +48,16 @@ const eventSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-eventSchema.pre("validate", function (next) {
-    if (!this.participants.includes(this.userId)) {
-        this.participants.push(this.userId);
-    }
+// eventSchema.pre("validate", function (next) {
+//     if (!this.participants.includes(this.userId)) {
+//         this.participants.push(this.userId);
+//     }
 
-    if (this.type === "private") {
-        this.participants = [this.userId];
-    }
+//     if (this.type === "private") {
+//         this.participants = [this.userId];
+//     }
 
-    next();
-});
+//     next();
+// });
 
 export default mongoose.model("Event", eventSchema);

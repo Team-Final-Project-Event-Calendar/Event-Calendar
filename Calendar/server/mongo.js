@@ -35,14 +35,45 @@ mongoose
     // POST routes:
     app.post("/api/events", verifyToken, async (req, res) => {
       try {
-        const newEvent = new Event({ ...req.body, userId: req.user.id });
+        const participantUsernames = req.body.participants || [];
+    
+        const participantUsers = await User.find({
+          username: { $in: participantUsernames },
+        });
+    
+        if (participantUsers.length !== participantUsernames.length) {
+          return res
+            .status(400)
+            .json({ error: "One or more participants not found" });
+        }
+    
+        const participantIds = participantUsers.map((user) => user._id);
+    
+        if (!participantIds.includes(req.user.id)) {
+          participantIds.push(req.user.id);
+        }
+    
+        const newEvent = new Event({
+          title: req.body.title,
+          description: req.body.description,
+          type: req.body.type,
+          startDateTime: req.body.startDateTime,
+          endDateTime: req.body.endDateTime,
+          isRecurring: req.body.isRecurring,
+          isLocation: req.body.isLocation,
+          location: req.body.location,
+          recurrenceRule: req.body.recurrenceRule,
+          userId: req.user.id,
+          participants: participantIds,
+
+        });
         const savedEvent = await newEvent.save();
         res.status(201).json(savedEvent);
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
     });
-
+    
     // GET routes:
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
@@ -70,6 +101,34 @@ mongoose
         res.status(500).json({ error: err.message });
       }
     });
+
+    app.post('/api/events/participating', verifyToken, async (req, res) => {
+
+      try{
+        const { eventId } = req.body;
+
+        if (!eventId) {
+          return res.status(400).json({ error: "Event ID is required" });
+        }
+
+        const event = await Event.findById(eventId);
+
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+
+        if (event.participants.includes(req.user.id)) {
+          return res.status(400).json({ error: "Already participating in this event" });
+        }
+
+        event.participants.push(req.user.id);
+        await event.save();
+
+        res.json(event);
+      }catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    })
 
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {

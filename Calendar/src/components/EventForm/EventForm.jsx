@@ -21,6 +21,7 @@ const EventForm = ({ onEventCreated }) => {
     endDateTime: "",
     isRecurring: false,
     isLocation: false,
+    participants: [], 
     location: {
       address: "",
       city: "",
@@ -35,6 +36,50 @@ const EventForm = ({ onEventCreated }) => {
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+
+
+
+  const [participantName, setParticipantName] = useState("");
+
+
+  const addParticipant = () => {
+    const trimmedName = participantName.trim();
+    if (trimmedName) {
+      setEvent((prev) => ({
+        ...prev,
+        participants: [...prev.participants, trimmedName],
+      }));
+      setParticipantName(""); 
+    }
+  };
+  
+
+
+const removeParticipant = (index) => {
+  setEvent((prev) => ({
+    ...prev,
+    participants: prev.participants.filter((_, i) => i !== index),
+  }));
+};
+
+
+const handleParticipantChange = (index, value) => {
+  const newParticipants = [...event.participants];
+  newParticipants[index] = value;
+  setEvent((prev) => ({
+    ...prev,
+    participants: newParticipants,
+  }));
+
+
+  if (errors.participants) {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      participants: "",
+    }));
+  }
+};
+
 
   const handleChange = (prop, value) => {
     setEvent({ ...event, [prop]: value });
@@ -168,6 +213,8 @@ const EventForm = ({ onEventCreated }) => {
     }
 
     try {
+      console.log(preparedEvent);
+
       const res = await axios.post(`${key}/api/events`, preparedEvent, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -184,6 +231,7 @@ const EventForm = ({ onEventCreated }) => {
         endDateTime: "",
         isRecurring: false,
         isLocation: false,
+        participants: [], 
         location: {
           address: "",
           city: "",
@@ -299,6 +347,44 @@ const EventForm = ({ onEventCreated }) => {
   </>
 )}
 
+<Field.Root>
+  <Field.Label>Participants</Field.Label>
+  <Stack direction="row" spacing={2} mb={2}>
+    <Input
+      placeholder="Name"
+      value={participantName}
+      onChange={(e) => setParticipantName(e.target.value)}
+    />
+    <Button onClick={addParticipant} size="sm" variant="outline">
+      + Add Participant
+    </Button>
+  </Stack>
+
+  {event.participants.map((participant, index) => (
+  <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
+    <Input
+      placeholder={`Participant #${index + 1} name`}
+      value={participant}
+      onChange={(e) => handleParticipantChange(index, e.target.value)}
+      isInvalid={!!errors.participants}
+    />
+    <Button
+      colorScheme="red"
+      onClick={() => removeParticipant(index)}
+      size="sm"
+    >
+      Remove
+    </Button>
+  </Stack>
+))}
+
+
+  {errors.participants && (
+    <Text color="red.500" mt={1}>
+      {errors.participants}
+    </Text>
+  )}
+</Field.Root>
           <Field.Root>
             <Field.Label>Type</Field.Label>
             <NativeSelect.Root>
