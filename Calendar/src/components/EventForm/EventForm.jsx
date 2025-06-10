@@ -376,7 +376,7 @@ const handleParticipantChange = (index, value) => {
       >
         <option value="">Select a user</option>
         {users
-          .filter((u) => u._id !== user?._id) // изключваме текущия потребител
+          .filter((u) => u._id !== user?._id)
           .map((u) => (
             <option key={u._id} value={u.username}>
               {u.username}
