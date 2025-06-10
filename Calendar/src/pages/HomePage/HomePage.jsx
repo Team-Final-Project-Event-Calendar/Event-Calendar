@@ -1,10 +1,12 @@
 import "../PublicPage/PublicPage.css";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./HomePage.css";
-const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 import axios from "axios";
+
+
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 function HomePage() {
   const [publicEvents, setPublicEvents] = useState([]);
@@ -33,42 +35,78 @@ function HomePage() {
     // Fetch all public events
     fetch(`${key}/api/events/public`)
       .then((res) => res.json())
-      .then((data) => setPublicEvents(data))
-      .catch((err) => console.error("Failed to fetch public events:", err));
+      .then((data) => Array.isArray(data) ? setPublicEvents(data) : setPublicEvents([]))
+      .catch((err) => {
+        setPublicEvents([]);
+        console.error("Failed to fetch public events:", err);
+      });
 
     // Fetch events created by the user
-    fetch(`${key}/api/events`, { headers: authHeaders })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) =>
-        Array.isArray(data) ? setMyEvents(data) : setMyEvents([])
-      )
-      .catch((err) => {
-        setMyEvents([]);
-        console.error("Failed to fetch my events:", err);
-      });
+    if (token) {
+      fetch(`${key}/api/events`, { headers: authHeaders })
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data) =>
+          Array.isArray(data) ? setMyEvents(data) : setMyEvents([])
+        )
+        .catch((err) => {
+          setMyEvents([]);
+          console.error("Failed to fetch my events:", err);
+        });
 
-    // Fetch events where user is a participant
-    fetch(`${key}/api/events/participating`, { headers: authHeaders })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) =>
-        Array.isArray(data)
-          ? setParticipatingEvents(data)
-          : setParticipatingEvents([])
-      )
-      .catch((err) => {
-        setParticipatingEvents([]);
-        console.error("Failed to fetch participating events:", err);
-      });
-  }, [myEvents]);
+      // Fetch events where user is a participant
+      fetch(`${key}/api/events/participating`, { headers: authHeaders })
+        .then((res) => {
+          console.log("Participating events response status:", res.status);
+          console.log("Response headers:", res.headers);
+
+          if (res.status === 500) {
+            // Get the actual error message from the server
+            return res.json().then(errorData => {
+              console.error("500 Error details:", errorData);
+              setParticipatingEvents([]);
+              return [];
+            }).catch(() => {
+              console.error("500 Error but no JSON response");
+              setParticipatingEvents([]);
+              return [];
+            });
+          }
+
+          if (res.status === 403) {
+            console.log("403 Forbidden - token might be invalid");
+            setParticipatingEvents([]);
+            return [];
+          }
+
+          return res.ok ? res.json() : [];
+        })
+        .then((data) => {
+          console.log("Participating events data:", data);
+          Array.isArray(data)
+            ? setParticipatingEvents(data)
+            : setParticipatingEvents([]);
+        })
+        .catch((err) => {
+          console.error("Participating events fetch error:", err);
+          setParticipatingEvents([]);
+        });
+    } else {
+      setMyEvents([]);
+      setParticipatingEvents([]);
+    }
+
+  }, []);
 
   // Iterate through all events to remove "duplicated" events
-  const allEventsMap = new Map();
-  [...publicEvents, ...myEvents, ...participatingEvents].forEach((event) => {
-    if (event && event._id) {
-      allEventsMap.set(event._id, event);
-    }
-  });
-  const uniqueEvents = Array.from(allEventsMap.values());
+  const uniqueEvents = useMemo(() => {
+    const allEventsMap = new Map();
+    [...publicEvents, ...myEvents, ...participatingEvents].forEach((event) => {
+      if (event && event._id) {
+        allEventsMap.set(event._id, event);
+      }
+    });
+    return Array.from(allEventsMap.values());
+  }, [publicEvents, myEvents, participatingEvents]);
 
   return (
     <div className="home-page-container">

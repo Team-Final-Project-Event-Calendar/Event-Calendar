@@ -20,6 +20,11 @@ app.use(
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 
 mongoose
@@ -27,6 +32,7 @@ mongoose
   .then(() => {
     console.log("✅ connect with MongoDB!");
 
+    // POST routes:
     app.post("/api/events", verifyToken, async (req, res) => {
       try {
         const newEvent = new Event({ ...req.body, userId: req.user.id });
@@ -37,6 +43,7 @@ mongoose
       }
     });
 
+    // GET routes:
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ userId: req.user.id });
@@ -55,49 +62,12 @@ mongoose
       }
     });
 
-    app.get("/api/events/:id", verifyToken, async (req, res) => {
-      try {
-        const event = await Event.findById(req.params.id).populate('participants', 'username email');
-        if (!event) {
-          return res.status(404).json({ error: "Event not found" });
-        }
-        res.json(event);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
-    
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ participants: req.user.id });
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
-      }
-    });
-
-    app.put("/api/events/:id", verifyToken, async (req, res) => {
-      try {
-        const updatedEvent = await Event.findByIdAndUpdate(
-          req.params.id,
-          { ...req.body },
-          { new: true }
-        );
-        res.json(updatedEvent);
-      } catch (err) {
-        res.status(400).json({ error: err.message });
-      }
-    });
-
-    app.delete("/api/events/:id", verifyToken, async (req, res) => {
-      try {
-        const deletedEvent = await Event.findByIdAndDelete(req.params.id);
-        if (!deletedEvent) {
-          return res.status(404).json({ error: "Event not found" });
-        }
-        res.json({ message: "Event deleted successfully" });
-      } catch (err) {
-        res.status(400).json({ error: err.message });
       }
     });
 
@@ -116,18 +86,49 @@ mongoose
       }
     });
 
+    // GET routes with parameter - MUST come AFTER all specific routes(to avoid conflicts):
+    app.get("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const event = await Event.findById(req.params.id).populate('participants', 'username email');
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+        res.json(event);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
+    // PUT routes with parameter:
+    app.put("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const updatedEvent = await Event.findByIdAndUpdate(
+          req.params.id,
+          { ...req.body },
+          { new: true }
+        );
+        res.json(updatedEvent);
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    // DELETE routes with parameter:
+    app.delete("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+        if (!deletedEvent) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+        res.json({ message: "Event deleted successfully" });
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    // 400 handlers
     app.use("/*splat", (req, res) => {
       res.status(404).json({ error: "Route not found" });
-    });
-
-    app.use((req, res, next) => {
-      console.log(`${req.method} ${req.originalUrl}`);
-      next();
-    });
-
-    app.use((req, res, next) => {
-      console.log(`[${req.method}] ${req.url}`);
-      next();
     });
 
     const PORT = process.env.PORT || 5000;
