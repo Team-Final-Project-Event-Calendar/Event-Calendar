@@ -47,7 +47,14 @@ function Contacts() {
   }
 
   return (
-    <div className="w-60" style={{ margin: "0px auto" }}>
+    <div
+      className="w-60"
+      style={{
+        margin: "0px auto",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
       <div
         style={{
           maxWidth: "400px",
@@ -116,8 +123,8 @@ function Contacts() {
         className="search-area"
         style={{
           display: "flex",
-          justifyContent: "center",
           width: "100vw",
+          justifyContent: "center",
         }}
       >
         <div className="search-bar">
