@@ -121,11 +121,20 @@ function Contacts() {
         }}
       >
         <div className="search-bar">
-          <div className="search-bar-area">
+          <div
+            className="search-bar-area"
+            style={{ display: "flex", gap: "20px" }}
+          >
             <input
               type="text"
               placeholder="Type username to find user"
-              style={{ color: "white", background: "#5565dd" }}
+              style={{
+                color: "white",
+                background: "#5565dd",
+                minWidth: "200px",
+                borderRadius: "5px",
+                padding: "5px",
+              }}
             />
             <Button variant={"ghost"} style={{ color: "grey" }}>
               Find
