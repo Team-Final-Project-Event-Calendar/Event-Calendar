@@ -77,16 +77,4 @@ const eventSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// eventSchema.pre("validate", function (next) {
-//     if (!this.participants.includes(this.userId)) {
-//         this.participants.push(this.userId);
-//     }
-
-//     if (this.type === "private") {
-//         this.participants = [this.userId];
-//     }
-
-//     next();
-// });
-
 export default mongoose.model("Event", eventSchema);

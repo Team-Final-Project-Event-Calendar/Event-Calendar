@@ -60,7 +60,8 @@ function MyEventsPage() {
       }}
     >
       <div>
-        <CardsListComponent events={events} onDeleteEvent={handleDeleteEvent} />
+      <CardsListComponent events={events} onDelete={handleDeleteEvent} />
+
       </div>
       <div>
         <EventForm onEventCreated={handleEventCreated} />
