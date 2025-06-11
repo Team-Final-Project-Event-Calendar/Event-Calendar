@@ -58,7 +58,7 @@ function UserProfile() {
         <strong>Email:</strong> {userData.email}
       </p>
       <p>
-        <strong>Phone:</strong> {userData.phone || "N/A"}
+        <strong>Phone:</strong> {userData.phoneNumber || "N/A"}
       </p>
       {/* Add more user fields here */}
     </div>
