@@ -73,7 +73,87 @@ mongoose
       }
     });
 
-    // GET routes:
+    app.post("/api/events/:id/participants", verifyToken, async (req, res) => {
+      try {
+        const { username } = req.body;
+        const eventId = req.params.id;
+    
+        if (!username) {
+          return res.status(400).json({ message: "Username is required" });
+        }
+    
+
+        const userToInvite = await User.findOne({
+          username: new RegExp(`^${username}$`, "i"),
+        });
+    
+        if (!userToInvite) {
+          return res.status(404).json({ message: "User not found" });
+        }
+    
+
+        const event = await Event.findById(eventId);
+        if (!event) {
+          return res.status(404).json({ message: "Event not found" });
+        }
+    
+  
+        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
+          return res.status(400).json({ message: "User already a participant" });
+        }
+    
+        event.participants.push(userToInvite._id);
+    
+        await event.save();
+    
+        res.json({ message: "User invited successfully" });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+    app.delete("/api/events/:id/participants/:participantId", verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const participantId = req.params.participantId;
+    
+        const event = await Event.findById(eventId);
+    
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+    
+        
+        if (event.userId.toString() !== req.user.id) {
+          return res.status(403).json({ error: "You do not have permission to modify this event" });
+        }
+    
+      
+        const participantExists = event.participants.includes(participantId);
+        if (!participantExists) {
+          return res.status(400).json({ error: "Participant not found in this event" });
+        }
+    
+      
+        if (participantId === req.user.id) {
+          return res.status(400).json({ error: "Event owner cannot remove themselves" });
+        }
+    
+      
+        event.participants = event.participants.filter(
+          (id) => id.toString() !== participantId
+        );
+    
+        await event.save();
+    
+        res.status(200).json({ message: "Participant removed", participants: event.participants });
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+    
+    
+  
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ userId: req.user.id });

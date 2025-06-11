@@ -1,55 +1,76 @@
 import {
   Button,
-  Card,
   Image,
   Text,
   Box,
   useDisclosure,
 } from "@chakra-ui/react";
 import "./CardComponent.css";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
-import { useState } from "react";
-import { LuHand } from "react-icons/lu";
 import axios from "axios";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-function CardComponent({ event, onDelete }) {
+function CardComponent({ event, onDelete, participants }) {
   const { user } = useContext(AuthContext);
   const { onOpen } = useDisclosure();
   const [isInviteVisible, setIsInviteVisible] = useState(false);
-  const [username, setUsername] = useState("");
+  const [selectedUsername, setSelectedUsername] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [users, setUsers] = useState([]);
 
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
-  const handleInvite = () => {
-    setIsInviteVisible(!isInviteVisible);
+  const handleInvite = async () => {
+    try {
+      if (users.length === 0) {
+        const response = await axios.get(`${key}/api/auth/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setUsers(response.data);
+      }
+      setIsInviteVisible((prev) => !prev);
+      setFeedback("");
+      setSelectedUsername("");
+    } catch (error) {
+      setFeedback("Failed to load users");
+      console.error(error);
+    }
   };
 
+
+
   const handleSendInvite = async () => {
+    if (!selectedUsername) {
+      setFeedback("Please select a username");
+      return;
+    }
+
     try {
-      console.log(event._id);
       const response = await axios.post(
-        `${key}/api/events/invite/${event._id}`,
-        { username },
+        `${key}/api/events/${event._id}/participants`,
+        { username: selectedUsername },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      console.log("API REQUEST SEND");
-      setFeedback(response.data.message || "User invited successfully!");
-      setUsername("");
+
+      setFeedback(
+        response.data.message || `Invite sent to ${selectedUsername}!`
+      );
+      setSelectedUsername("");
+      setIsInviteVisible(false);
     } catch (error) {
-      if (error.response?.data?.message) {
-        setFeedback(error.response.data.message);
-      } else {
-        setFeedback("An error occurred. Please try again.");
-      }
+      const msg =
+        error.response?.data?.message || "Failed to send invite";
+      setFeedback(msg);
+      console.error(error);
     }
   };
 
@@ -66,75 +87,59 @@ function CardComponent({ event, onDelete }) {
       _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
     >
       <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.800">
-        <Link
-          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
-        >
+        <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
           {event.title}
         </Link>
       </Text>
-      <Text fontSize="sm" color="blue" mb={1} ml={2}>
-        <Link
-          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
-        >
+  
+      <Text fontSize="sm" color="blue.500" mb={1} ml={2}>
+        <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
           See Details
         </Link>
       </Text>
-
+  
       <Text fontSize="md" color="gray.600" mb={3}>
         {event.description}
       </Text>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
+  
+      <Box display="flex" alignItems="center">
         <Text fontSize="sm" color="gray.500" mb={4}>
-          {event.startDateTime
-            ? new Date(event.startDateTime).toLocaleString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : event.startDate
-            ? new Date(event.startDate).toLocaleString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : ""}
+          {(event.startDateTime || event.startDate) &&
+            new Date(event.startDateTime || event.startDate).toLocaleString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
         </Text>
-
-        <Text mb={1} color={typeColor} style={{ marginLeft: "auto" }}>
+  
+        <Text mb={1} color={typeColor} ml="auto">
           {event.type}
         </Text>
-      </div>
-
-      <Box display="flex" gap="2">
+      </Box>
+  
+      <Box display="flex" gap={2} mt={3}>
         {user && user._id === event.userId ? (
           <Box width="100%">
             <Button
               variant="ghost"
-              color="grey"
+              color="gray"
               onClick={(e) => {
                 e.stopPropagation();
                 onOpen();
-                handleInvite(); // just toggle the invite form
+                handleInvite();
               }}
             >
               Invite
             </Button>
-
+  
             {isInviteVisible && (
               <Box
                 className="invite-form"
                 display="flex"
                 alignItems="center"
+                flexDirection="column"
                 gap="8px"
                 p="8px"
                 bg="#f1f1f1"
@@ -143,15 +148,12 @@ function CardComponent({ event, onDelete }) {
                 boxShadow="sm"
                 mt="10px"
                 width="100%"
-                flexDirection="column"
               >
-                <input
-                  type="text"
-                  placeholder="Type username"
-                  value={username}
+                <select
+                  value={selectedUsername}
                   onChange={(e) => {
-                    setUsername(e.target.value);
-                    setFeedback(""); // clear error when typing
+                    setSelectedUsername(e.target.value);
+                    setFeedback("");
                   }}
                   style={{
                     width: "100%",
@@ -159,18 +161,29 @@ function CardComponent({ event, onDelete }) {
                     border: "1px solid #ccc",
                     borderRadius: "4px",
                     fontSize: "14px",
-                    color: "white",
+                    color: "black",
                   }}
-                />
+                >
+                  <option value="" disabled>
+                    Select username
+                  </option>
+                  {users.map((u) => (
+                    <option key={u._id} value={u.username}>
+                      {u.username}
+                    </option>
+                  ))}
+                </select>
+  
                 <Button
                   variant="solid"
                   colorScheme="blue"
                   size="sm"
                   onClick={handleSendInvite}
-                  isDisabled={!username.trim()}
+                  isDisabled={!selectedUsername}
                 >
                   Send
                 </Button>
+  
                 {feedback && <Text color="red.500">{feedback}</Text>}
               </Box>
             )}
@@ -180,26 +193,25 @@ function CardComponent({ event, onDelete }) {
             Join Event
           </Button>
         )}
-
-        {user && user._id && event.userId === user._id ? (
+  
+        {user && user._id === event.userId && (
           <Button
             variant="ghost"
             color="gray"
             onClick={(e) => {
               e.stopPropagation();
-              if (
-                window.confirm("Are you sure you want to delete this event?")
-              ) {
-                onDelete && onDelete(event);
+              if (window.confirm("Are you sure you want to delete this event?")) {
+                onDelete?.(event);
               }
             }}
           >
             Delete
           </Button>
-        ) : null}
+        )}
       </Box>
     </Box>
   );
+  
 }
 
 export default CardComponent;

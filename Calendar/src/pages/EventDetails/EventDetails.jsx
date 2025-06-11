@@ -75,9 +75,33 @@ function EventDetails() {
             </Box>
         );
     }
+    const handleRemoveParticipant = async (participantId) => {
+        try {
+            const response = await fetch(`${key}/api/events/${id}/participants/${participantId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to remove participant');
+            }
+    
+        
+            setEvent((prev) => ({
+                ...prev,
+                participants: prev.participants.filter((p) => p._id !== participantId),
+            }));
+        } catch (error) {
+            console.error('Error removing participant:', error);
+        }
+    };
+    
 
     return (
-        <Container maxW="5xl" py={15} >
+        <Container maxW="5xl" py={15}>
             <Box
                 bg="gray.50"
                 _dark={{ bg: 'gray.600' }}
@@ -90,9 +114,9 @@ function EventDetails() {
                     <Badge colorScheme="teal" color={'blue.500'} background={'black'}>
                         {event.userId === user._id ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
-
+    
                     <Heading size="lg">{event.title}</Heading>
-
+    
                     {event.coverPhoto && (
                         <Box w="100%" maxH="400px" overflow="hidden" borderRadius="md" mb={5}>
                             <Image
@@ -104,17 +128,17 @@ function EventDetails() {
                             />
                         </Box>
                     )}
-
+    
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Start:</Text>
                         <Text>{new Date(event.start).toLocaleString()}</Text>
                     </Stack>
-
+    
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">End:</Text>
                         <Text>{new Date(event.end).toLocaleString()}</Text>
                     </Stack>
-
+    
                     {event.location && (
                         <Stack spacing={1} w="100%">
                             <Text fontWeight="bold">Location:</Text>
@@ -125,12 +149,12 @@ function EventDetails() {
                             </Text>
                         </Stack>
                     )}
-
+    
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Description:</Text>
                         <Text>{event.description}</Text>
                     </Stack>
-
+    
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Participants:</Text>
                         {event.participants && event.participants.length > 0 ? (
@@ -141,11 +165,30 @@ function EventDetails() {
                                         key={participant._id || participant}
                                         display="flex"
                                         alignItems="center"
+                                        justifyContent="space-between"
                                         mb={1}
-                                        color="blue.500"
+                                        pr={2}
                                     >
-                                        <MdPerson style={{ marginRight: 6 }} />
-                                        <Text as="span">{participant.username || participant}</Text>
+                                        <Box display="flex" alignItems="center">
+                                            <MdPerson style={{ marginRight: 6 }} />
+                                            <Text as="span">{participant.username || participant}</Text>
+                                        </Box>
+    
+                                        {event.userId === user._id && (
+                                            <Text
+                                            as="button"
+                                            fontSize="sm"
+                                            color="white"
+                                            background="red.600"
+                                            px={3}         
+                                            py={1}         
+                                            borderRadius="md"
+                                            _hover={{ background: 'red.700' }}
+                                                onClick={() => handleRemoveParticipant(participant._id)}
+                                            >
+                                                Remove
+                                            </Text>
+                                        )}
                                     </Box>
                                 ))}
                             </Box>
@@ -157,6 +200,7 @@ function EventDetails() {
             </Box>
         </Container>
     );
+    
 }
 
 export default EventDetails;
