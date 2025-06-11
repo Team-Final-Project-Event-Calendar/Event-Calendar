@@ -19,6 +19,18 @@ router.get("/users", verifyToken, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.get("/users/:id", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 // Edit user details
 router.put("/users/:id", verifyToken, async (req, res) => {
   const { id } = req.params;

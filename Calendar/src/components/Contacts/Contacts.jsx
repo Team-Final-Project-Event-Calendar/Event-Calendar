@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
   "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg";
 
 function Contacts() {
+  const navigate = useNavigate();
   const DEFAULT_AVATAR =
     "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg";
 
@@ -68,6 +70,7 @@ function Contacts() {
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {contacts.map((user) => (
           <li
+            onClick={() => navigate(`/users/${user._id}`)}
             key={user._id}
             style={{
               display: "flex",

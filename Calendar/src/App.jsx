@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/Authentication/RoutesProtection/Protect
 import CalendarComponent from "./components/CalendarComponent/CalendarComponent";
 import EventDetails from "./pages/EventDetails/EventDetails";
 import Contacts from "./components/Contacts/Contacts";
+import UserProfile from "./components/UserProfile/UserProfile";
 function App() {
   return (
     <>
@@ -28,6 +29,8 @@ function App() {
           }
         />
         <Route path="/public" element={<PublicPage />} />
+
+        <Route path="/users/:id" element={<UserProfile />} />
 
         <Route
           path="/"
