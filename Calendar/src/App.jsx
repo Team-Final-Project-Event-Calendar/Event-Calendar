@@ -12,55 +12,83 @@ import PublicOnlyRoute from "./components/Authentication/RoutesProtection/Public
 import ProtectedRoute from "./components/Authentication/RoutesProtection/ProtectedRoute";
 import CalendarComponent from "./components/CalendarComponent/CalendarComponent";
 import EventDetails from "./pages/EventDetails/EventDetails";
+import Contacts from "./components/Contacts/Contacts";
 function App() {
   return (
     <>
       <NavBar />
       <Routes>
-        <Route path="/authentication" element={
-          <PublicOnlyRoute>
-            <Authentication />
-          </PublicOnlyRoute>
-        } />
+        <Route path="/contacts" element={<Contacts></Contacts>}></Route>
+        <Route
+          path="/authentication"
+          element={
+            <PublicOnlyRoute>
+              <Authentication />
+            </PublicOnlyRoute>
+          }
+        />
         <Route path="/public" element={<PublicPage />} />
-      
-        <Route path="/" element={
-          <ProtectedRoute>
-            <CalendarComponent />
-          </ProtectedRoute>
-        } />
-        <Route path="/homepage" element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/authentication/admin" element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        } />
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/myevents" element={
-          <ProtectedRoute>
-            <MyEventsPage />
-          </ProtectedRoute>
-        } />
 
-        <Route path='/eventdetails/:id' element={<ProtectedRoute><EventDetails /></ProtectedRoute>} />
-        
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <CalendarComponent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/homepage"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/authentication/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/myevents"
+          element={
+            <ProtectedRoute>
+              <MyEventsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/eventdetails/:id"
+          element={
+            <ProtectedRoute>
+              <EventDetails />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/about" element={<AboutPage />} />
-        
-    
-        <Route path="*" element={
-          <ProtectedRoute>
-            <CalendarComponent />
-          </ProtectedRoute>
-        } />
+
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <CalendarComponent />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

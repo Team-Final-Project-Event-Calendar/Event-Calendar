@@ -12,12 +12,13 @@ function DrawerComponent({ onLogout }) {
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner padding="7vh 8vw">
-          <Drawer.Content
-            rounded="md"
-            maxH="70vh"
-          >
+          <Drawer.Content rounded="md" maxH="70vh">
             <Drawer.Header>
-              <Drawer.Title alignItems={"center"} display="flex" justifyContent="center">
+              <Drawer.Title
+                alignItems={"center"}
+                display="flex"
+                justifyContent="center"
+              >
                 <span
                   style={{
                     fontSize: 20,
@@ -27,22 +28,41 @@ function DrawerComponent({ onLogout }) {
                     borderRadius: 10,
                     padding: "3px 62px",
                   }}
-                > User Panel </span>
+                >
+                  {" "}
+                  User Panel{" "}
+                </span>
               </Drawer.Title>
             </Drawer.Header>
-            
+
             <Drawer.Body
               style={{
                 justifyItems: "center",
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
-              }}>
-              <Button variant="ghost" fontSize={18} onClick={() => navigate("/profile")}>
-                 Profile
+              }}
+            >
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/profile")}
+              >
+                Profile
               </Button>
-              <Button variant="ghost" fontSize={18} onClick={() => navigate("/myevents")}>
-                 My Events
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/myevents")}
+              >
+                My Events
+              </Button>
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/contacts")}
+              >
+                Contacts
               </Button>
             </Drawer.Body>
 
@@ -55,7 +75,7 @@ function DrawerComponent({ onLogout }) {
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
-    </Drawer.Root >
+    </Drawer.Root>
   );
 }
 export default DrawerComponent;
