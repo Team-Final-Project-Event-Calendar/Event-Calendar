@@ -1,52 +1,81 @@
 import mongoose from "mongoose";
 
-
-const recurrenceSchema = new mongoose.Schema({
+const recurrenceSchema = new mongoose.Schema(
+  {
     frequency: {
-        type: String,
-        enum: ["daily", "weekly", "monthly"],
+      type: String,
+      enum: ["daily", "weekly", "monthly"],
     },
     interval: {
-        type: Number,
-        default: 1,
+      type: Number,
+      default: 1,
     },
     endDate: {
-        type: Date,
+      type: Date,
     },
-}, { _id: false });
+  },
+  { _id: false }
+);
 
-
-const eventSchema = new mongoose.Schema({
+const eventSchema = new mongoose.Schema(
+  {
     title: { type: String, required: true },
     description: { type: String, required: true },
     type: { type: String, required: true },
     startDateTime: { type: Date, required: true },
     endDateTime: { type: Date, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     coverPhoto: { type: String },
     location: {
-        address: String,
-        city: String,
-        country: String,
+      address: String,
+      city: String,
+      country: String,
     },
-    participants: [{
+    participants: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    }],
+      },
+    ],
     isRecurring: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     recurrenceRule: {
-        type: recurrenceSchema,
-        default: null,
+      type: recurrenceSchema,
+      default: null,
     },
     seriesId: {
-        type: String,
+      type: String,
     },
-}, { timestamps: true });
-
+    invitedUsers: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        status: {
+          type: String,
+          enum: ["pending", "accepted", "declined"],
+          default: "pending",
+        },
+      },
+    ],
+    invitedUsers: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        status: {
+          type: String,
+          enum: ["pending", "accepted", "declined"],
+          default: "pending",
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 // eventSchema.pre("validate", function (next) {
 //     if (!this.participants.includes(this.userId)) {

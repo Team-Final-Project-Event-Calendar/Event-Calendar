@@ -12,17 +12,47 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import { useState } from "react";
 import { LuHand } from "react-icons/lu";
+import axios from "axios";
+
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
   const { onOpen } = useDisclosure();
   const [isInviteVisible, setIsInviteVisible] = useState(false);
+  const [username, setUsername] = useState("");
+  const [feedback, setFeedback] = useState("");
 
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   const handleInvite = () => {
     setIsInviteVisible(!isInviteVisible);
   };
+
+  const handleSendInvite = async () => {
+    try {
+      console.log(event._id);
+      const response = await axios.post(
+        `${key}/api/events/invite/${event._id}`,
+        { username },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      console.log("API REQUEST SEND");
+      setFeedback(response.data.message || "User invited successfully!");
+      setUsername("");
+    } catch (error) {
+      if (error.response?.data?.message) {
+        setFeedback(error.response.data.message);
+      } else {
+        setFeedback("An error occurred. Please try again.");
+      }
+    }
+  };
+
   return (
     <Box
       className="card-container"
@@ -87,58 +117,64 @@ function CardComponent({ event, onDelete }) {
 
       <Box display="flex" gap="2">
         {user && user._id === event.userId ? (
-          <div>
+          <Box width="100%">
             <Button
               variant="ghost"
               color="grey"
               onClick={(e) => {
                 e.stopPropagation();
                 onOpen();
-                handleInvite();
+                handleInvite(); // just toggle the invite form
               }}
             >
               Invite
             </Button>
+
             {isInviteVisible && (
-              <div
+              <Box
                 className="invite-form"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px",
-                  backgroundColor: "#f1f1f1",
-                  border: "1px solid #ccc",
-                  borderRadius: "6px",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                  marginTop: "10px",
-                  width: "100%",
-                }}
+                display="flex"
+                alignItems="center"
+                gap="8px"
+                p="8px"
+                bg="#f1f1f1"
+                border="1px solid #ccc"
+                borderRadius="6px"
+                boxShadow="sm"
+                mt="10px"
+                width="100%"
+                flexDirection="column"
               >
                 <input
                   type="text"
                   placeholder="Type username"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setFeedback(""); // clear error when typing
+                  }}
                   style={{
-                    flex: 1,
+                    width: "100%",
                     padding: "6px",
                     border: "1px solid #ccc",
                     borderRadius: "4px",
-                    outline: "none",
                     fontSize: "14px",
-                    color: "lightgrey",
+                    color: "white",
                   }}
                 />
                 <Button
-                  variant="ghost"
+                  variant="solid"
                   colorScheme="blue"
                   size="sm"
-                  style={{ padding: "6px 12px", color: "grey" }}
+                  onClick={handleSendInvite}
+                  isDisabled={!username.trim()}
                 >
                   Send
                 </Button>
-              </div>
+                {feedback && <Text color="red.500">{feedback}</Text>}
+              </Box>
             )}
-          </div>
+          </Box>
         ) : (
           <Button colorScheme="blue" flex={1}>
             Join Event

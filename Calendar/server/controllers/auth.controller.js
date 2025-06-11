@@ -184,5 +184,18 @@ router.delete("/delete/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 });
+// Add a new endpoint to check if a user exists by username
+router.get("/users/exists/:username", verifyToken, async (req, res) => {
+  try {
+    const userExists = await User.findOne({ username: req.params.username });
+    if (userExists) {
+      return res.status(200).json({ exists: true });
+    } else {
+      return res.status(404).json({ exists: false });
+    }
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 export default router;

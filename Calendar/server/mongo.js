@@ -36,23 +36,23 @@ mongoose
     app.post("/api/events", verifyToken, async (req, res) => {
       try {
         const participantUsernames = req.body.participants || [];
-    
+
         const participantUsers = await User.find({
           username: { $in: participantUsernames },
         });
-    
+
         if (participantUsers.length !== participantUsernames.length) {
           return res
             .status(400)
             .json({ error: "One or more participants not found" });
         }
-    
+
         const participantIds = participantUsers.map((user) => user._id);
-    
+
         if (!participantIds.includes(req.user.id)) {
           participantIds.push(req.user.id);
         }
-    
+
         const newEvent = new Event({
           title: req.body.title,
           description: req.body.description,
@@ -65,7 +65,6 @@ mongoose
           recurrenceRule: req.body.recurrenceRule,
           userId: req.user.id,
           participants: participantIds,
-
         });
         const savedEvent = await newEvent.save();
         res.status(201).json(savedEvent);
@@ -73,7 +72,7 @@ mongoose
         res.status(400).json({ error: err.message });
       }
     });
-    
+
     // GET routes:
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
@@ -117,10 +116,62 @@ mongoose
       }
     });
 
+    app.post("/api/events/invite/:id", verifyToken, async (req, res) => {
+      console.log("inside the api");
+      try {
+        const { username } = req.body;
+
+        const eventId = req.params.id;
+
+        if (!username) {
+          return res.status(400).json({ message: "Username is required" });
+        }
+
+        // Find user by username (case insensitive)
+        const userToInvite = await User.findOne({
+          username: new RegExp(`^${username}$`, "i"),
+        });
+
+        if (!userToInvite) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        // Find event
+        const event = await Event.findById(eventId);
+        if (!event) {
+          return res.status(404).json({ message: "Event not found" });
+        }
+
+        // Check if user is already invited
+        const alreadyInvited = event.invitedUsers.some(
+          (invite) => invite.userId.toString() === userToInvite._id.toString()
+        );
+        if (alreadyInvited) {
+          return res.status(400).json({ message: "User already invited" });
+        }
+
+        // Add user to invitedUsers with status 'pending'
+        event.invitedUsers.push({
+          userId: userToInvite._id,
+          status: "pending",
+        });
+
+        await event.save();
+
+        res.json({ message: "User invited successfully" });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
     // GET routes with parameter - MUST come AFTER all specific routes(to avoid conflicts):
     app.get("/api/events/:id", verifyToken, async (req, res) => {
       try {
-        const event = await Event.findById(req.params.id).populate('participants', 'username email');
+        const event = await Event.findById(req.params.id).populate(
+          "participants",
+          "username email"
+        );
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
