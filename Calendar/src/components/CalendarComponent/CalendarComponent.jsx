@@ -50,7 +50,7 @@ function CalendarComponent() {
   };
 
   return (
-    <div className="calendar-component">
+    <div className="calendar-component" style={{ marginTop: "50px" }}>
       <div className="calendar-controls-container">
         <div className="calendar-controls">
           <button onClick={goToPrevious}>← Previous</button>
