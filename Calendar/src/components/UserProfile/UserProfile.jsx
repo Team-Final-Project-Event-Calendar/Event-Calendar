@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
 
@@ -8,8 +8,10 @@ const DEFAULT_AVATAR =
 
 function UserProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { token } = useContext(AuthContext);
   const [userData, setUserData] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,6 +37,15 @@ function UserProfile() {
     }
   }, [id, token]);
 
+  const formatDate = (iso) => {
+    if (!iso) return "N/A";
+    return new Date(iso).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   if (!userData) {
     return (
       <div style={{ textAlign: "center", paddingTop: "50px" }}>
@@ -43,37 +54,83 @@ function UserProfile() {
     );
   }
 
+  const bgColor = darkMode ? "#1e1e1e" : "#f4f6f9";
+  const cardColor = darkMode ? "#2c2c2c" : "#ffffff";
+  const textColor = darkMode ? "#f1f1f1" : "#333";
+  const subTextColor = darkMode ? "#ccc" : "#555";
+
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
-        padding: "40px 20px",
-        backgroundColor: "#f7f9fc",
+        padding: "60px 20px",
+        background: bgColor,
         minHeight: "100vh",
+        transition: "background 0.3s ease",
       }}
     >
       <div
         style={{
-          maxWidth: "600px",
+          backgroundColor: cardColor,
+          borderRadius: "20px",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+          maxWidth: "500px",
           width: "100%",
-          backgroundColor: "#fff",
-          borderRadius: "16px",
-          boxShadow: "0 6px 16px rgba(0, 0, 0, 0.1)",
-          padding: "30px",
+          padding: "40px 30px",
           textAlign: "center",
+          color: textColor,
+          transition: "background 0.3s ease, color 0.3s ease",
         }}
       >
+        {/* Top Controls */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "20px",
+          }}
+        >
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: subTextColor,
+              fontSize: "0.9rem",
+              cursor: "pointer",
+            }}
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            style={{
+              background: darkMode ? "#444" : "#ddd",
+              color: darkMode ? "#fff" : "#333",
+              border: "none",
+              borderRadius: "12px",
+              padding: "4px 12px",
+              fontSize: "0.8rem",
+              cursor: "pointer",
+            }}
+          >
+            {darkMode ? "☀ Light" : "🌙 Dark"}
+          </button>
+        </div>
+
+        {/* Profile Image */}
         <img
           src={userData.avatar || DEFAULT_AVATAR}
           alt={userData.username}
           style={{
-            width: "130px",
-            height: "130px",
+            width: "140px",
+            height: "140px",
             borderRadius: "50%",
             objectFit: "cover",
+            border: `5px solid ${darkMode ? "#555" : "#e0e0e0"}`,
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
             marginBottom: "20px",
-            border: "4px solid #e0e0e0",
           }}
           onError={(e) => {
             e.target.onerror = null;
@@ -81,25 +138,38 @@ function UserProfile() {
           }}
         />
 
+        {/* Username */}
         <h2
-          style={{
-            fontSize: "1.8rem",
-            fontWeight: "600",
-            color: "#333",
-            marginBottom: "10px",
-          }}
+          style={{ fontSize: "1.8rem", fontWeight: "600", marginBottom: "8px" }}
         >
           {userData.username}
         </h2>
 
-        <div style={{ textAlign: "left", padding: "0 20px" }}>
-          <p style={{ fontSize: "1rem", marginBottom: "12px" }}>
+        <hr
+          style={{
+            margin: "20px 0",
+            border: "none",
+            borderTop: "1px solid #ddd",
+          }}
+        />
+
+        {/* Info */}
+        <div
+          style={{
+            textAlign: "left",
+            fontSize: "1rem",
+            lineHeight: "1.6",
+          }}
+        >
+          <div style={{ marginBottom: "12px", color: subTextColor }}>
             <strong>Email:</strong> {userData.email}
-          </p>
-          <p style={{ fontSize: "1rem", marginBottom: "12px" }}>
+          </div>
+          <div style={{ marginBottom: "12px", color: subTextColor }}>
             <strong>Phone:</strong> {userData.phoneNumber || "N/A"}
-          </p>
-          {/* Additional fields if needed */}
+          </div>
+          <div style={{ marginBottom: "12px", color: subTextColor }}>
+            <strong>Joined:</strong> {formatDate(userData.createdAt)}
+          </div>
         </div>
       </div>
     </div>
