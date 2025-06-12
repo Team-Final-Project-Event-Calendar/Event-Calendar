@@ -317,20 +317,19 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     if (view === "day") {
         const day = new Date(currentDate);
         const dayEvents = getEventsForDay(day);
-
-        const dayViewStyle = {
-            borderWidth: "1px",
-            borderColor: "blue.300",
-            borderRadius: "lg",
-            p: 6,
-            bg: "blue.50",
-            boxShadow: "xl",
-            transition: "all 0.2s",
+    
+        const getEventsForHour = (hour) => {
+            return dayEvents.filter((e) => {
+                const eventDate = new Date(e.startDateTime);
+                return eventDate.getHours() === hour;
+            });
         };
-
+    
+        const hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
+    
         return (
             <Box>
-                <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign="right">
+                <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
                     {day.toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",
@@ -338,41 +337,59 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         day: "numeric",
                     })}
                 </Text>
-
-                <Box {...dayViewStyle}>
-                    <Text fontWeight="bold" mb={4}>
-                        Events:
-                    </Text>
-                    {dayEvents.length === 0 ? (
-                        <Text fontSize="sm" color="gray.600">
-                            No events for this day.
-                        </Text>
-                    ) : (
-                        dayEvents.map((e, i) => (
+    
+                <Box borderWidth="1px" borderColor="blue.300" borderRadius="lg" bg="blue.50" boxShadow="xl">
+                    {hours.map((hour) => {
+                        const hourEvents = getEventsForHour(hour);
+                        return (
                             <Box
-                                key={i}
-                                bg="green.300"
-                                color="black.900"
+                                key={hour}
+                                borderBottom="1px solid #CBD5E0"
                                 px={4}
-                                py={5}
-                                borderRadius="md"
-                                fontSize="sm"
-                                mt={3}
-                                boxShadow="md"
+                                py={3}
+                                display="flex"
+                                alignItems="flex-start"
+                                position="relative"
                             >
-                                <Text fontWeight="bold">• {e.title}</Text>
-                                {e.description && (
-                                    <Text fontSize="xs" mt={1} color="black.900">
-                                        •  {e.description}
-                                    </Text>
-                                )}
+                                <Text fontWeight="bold" minW="60px">
+                                    {String(hour).padStart(2, "0")}:00
+                                </Text>
+                                <Box flex="1" pl={4}>
+                                    {hourEvents.length === 0 ? (
+                                        <Text fontSize="sm" color="gray.500">
+                                            No events
+                                        </Text>
+                                    ) : (
+                                        hourEvents.map((e, i) => (
+                                            <Box
+                                                key={i}
+                                                bg="green.300"
+                                                color="black"
+                                                px={3}
+                                                py={2}
+                                                borderRadius="md"
+                                                fontSize="sm"
+                                                mb={2}
+                                                boxShadow="md"
+                                            >
+                                                <Text fontWeight="bold">• {e.title}</Text>
+                                                {e.description && (
+                                                    <Text fontSize="xs" mt={1}>
+                                                        {e.description}
+                                                    </Text>
+                                                )}
+                                            </Box>
+                                        ))
+                                    )}
+                                </Box>
                             </Box>
-                        ))
-                    )}
+                        );
+                    })}
                 </Box>
             </Box>
         );
     }
+    
 
 
     return null;
