@@ -6,6 +6,7 @@ import { Provider } from "./components/ui/provider.jsx";
 import Test from "./TestComponent/AppComponent/Test.jsx";
 import AuthProvider from "./components/Authentication/AuthContext.jsx";
 import "./index.css";
+import "./dark-theme.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

@@ -1,0 +1,833 @@
+/* ===========================================
+   DARK THEME CSS FOR EVENT CALENDAR APP
+   =========================================== 
+   This file provides dark theme styling that integrates with ChakraUI's color mode system.
+   Dark theme styles are applied when the 'dark' class is present on the html/body element.
+   =========================================== */
+
+/* Global Dark Theme Variables */
+.dark {
+  /* Primary Colors */
+  --dark-bg-primary: #1a1a1a;
+  --dark-bg-secondary: #2d2d2d;
+  --dark-bg-tertiary: #3a3a3a;
+  --dark-bg-elevated: #404040;
+  
+  /* Text Colors */
+  --dark-text-primary: #ffffff;
+  --dark-text-secondary: #e2e2e2;
+  --dark-text-muted: #a0a0a0;
+  --dark-text-disabled: #666666;
+  
+  /* Border Colors */
+  --dark-border-primary: #404040;
+  --dark-border-secondary: #555555;
+  --dark-border-hover: #666666;
+  
+  /* Interactive Colors */
+  --dark-hover-bg: #4a4a4a;
+  --dark-active-bg: #525252;
+  --dark-focus-ring: rgba(59, 130, 246, 0.5);
+  
+  /* Brand Colors (Adjusted for dark theme) */
+  --dark-brand-primary: #3b82f6;
+  --dark-brand-hover: #2563eb;
+  --dark-success: #10b981;
+  --dark-danger: #ef4444;
+  --dark-warning: #f59e0b;
+  
+  /* Shadow Colors */
+  --dark-shadow-light: rgba(0, 0, 0, 0.3);
+  --dark-shadow-medium: rgba(0, 0, 0, 0.5);
+  --dark-shadow-heavy: rgba(0, 0, 0, 0.7);
+}
+
+/* ===========================================
+   GLOBAL BODY AND HTML STYLES
+   =========================================== */
+.dark body {
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark html {
+  background-color: var(--dark-bg-primary);
+}
+
+/* ===========================================
+   NAVIGATION BAR STYLES
+   =========================================== */
+.dark .navbar,
+.dark [style*="backgroundColor: #5565dd"] {
+  background-color: #2d3748 !important;
+  border-bottom: 1px solid var(--dark-border-primary);
+}
+
+.dark .login-register {
+  color: var(--dark-text-secondary) !important;
+}
+
+.dark .login-register:hover {
+  color: var(--dark-brand-primary) !important;
+}
+
+/* ===========================================
+   AUTHENTICATION COMPONENT STYLES
+   =========================================== */
+.dark .auth-container {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 2px 16px var(--dark-shadow-medium);
+}
+
+.dark .auth-form h2 {
+  color: var(--dark-text-primary);
+}
+
+.dark .auth-toggle button {
+  color: var(--dark-text-secondary);
+  background-color: transparent;
+}
+
+.dark .auth-toggle button:disabled {
+  color: var(--dark-brand-primary);
+  border-bottom-color: var(--dark-brand-primary);
+}
+
+.dark .auth-form input {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .auth-form input:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 0 2px var(--dark-focus-ring);
+}
+
+.dark .auth-form input::placeholder {
+  color: var(--dark-text-muted);
+}
+
+.dark .auth-form button[type="submit"] {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .auth-form button[type="submit"]:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+.dark .error {
+  color: #fca5a5;
+  background-color: rgba(239, 68, 68, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 3px solid var(--dark-danger);
+}
+
+.dark .success {
+  color: #86efac;
+  background-color: rgba(16, 185, 129, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 3px solid var(--dark-success);
+}
+
+/* ===========================================
+   CALENDAR COMPONENT STYLES
+   =========================================== */
+.dark .calendar-component {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 8px 20px var(--dark-shadow-medium);
+}
+
+.dark .calendar-title {
+  color: var(--dark-text-primary);
+}
+
+.dark .calendar-controls button {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .calendar-controls button:hover {
+  background-color: var(--dark-brand-hover);
+  border-color: var(--dark-border-hover);
+}
+
+.dark .view-dropdown button {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .view-dropdown button:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+.dark .view-dropdown-content {
+  background-color: var(--dark-bg-elevated);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 2px 8px var(--dark-shadow-medium);
+}
+
+.dark .view-dropdown-content button {
+  background-color: transparent;
+  color: var(--dark-text-secondary);
+}
+
+.dark .view-dropdown-content button:hover {
+  background-color: var(--dark-hover-bg);
+  color: var(--dark-text-primary);
+}
+
+/* Event Form Styles */
+.dark .event-form-container {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 10px 30px var(--dark-shadow-heavy);
+}
+
+.dark .event-form-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dark .cancel-button {
+  background-color: var(--dark-danger);
+  color: var(--dark-text-primary);
+}
+
+.dark .cancel-button:hover {
+  background-color: #dc2626;
+}
+
+.dark .create-button {
+  background-color: var(--dark-success);
+  color: var(--dark-text-primary);
+}
+
+.dark .create-button:hover {
+  background-color: #059669;
+}
+
+/* ===========================================
+   CARD COMPONENT STYLES
+   =========================================== */
+.dark .card-container {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .card-container:hover {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--dark-shadow-medium);
+}
+
+/* Select elements in cards */
+.dark .card-container select {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .card-container select:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 0 2px var(--dark-focus-ring);
+}
+
+.dark .card-container option {
+  background-color: var(--dark-bg-tertiary);
+  color: var(--dark-text-primary);
+}
+
+/* ===========================================
+   PUBLIC PAGE STYLES
+   =========================================== */
+.dark .public-Welcome-container,
+.dark .public-Events-container {
+  background-color: transparent;
+}
+
+.dark .public-welcome-chakra_Card-Root {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 0 80px -25px rgba(0, 0, 0, 0.5),
+              0 30px 50px -30px rgba(0, 0, 0, 0.6),
+              0 -2px 6px 0px rgba(255, 255, 255, 0.05) inset;
+}
+
+.dark .public-welcome-chakra_Card-heading {
+  color: var(--dark-text-primary);
+}
+
+.dark .public-welcome-chakra_Card-Body {
+  color: var(--dark-text-secondary);
+}
+
+.dark .public-link {
+  color: var(--dark-brand-primary);
+}
+
+.dark .public-link:hover {
+  color: var(--dark-brand-hover);
+}
+
+.dark .public-events-chakra_Box {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .public-events-chakra_Box-title {
+  color: var(--dark-text-primary);
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--dark-brand-primary);
+}
+
+/* ===========================================
+   ADMIN PANEL STYLES
+   =========================================== */
+.dark .adminContainer {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 4px 12px var(--dark-shadow-medium);
+}
+
+.dark .adminTitle {
+  color: var(--dark-text-primary);
+}
+
+.dark .panel {
+  background-color: var(--dark-bg-tertiary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 2px 8px var(--dark-shadow-light);
+}
+
+.dark .panelTitle {
+  color: var(--dark-text-primary);
+  border-bottom-color: var(--dark-border-primary);
+}
+
+.dark .searchInput {
+  background-color: var(--dark-bg-elevated);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .searchInput:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 5px var(--dark-focus-ring);
+}
+
+.dark .searchInput::placeholder {
+  color: var(--dark-text-muted);
+}
+
+.dark .userList,
+.dark .eventList {
+  border-top-color: var(--dark-border-primary);
+}
+
+.dark .userListItem,
+.dark .eventListItem {
+  border-bottom-color: var(--dark-border-primary);
+}
+
+.dark .userName {
+  color: var(--dark-text-primary);
+}
+
+.dark .userEmail {
+  color: var(--dark-text-muted);
+}
+
+.dark .eventInfo {
+  color: var(--dark-text-primary);
+}
+
+.dark .editInput,
+.dark .editTextarea {
+  background-color: var(--dark-bg-elevated);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .editInput:focus,
+.dark .editTextarea:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 0 2px var(--dark-focus-ring);
+}
+
+.dark .backButton {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .backButton:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+/* Admin Button Colors */
+.dark .btnBlock {
+  background-color: var(--dark-danger);
+}
+
+.dark .btnBlock:hover {
+  background-color: #dc2626;
+}
+
+.dark .btnUnblock {
+  background-color: var(--dark-success);
+}
+
+.dark .btnUnblock:hover {
+  background-color: #059669;
+}
+
+.dark .deleteButton {
+  background-color: #6b7280;
+}
+
+.dark .deleteButton:hover {
+  background-color: #4b5563;
+}
+
+.dark .editButton {
+  background-color: var(--dark-brand-primary);
+}
+
+.dark .editButton:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+.dark .saveButton {
+  background-color: var(--dark-success);
+}
+
+.dark .saveButton:hover {
+  background-color: #059669;
+}
+
+.dark .cancelButton {
+  background-color: var(--dark-warning);
+}
+
+.dark .cancelButton:hover {
+  background-color: #d97706;
+}
+
+/* ===========================================
+   PROFILE AND USER STYLES
+   =========================================== */
+.dark .profile-container {
+  background-color: var(--dark-bg-primary);
+}
+
+.dark .profile-card {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 10px 30px var(--dark-shadow-medium);
+  color: var(--dark-text-primary);
+}
+
+/* Profile Details Component */
+.dark .profile-details-container {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .profile-details-container h2 {
+  color: var(--dark-text-primary);
+}
+
+.dark .profile-details-container input {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .profile-details-container input:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 0 2px var(--dark-focus-ring);
+}
+
+.dark .profile-details-container label {
+  color: var(--dark-text-secondary);
+}
+
+/* ===========================================
+   CONTACTS COMPONENT STYLES
+   =========================================== */
+.dark .contacts-container {
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .contacts-list {
+  background-color: var(--dark-bg-secondary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .contact-item {
+  border-bottom-color: var(--dark-border-primary);
+}
+
+.dark .contact-item:hover {
+  background-color: var(--dark-hover-bg);
+}
+
+/* ===========================================
+   WEATHER WIDGET STYLES
+   =========================================== */
+.dark .weather-widget {
+  background: rgba(45, 45, 45, 0.15);
+  border: 0.1px solid rgba(255, 255, 255, 0.2);
+  color: var(--dark-text-primary);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ===========================================
+   HOMEPAGE STYLES
+   =========================================== */
+.dark .homepage-container {
+  background-color: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .homepage-title {
+  color: var(--dark-brand-primary);
+}
+
+.dark .homepage-subtitle {
+  color: var(--dark-text-secondary);
+}
+
+.dark .public-events-box {
+  background-color: var(--dark-bg-secondary) !important;
+  border: 1px solid var(--dark-border-primary);
+  box-shadow: 0 4px 24px var(--dark-shadow-medium);
+}
+
+/* Search and Clear Button Styles */
+.dark .search-clear-button {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+  border: 1px solid var(--dark-border-primary);
+}
+
+.dark .search-clear-button:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+/* ===========================================
+   FORM ELEMENTS AND INPUTS
+   =========================================== */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="tel"],
+.dark input[type="number"],
+.dark textarea,
+.dark select {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="tel"]:focus,
+.dark input[type="number"]:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: var(--dark-brand-primary);
+  box-shadow: 0 0 0 2px var(--dark-focus-ring);
+  outline: none;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--dark-text-muted);
+}
+
+/* ===========================================
+   BUTTON STYLES
+   =========================================== */
+.dark button:not([class*="chakra"]) {
+  background-color: var(--dark-bg-tertiary);
+  border-color: var(--dark-border-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark button:not([class*="chakra"]):hover {
+  background-color: var(--dark-hover-bg);
+  border-color: var(--dark-border-hover);
+}
+
+/* ===========================================
+   CALENDAR MATRIX STYLES (ChakraUI Integration)
+   =========================================== */
+.dark .calendar-matrix-container {
+  background-color: var(--dark-bg-secondary);
+}
+
+/* Calendar day cells in dark mode */
+.dark [data-theme="dark"] .calendar-day-cell,
+.chakra-theme.dark .calendar-day-cell {
+  background-color: var(--dark-bg-tertiary) !important;
+  border-color: var(--dark-border-primary) !important;
+  color: var(--dark-text-primary) !important;
+}
+
+.dark [data-theme="dark"] .calendar-day-cell:hover,
+.chakra-theme.dark .calendar-day-cell:hover {
+  background-color: var(--dark-hover-bg) !important;
+  border-color: var(--dark-border-hover) !important;
+}
+
+/* Today highlight in dark mode */
+.dark [data-theme="dark"] .calendar-today,
+.chakra-theme.dark .calendar-today {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  border-color: var(--dark-success) !important;
+  box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* ===========================================
+   SCROLLBAR STYLES
+   =========================================== */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: var(--dark-bg-tertiary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: var(--dark-border-hover);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--dark-text-muted);
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+.dark .text-primary {
+  color: var(--dark-text-primary) !important;
+}
+
+.dark .text-secondary {
+  color: var(--dark-text-secondary) !important;
+}
+
+.dark .text-muted {
+  color: var(--dark-text-muted) !important;
+}
+
+.dark .bg-primary {
+  background-color: var(--dark-bg-primary) !important;
+}
+
+.dark .bg-secondary {
+  background-color: var(--dark-bg-secondary) !important;
+}
+
+.dark .bg-tertiary {
+  background-color: var(--dark-bg-tertiary) !important;
+}
+
+.dark .border-primary {
+  border-color: var(--dark-border-primary) !important;
+}
+
+/* ===========================================
+   RESPONSIVE DARK THEME ADJUSTMENTS
+   =========================================== */
+@media (max-width: 768px) {
+  .dark .auth-container,
+  .dark .calendar-component,
+  .dark .adminContainer {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .dark .profile-card {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* ===========================================
+   DARK THEME ANIMATIONS
+   =========================================== */
+.dark * {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ===========================================
+   OVERRIDE INLINE STYLES FOR DARK THEME
+   =========================================== */
+.dark [style*="color: #444"],
+.dark [style*="color: #222"],
+.dark [style*="color: #333"],
+.dark [style*="color: black"] {
+  color: var(--dark-text-primary) !important;
+}
+
+.dark [style*="color: #666"],
+.dark [style*="color: #555"],
+.dark [style*="color: #999"] {
+  color: var(--dark-text-secondary) !important;
+}
+
+.dark [style*="background: #fff"],
+.dark [style*="background-color: #fff"],
+.dark [style*="background-color: white"],
+.dark [style*="background: white"] {
+  background-color: var(--dark-bg-secondary) !important;
+}
+
+.dark [style*="background: #f7f7f7"],
+.dark [style*="background-color: #f7f7f7"],
+.dark [style*="background: #f9f9f9"],
+.dark [style*="background-color: #f9f9f9"] {
+  background-color: var(--dark-bg-tertiary) !important;
+}
+
+.dark [style*="border: 1px solid #ccc"],
+.dark [style*="border-color: #ccc"],
+.dark [style*="border: 1px solid #ddd"] {
+  border-color: var(--dark-border-primary) !important;
+}
+
+/* HomePage specific overrides */
+.dark [style*="background: #1976d2"] {
+  background-color: var(--dark-brand-primary) !important;
+}
+
+.dark [style*="color: #1976d2"] {
+  color: var(--dark-brand-primary) !important;
+}
+
+.dark [style*="borderBottom: 1px solid #eee"] {
+  border-bottom-color: var(--dark-border-primary) !important;
+}
+
+/* ===========================================
+   ADDITIONAL COMPONENT-SPECIFIC OVERRIDES
+   =========================================== */
+
+/* Card Component Invite Form */
+.dark .invite-form {
+  background-color: var(--dark-bg-tertiary) !important;
+  border-color: var(--dark-border-primary) !important;
+}
+
+/* Calendar Matrix and ChakraUI Box Integration */
+.dark .chakra-ui-dark-mode {
+  background-color: var(--dark-bg-secondary);
+  color: var(--dark-text-primary);
+}
+
+/* Specific overrides for hardcoded styles in components */
+.dark [style*="color: black"] {
+  color: var(--dark-text-primary) !important;
+}
+
+.dark [style*="background-color: #f1f1f1"] {
+  background-color: var(--dark-bg-tertiary) !important;
+}
+
+.dark [style*="background: #f1f1f1"] {
+  background-color: var(--dark-bg-tertiary) !important;
+}
+
+.dark [style*="border: 1px solid #ccc"] {
+  border-color: var(--dark-border-primary) !important;
+}
+
+/* Color mode toggle button styling */
+.dark [style*="color: yellow"] {
+  color: #fbbf24 !important;
+}
+
+/* Ensure hover states work correctly in dark mode */
+.dark .card-container:hover {
+  background-color: var(--dark-bg-tertiary) !important;
+}
+
+/* Navigation bar background override */
+.dark [style*="backgroundColor: #5565dd"] {
+  background-color: #2d3748 !important;
+}
+
+/* Public page specific styling */
+.dark [style*="background: #f7f7f7"] {
+  background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Profile and Admin page container overrides */
+.dark [style*="background-color: #f9fafb"] {
+  background-color: var(--dark-bg-secondary) !important;
+}
+
+/* Text color overrides for various components */
+.dark [style*="color: #888"] {
+  color: var(--dark-text-muted) !important;
+}
+
+.dark [style*="color: #555"] {
+  color: var(--dark-text-secondary) !important;
+}
+
+.dark [style*="color: #666"] {
+  color: var(--dark-text-secondary) !important;
+}
+
+/* Ensure ChakraUI components work properly in dark mode */
+.dark .chakra-button[data-variant="ghost"] {
+  color: var(--dark-text-primary);
+  background-color: transparent;
+}
+
+.dark .chakra-button[data-variant="ghost"]:hover {
+  background-color: var(--dark-hover-bg);
+}
+
+.dark .chakra-button[data-variant="solid"] {
+  background-color: var(--dark-brand-primary);
+  color: var(--dark-text-primary);
+}
+
+.dark .chakra-button[data-variant="solid"]:hover {
+  background-color: var(--dark-brand-hover);
+}
+
+/* Calendar day cell styling for ChakraUI integration */
+.dark [data-calendar-day] {
+  background-color: var(--dark-bg-tertiary) !important;
+  border-color: var(--dark-border-primary) !important;
+  color: var(--dark-text-primary) !important;
+}
+
+.dark [data-calendar-day]:hover {
+  background-color: var(--dark-hover-bg) !important;
+}
+
+/* Weather widget glass effect enhancement for dark mode */
+.dark .weather-widget {
+  background: rgba(40, 40, 40, 0.15) !important;
+  border: 0.1px solid rgba(255, 255, 255, 0.1) !important;
+}
