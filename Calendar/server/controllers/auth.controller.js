@@ -11,6 +11,28 @@ router.get("/admin", verifyAdmin, async (req, res) => {
   res.json({ message: "Welcome to the admin page" });
 });
 
+router.get("/users/search/:query", verifyToken, async (req, res) => {
+  try {
+    const { query } = req.params;
+
+    const users = await User.find({
+      $or: [
+        { username: { $regex: query, $options: "i" } },
+        { phoneNumber: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+      ],
+    }).select("-password");
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ error: "No users found" });
+    }
+
+    res.status(200).json({ data: users });
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 router.get("/users", verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, "-password");
@@ -31,6 +53,7 @@ router.get("/users/:id", verifyToken, async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
 // Edit user details
 router.put("/users/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
