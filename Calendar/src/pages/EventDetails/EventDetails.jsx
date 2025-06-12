@@ -8,6 +8,7 @@ import {
     Container,
     Badge,
     Image,
+    Button,
 } from '@chakra-ui/react';
 import { MdPerson } from 'react-icons/md';
 import { useEffect, useState, useContext } from 'react';
@@ -20,45 +21,91 @@ function EventDetails() {
 
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isLeaving, setIsLeaving] = useState(false);
+    const [isParticipant, setIsParticipant] = useState(false);
 
-    const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+    const backendUrl = import.meta.env.VITE_BACK_END_URL || 'http://localhost:5000';
+
 
     useEffect(() => {
-        const fetchEvents = async () => {
+        async function fetchEvent() {
             try {
-                const response = await fetch(`${key}/api/events/${id}`, {
-                    method: 'GET',
+                setLoading(true);
+                const response = await fetch(`${backendUrl}/api/events/${id}`, {
                     headers: {
-                        'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch event details');
-                }
+                if (!response.ok) throw new Error('Failed to fetch event details');
 
                 const data = await response.json();
                 setEvent({
-                    title: data.title,
-                    description: data.description,
-                    userId: data.userId,
+                    ...data,
                     start: data.startDateTime || data.startDate,
                     end: data.endDateTime || data.endDate,
-                    coverPhoto: data.coverPhoto,
-                    location: data.location,
-                    participants: data.participants,
                 });
-
-            } catch (error) {
-                console.error('Error fetching event details:', error);
+            } catch (err) {
+                console.error(err);
+                setEvent(null);
             } finally {
                 setLoading(false);
             }
-        };
+        }
+        fetchEvent();
+    }, [id, backendUrl]);
 
-        fetchEvents();
-    }, [id, key]);
+    useEffect(() => {
+        if (event?.participants && user?._id) {
+            setIsParticipant(event.participants.some((p) => p._id === user._id));
+        } else {
+            setIsParticipant(false);
+        }
+    }, [event, user?._id]);
+
+    const handleRemoveParticipant = async (participantId) => {
+        try {
+            const response = await fetch(`${backendUrl}/api/events/${id}/participants/${participantId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!response.ok) throw new Error('Failed to remove participant');
+
+            setEvent((prev) => ({
+                ...prev,
+                participants: prev.participants.filter((p) => p._id !== participantId),
+            }));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
+    const handleLeaveEvent = async () => {
+        try {
+            setIsLeaving(true);
+            const response = await fetch(`${backendUrl}/api/events/${id}/leave`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!response.ok) throw new Error('Failed to leave event');
+
+            setEvent((prev) => ({
+                ...prev,
+                participants: prev.participants.filter((p) => p._id !== user._id),
+            }));
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLeaving(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -75,31 +122,8 @@ function EventDetails() {
             </Box>
         );
     }
-    const handleRemoveParticipant = async (participantId) => {
-        try {
-            const response = await fetch(`${key}/api/events/${id}/participants/${participantId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-    
-            if (!response.ok) {
-                throw new Error('Failed to remove participant');
-            }
-    
-        
-            setEvent((prev) => ({
-                ...prev,
-                participants: prev.participants.filter((p) => p._id !== participantId),
-            }));
-        } catch (error) {
-            console.error('Error removing participant:', error);
-        }
-    };
-    
 
+    const isOwner = event.userId === user._id;
     return (
         <Container maxW="5xl" py={15}>
             <Box
@@ -107,12 +131,12 @@ function EventDetails() {
                 _dark={{ bg: 'gray.600' }}
                 boxShadow="xl"
                 borderRadius="2xl"
-                color={'blue.500'}
+                color="blue.500"
                 p={8}
             >
                 <VStack spacing={10} align="start">
-                    <Badge colorScheme="teal" color={'blue.500'} background={'black'}>
-                        {event.userId === user._id ? `Created by ${user.username}` : 'Shared event'}
+                    <Badge colorScheme="teal" bg="black" color="blue.500">
+                        {isOwner ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
     
                     <Heading size="lg">{event.title}</Heading>
@@ -143,9 +167,9 @@ function EventDetails() {
                         <Stack spacing={1} w="100%">
                             <Text fontWeight="bold">Location:</Text>
                             <Text>
-                                {event.location.address ? event.location.address + ', ' : ''}
-                                {event.location.city ? event.location.city + ', ' : ''}
-                                {event.location.country || ''}
+                                {[event.location.address, event.location.city, event.location.country]
+                                    .filter(Boolean)
+                                    .join(', ')}
                             </Text>
                         </Stack>
                     )}
@@ -162,7 +186,7 @@ function EventDetails() {
                                 {event.participants.map((participant) => (
                                     <Box
                                         as="li"
-                                        key={participant._id || participant}
+                                        key={participant._id}
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="space-between"
@@ -171,23 +195,33 @@ function EventDetails() {
                                     >
                                         <Box display="flex" alignItems="center">
                                             <MdPerson style={{ marginRight: 6 }} />
-                                            <Text as="span">{participant.username || participant}</Text>
+                                            <Text as="span">{participant.username}</Text>
                                         </Box>
     
-                                        {event.userId === user._id && (
-                                            <Text
-                                            as="button"
-                                            fontSize="sm"
-                                            color="white"
-                                            background="red.600"
-                                            px={3}         
-                                            py={1}         
-                                            borderRadius="md"
-                                            _hover={{ background: 'red.700' }}
+                                    
+                                        {isOwner && participant._id !== user._id && (
+                                            <Button
+                                                size="sm"
+                                                colorScheme="red"
+                                                background={'red.600'}
                                                 onClick={() => handleRemoveParticipant(participant._id)}
                                             >
                                                 Remove
-                                            </Text>
+                                            </Button>
+                                        )}
+    
+                                
+                                        {participant._id === user._id && (
+                                            <Button
+                                                size="sm"
+                                                colorScheme="orange"
+                                                background={'orange.600'}
+                                                onClick={handleLeaveEvent}
+                                                isLoading={isLeaving}
+                                                loadingText="Leaving..."
+                                            >
+                                                Leave
+                                            </Button>
                                         )}
                                     </Box>
                                 ))}
@@ -200,6 +234,7 @@ function EventDetails() {
             </Box>
         </Container>
     );
+    
     
 }
 

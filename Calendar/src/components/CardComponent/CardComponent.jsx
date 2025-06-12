@@ -15,6 +15,9 @@ function CardComponent({ event, onDelete }) {
   const [feedback, setFeedback] = useState("");
   const [users, setUsers] = useState([]);
   const [isJoining, setIsJoining] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+
+  const isParticipant = event.participants?.includes(user?._id);
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   const handleInvite = async () => {
@@ -72,14 +75,14 @@ function CardComponent({ event, onDelete }) {
       return;
     }
 
-    if (event.participants?.some((p) => p === user._id || p._id === user._id)) {
+    if (isParticipant) {
       alert("You are already a participant in this event.");
       return;
     }
 
     setIsJoining(true);
     try {
-      const response = await axios.post(`${key}/api/events/${event._id}/join`, null, {
+      await axios.post(`${key}/api/events/${event._id}/join`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -93,6 +96,25 @@ function CardComponent({ event, onDelete }) {
       alert(message);
     } finally {
       setIsJoining(false);
+    }
+  };
+
+  const handleLeaveEvent = async () => {
+    const token = localStorage.getItem("token");
+    if (!user) return;
+
+    setIsLeaving(true);
+    try {
+      await axios.delete(`${key}/api/events/${event._id}/leave`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      alert("You have successfully left the event.");
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to leave event:", error);
+    } finally {
+      setIsLeaving(false);
     }
   };
 
@@ -217,12 +239,25 @@ function CardComponent({ event, onDelete }) {
               </Box>
             )}
           </Box>
+        ) : isParticipant ? (
+          <Button
+            colorScheme="red"
+            flex={1}
+            onClick={handleLeaveEvent}
+            isLoading={isLeaving}
+          >
+            Leave Event
+          </Button>
         ) : (
-          <Button colorScheme="blue" flex={1} onClick={handleEventJoin} isLoading={isJoining}>
+          <Button
+            colorScheme="blue"
+            flex={1}
+            onClick={handleEventJoin}
+            isLoading={isJoining}
+          >
             Join Event
           </Button>
         )}
-
 
         {user && user._id === event.userId && (
           <Button

@@ -350,6 +350,33 @@ mongoose
       }
     });
 
+    app.delete('/api/events/:id/leave', verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const userId = req.user.id;
+    
+        const event = await Event.findById(eventId);
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+    
+        const initialLength = event.participants.length;
+        event.participants = event.participants.filter(
+          (participantId) => participantId.toString() !== userId
+        );
+    
+        if (event.participants.length === initialLength) {
+          return res.status(400).json({ error: "You are not a participant" });
+        }
+    
+        await event.save();
+        res.status(200).json({ message: "Left the event", participants: event.participants });
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+    
+
  
 
     // GET - Fetch all EventSeries for a user
