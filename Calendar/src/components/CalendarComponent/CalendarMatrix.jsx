@@ -412,7 +412,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                           fontSize="sm"
                           mb={2}
                           boxShadow="md"
-                          style={{ minHeight: `${heightPx}px` }}
+                          style={{ minHeight: `100px` }}
                         >
                           <Text fontWeight="bold">• {e.title}</Text>
                           {e.description && (
