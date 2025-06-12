@@ -6,6 +6,45 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 function CalendarMatrix({ currentDate, view, onDayClick }) {
     const [events, setEvents] = useState([]);
 
+
+
+    const generateRepeatedEvents = (event) => {
+        const repeatCount = event.repeatCount || 5;      
+        const interval = event.repeatInterval || 1;       
+        const repeatType = event.repeatType || 'daily';
+    
+        const baseDate = new Date(event.startDateTime); 
+        if (isNaN(baseDate.getTime())) {
+            console.warn("Invalid startDateTime for event:", event);
+            return []; 
+        }
+        const repeatedEvents = [];
+    
+        for (let i = 0; i < repeatCount; i++) {  
+            const newDate = new Date(baseDate);
+    
+            if (repeatType === 'daily') {
+                newDate.setDate(newDate.getDate() + i * interval);
+            } else if (repeatType === 'weekly') {
+                newDate.setDate(newDate.getDate() + i * interval * 7);
+            } else if (repeatType === 'monthly') {
+                newDate.setMonth(newDate.getMonth() + i * interval);
+            }
+    
+            repeatedEvents.push({
+                ...event,
+                startDateTime: newDate.toISOString(),
+                isRepeatedInstance: i > 0,  
+            });
+        }
+    
+        return repeatedEvents;
+    };
+    
+
+
+
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -18,13 +57,30 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                 });
                 if (!response.ok) throw new Error("Failed to fetch events");
                 const data = await response.json();
-                setEvents(data);
+    
+                let allEvents = [];
+    
+                data.forEach(event => {
+                    if (event.isRecurring) { 
+                        const repeats = generateRepeatedEvents(event);
+                        allEvents.push(...repeats);
+                    } else {
+                        allEvents.push(event);
+                    }
+                });
+    
+                setEvents(allEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
         };
+    
         fetchEvents();
     }, []);
+    
+
+
+
 
     const getMonthDays = () => {
         const year = currentDate.getFullYear();
@@ -44,7 +100,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
     const getEventsForDay = (date) =>
         events.filter((e) => {
-            const eventDate = new Date(e.date || e.startDateTime);
+            const eventDate = new Date(e.startDateTime);
             return eventDate.toDateString() === date.toDateString();
         });
 
@@ -309,7 +365,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                                 <Text fontWeight="bold">• {e.title}</Text>
                                 {e.description && (
                                     <Text fontSize="xs" mt={1} color="black.900">
-                                    •  {e.description}
+                                        •  {e.description}
                                     </Text>
                                 )}
                             </Box>
