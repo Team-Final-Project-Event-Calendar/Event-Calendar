@@ -13,7 +13,7 @@ function Contacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchedUser, setSearchedUser] = useState(null);
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const { user, token } = useContext(AuthContext);
 
   const fetchAllUsers = async () => {
@@ -35,7 +35,7 @@ function Contacts() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      setSearchedUser(null); // Reset result view
+      setSearchedUsers([]); // Reset result view
       return;
     }
 
@@ -46,11 +46,11 @@ function Contacts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      const foundUser = res.data.data?.[0];
-      setSearchedUser(foundUser || null);
+      const matchedUsers = res.data.data || [];
+      setSearchedUsers(matchedUsers);
     } catch (err) {
       console.error("Search failed:", err.response?.data || err);
-      setSearchedUser(null);
+      setSearchedUsers([]);
     }
   };
 
@@ -146,47 +146,60 @@ function Contacts() {
         </ul>
       </div>
 
-      {/* Center: Searched User */}
+      {/* Center: Searched Users */}
       <div
         style={{
           flexGrow: 1,
-          maxWidth: "500px",
+          maxWidth: "600px",
           backgroundColor: "#fdfdfd",
           padding: "20px",
           borderRadius: "10px",
-          boxShadow: searchedUser ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+          boxShadow:
+            searchedUsers.length > 0 ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
           minHeight: "150px",
         }}
       >
-        {searchedUser ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "20px",
-            }}
-          >
-            <img
-              src={searchedUser.avatar || DEFAULT_AVATAR}
-              alt={searchedUser.username}
-              style={{
-                width: "80px",
-                height: "80px",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = DEFAULT_AVATAR;
-              }}
-            />
-            <div>
-              <h3 style={{ marginBottom: "5px", fontSize: "1.2rem" }}>
-                {searchedUser.username}
-              </h3>
-              <p>Email: {searchedUser.email}</p>
-              <p>Phone: {searchedUser.phoneNumber}</p>
-            </div>
+        {searchedUsers.length > 0 ? (
+          <div>
+            <h3 style={{ marginBottom: "16px", fontSize: "1.2rem" }}>
+              Found {searchedUsers.length} user(s):
+            </h3>
+            {searchedUsers.map((user) => (
+              <div
+                onClick={() => navigate(`/users/${user._id}`)}
+                key={user._id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "20px",
+                  paddingBottom: "15px",
+                  marginBottom: "15px",
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <img
+                  src={user.avatar || DEFAULT_AVATAR}
+                  alt={user.username}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_AVATAR;
+                  }}
+                />
+                <div>
+                  <h4 style={{ marginBottom: "5px", fontSize: "1.1rem" }}>
+                    {user.username}
+                  </h4>
+                  <p>Email: {user.email}</p>
+                  <p>Phone: {user.phoneNumber}</p>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <p style={{ color: "#999" }}>
