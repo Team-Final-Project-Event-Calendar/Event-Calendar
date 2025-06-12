@@ -75,9 +75,9 @@ function Contacts() {
     >
       {/* Left: Contacts List */}
       <div
+        className="all-contacts"
         style={{
           width: "300px",
-          backgroundColor: "#fff",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           padding: "20px",
@@ -150,7 +150,6 @@ function Contacts() {
         style={{
           flexGrow: 1,
           maxWidth: "600px",
-          backgroundColor: "#fdfdfd",
           padding: "20px",
           borderRadius: "10px",
           boxShadow:

@@ -12,30 +12,30 @@
   --dark-bg-secondary: #2d2d2d;
   --dark-bg-tertiary: #3a3a3a;
   --dark-bg-elevated: #404040;
-  
+
   /* Text Colors */
   --dark-text-primary: #ffffff;
   --dark-text-secondary: #e2e2e2;
   --dark-text-muted: #a0a0a0;
   --dark-text-disabled: #666666;
-  
+
   /* Border Colors */
   --dark-border-primary: #404040;
   --dark-border-secondary: #555555;
   --dark-border-hover: #666666;
-  
+
   /* Interactive Colors */
   --dark-hover-bg: #4a4a4a;
   --dark-active-bg: #525252;
   --dark-focus-ring: rgba(59, 130, 246, 0.5);
-  
+
   /* Brand Colors (Adjusted for dark theme) */
   --dark-brand-primary: #3b82f6;
   --dark-brand-hover: #2563eb;
   --dark-success: #10b981;
   --dark-danger: #ef4444;
   --dark-warning: #f59e0b;
-  
+
   /* Shadow Colors */
   --dark-shadow-light: rgba(0, 0, 0, 0.3);
   --dark-shadow-medium: rgba(0, 0, 0, 0.5);
@@ -141,6 +141,10 @@
   background-color: var(--dark-bg-secondary);
   border: 1px solid var(--dark-border-primary);
   box-shadow: 0 8px 20px var(--dark-shadow-medium);
+}
+
+.all-contacts {
+  background-color: var(--dark-bg-secondary);
 }
 
 .dark .calendar-title {
@@ -258,8 +262,8 @@
   background-color: var(--dark-bg-secondary);
   border: 1px solid var(--dark-border-primary);
   box-shadow: 0 0 80px -25px rgba(0, 0, 0, 0.5),
-              0 30px 50px -30px rgba(0, 0, 0, 0.6),
-              0 -2px 6px 0px rgba(255, 255, 255, 0.05) inset;
+    0 30px 50px -30px rgba(0, 0, 0, 0.6),
+    0 -2px 6px 0px rgba(255, 255, 255, 0.05) inset;
 }
 
 .dark .public-welcome-chakra_Card-heading {
@@ -656,13 +660,14 @@
    RESPONSIVE DARK THEME ADJUSTMENTS
    =========================================== */
 @media (max-width: 768px) {
+
   .dark .auth-container,
   .dark .calendar-component,
   .dark .adminContainer {
     margin: 1rem;
     padding: 1rem;
   }
-  
+
   .dark .profile-card {
     margin: 1rem;
     padding: 1.5rem;
