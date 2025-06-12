@@ -90,15 +90,17 @@ function ProfileDetailsComponent() {
 
   return (
     <div
-      style={{
-        maxWidth: "60vw",
-        margin: "40px auto",
-        padding: 32,
-        borderRadius: 16,
-        background: "#fff",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-        border: "1px solid #e0e0e0",
-      }}
+      className="css-1tudbfc"
+      style={{ width: "60vw", margin: "0px auto" }}
+      // style={{
+      //   maxWidth: "60vw",
+      //   margin: "40px auto",
+      //   padding: 32,
+      //   borderRadius: 16,
+      //   background: "#fff",
+      //   boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+      //   border: "1px solid #e0e0e0",
+      // }}
     >
       <h2
         style={{
