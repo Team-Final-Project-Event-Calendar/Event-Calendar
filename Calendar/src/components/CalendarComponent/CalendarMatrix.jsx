@@ -347,7 +347,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
           borderWidth="1px"
           borderColor="blue.300"
           borderRadius="lg"
-          bg="blue.50"
+          bg=""
           boxShadow="xl"
         >
           {hours.map((hour) => {
