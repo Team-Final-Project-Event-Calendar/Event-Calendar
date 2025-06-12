@@ -2,7 +2,7 @@
     max-width: 1500px;
     margin: 2rem auto;
     padding: 1rem 2rem;
-    background: #fff;
+    background: #52789a;
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,7 +28,7 @@
     background-color: #007bff;
     border: none;
     border-radius: 6px;
-    color: white;
+    color: #fff;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.25s ease;
