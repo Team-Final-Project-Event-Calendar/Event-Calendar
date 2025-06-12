@@ -83,7 +83,6 @@ function UserProfile() {
           transition: "background 0.3s ease, color 0.3s ease",
         }}
       >
-        {/* Top Controls */}
         <div
           style={{
             display: "flex",
@@ -119,7 +118,6 @@ function UserProfile() {
           </button>
         </div>
 
-        {/* Profile Image */}
         <img
           src={userData.avatar || DEFAULT_AVATAR}
           alt={userData.username}
@@ -153,7 +151,6 @@ function UserProfile() {
           }}
         />
 
-        {/* Info */}
         <div
           style={{
             textAlign: "left",
