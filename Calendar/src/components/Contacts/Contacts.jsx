@@ -13,6 +13,7 @@ function Contacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchedUser, setSearchedUser] = useState(null);
   const { user, token } = useContext(AuthContext);
 
   const fetchAllUsers = async () => {
@@ -34,7 +35,7 @@ function Contacts() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      fetchAllUsers(); // Reset to all users if empty
+      setSearchedUser(null); // Reset result view
       return;
     }
 
@@ -45,10 +46,11 @@ function Contacts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setContacts(res.data.data); // Access `.data` inside response
+      const foundUser = res.data.data?.[0];
+      setSearchedUser(foundUser || null);
     } catch (err) {
       console.error("Search failed:", err.response?.data || err);
-      setContacts([]); // No results
+      setSearchedUser(null);
     }
   };
 
@@ -62,21 +64,24 @@ function Contacts() {
 
   return (
     <div
-      className="w-60"
       style={{
+        width: "60vw",
         margin: "0px auto",
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "flex-start",
+        padding: "20px",
+        gap: "20px",
       }}
     >
+      {/* Left: Contacts List */}
       <div
         style={{
-          maxWidth: "400px",
-          minWidth: "300px",
-          padding: "20px",
+          width: "300px",
           backgroundColor: "#fff",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          padding: "20px",
         }}
       >
         <h2
@@ -141,37 +146,74 @@ function Contacts() {
         </ul>
       </div>
 
-      {/* Search Area */}
+      {/* Center: Searched User */}
       <div
-        className="search-area"
-        style={{ display: "flex", width: "100vw", justifyContent: "center" }}
+        style={{
+          flexGrow: 1,
+          maxWidth: "500px",
+          backgroundColor: "#fdfdfd",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: searchedUser ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+          minHeight: "150px",
+        }}
       >
-        <div className="search-bar">
+        {searchedUser ? (
           <div
-            className="search-bar-area"
-            style={{ display: "flex", gap: "20px" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
+            }}
           >
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Type username, email or phone"
+            <img
+              src={searchedUser.avatar || DEFAULT_AVATAR}
+              alt={searchedUser.username}
               style={{
-                color: "white",
-                background: "#5565dd",
-                minWidth: "200px",
-                borderRadius: "5px",
-                padding: "5px",
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = DEFAULT_AVATAR;
               }}
             />
-            <Button
-              variant={"ghost"}
-              style={{ color: "grey" }}
-              onClick={handleSearch}
-            >
-              Find
-            </Button>
+            <div>
+              <h3 style={{ marginBottom: "5px", fontSize: "1.2rem" }}>
+                {searchedUser.username}
+              </h3>
+              <p>Email: {searchedUser.email}</p>
+              <p>Phone: {searchedUser.phoneNumber}</p>
+            </div>
           </div>
+        ) : (
+          <p style={{ color: "#999" }}>
+            Search for a user to see their profile.
+          </p>
+        )}
+      </div>
+
+      {/* Right: Search Bar */}
+      <div style={{ minWidth: "220px", paddingTop: "20px" }}>
+        <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search username, email or phone"
+            style={{
+              background: "#5565dd",
+              borderRadius: "5px",
+              padding: "8px",
+              color: "white",
+              border: "none",
+            }}
+          />
+          <Button variant={"solid"} colorScheme="blue" onClick={handleSearch}>
+            Find
+          </Button>
         </div>
       </div>
     </div>
