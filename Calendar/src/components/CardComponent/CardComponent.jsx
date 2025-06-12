@@ -7,14 +7,14 @@ import axios from "axios";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-function CardComponent({ event, onDelete, participants }) {
+function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
   const { onOpen } = useDisclosure();
   const [isInviteVisible, setIsInviteVisible] = useState(false);
   const [selectedUsername, setSelectedUsername] = useState("");
   const [feedback, setFeedback] = useState("");
   const [users, setUsers] = useState([]);
-
+  const [isJoining, setIsJoining] = useState(false);
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   const handleInvite = async () => {
@@ -62,6 +62,37 @@ function CardComponent({ event, onDelete, participants }) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
       console.error(error);
+    }
+  };
+
+  const handleEventJoin = async () => {
+    const token = localStorage.getItem("token");
+    if (!user) {
+      alert("Please log in to join this event.");
+      return;
+    }
+
+    if (event.participants?.some((p) => p === user._id || p._id === user._id)) {
+      alert("You are already a participant in this event.");
+      return;
+    }
+
+    setIsJoining(true);
+    try {
+      const response = await axios.post(`${key}/api/events/${event._id}/join`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("You have successfully joined the event!");
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      const message = error.response?.data?.error || "Failed to join event.";
+      alert(message);
+    } finally {
+      setIsJoining(false);
     }
   };
 
@@ -187,10 +218,11 @@ function CardComponent({ event, onDelete, participants }) {
             )}
           </Box>
         ) : (
-          <Button colorScheme="blue" flex={1}>
+          <Button colorScheme="blue" flex={1} onClick={handleEventJoin} isLoading={isJoining}>
             Join Event
           </Button>
         )}
+
 
         {user && user._id === event.userId && (
           <Button

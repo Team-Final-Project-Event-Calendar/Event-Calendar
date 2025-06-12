@@ -115,7 +115,45 @@ mongoose
         res.status(500).json({ message: "Server error" });
       }
     });
+    app.post("/api/events/:id/join", verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const userId = req.user.id;
+    
+        const event = await Event.findById(eventId);
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
+        }
+    
+        const ownerId = event.userId.toString();
+        const isAlreadyParticipant = event.participants.some(p => p.toString() === userId);
+    
+        if (ownerId === userId) {
+          return res.status(400).json({ error: "Owner cannot join their own event" });
+        }
+    
+        if (isAlreadyParticipant) {
+          return res.status(400).json({ error: "You are already a participant" });
+        }
+    
+        if (event.type === "private") {
+          return res.status(403).json({ error: "Cannot join private event" });
+        }
+    
 
+        event.participants.push(userId);
+        await event.save();
+    
+        return res.status(200).json({
+          message: "Successfully joined the event",
+          participants: event.participants,
+        });
+      } catch (err) {
+        console.error("Join event error:", err);
+        res.status(500).json({ error: "Server error" });
+      }
+    });
+    
    // POST - Create new EventSeries
     app.post("/api/event-series", verifyToken, async (req, res) => {
       try {
