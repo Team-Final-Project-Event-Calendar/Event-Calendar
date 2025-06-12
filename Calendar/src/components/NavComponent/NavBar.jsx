@@ -7,8 +7,12 @@ import { AuthContext } from "../Authentication/AuthContext";
 import Searchbar from "../Searchbar/Searchbar";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import CalendarComponent from "../CalendarComponent/CalendarComponent";
+import { useColorMode } from "../ui/color-mode";
 import "./NavLink.css";
+
 function NavBar() {
+  const { colorMode, toggleColorMode } = useColorMode("light");
+
   const navigate = useNavigate();
   const { isLoggedIn, logout, user } = useContext(AuthContext);
 
@@ -101,6 +105,12 @@ function NavBar() {
             <>
               <AvatarComponent />
               <DrawerComponent onLogout={handleLogout} />
+              <button
+                onClick={toggleColorMode}
+                style={{ padding: "10px", fontSize: "20px", color: "yellow" }}
+              >
+                {colorMode === "light" ? "🌙" : "☀"}
+              </button>
             </>
           ) : (
             <>

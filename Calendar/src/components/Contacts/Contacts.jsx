@@ -70,7 +70,6 @@ function Contacts() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        padding: "20px",
         gap: "20px",
       }}
     >
