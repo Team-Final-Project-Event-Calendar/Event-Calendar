@@ -43,15 +43,26 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${key}/api/event-series`, series, {
+      // Prepare the series data properly
+      const seriesData = {
+        ...series,
+        // Don't send endingEventId if indefinite
+        endingEventId: series.isIndefinite ? undefined : series.endingEventId,
+        // Don't send endDate in recurrenceRule if indefinite
+        recurrenceRule: series.seriesType === "recurring" ? {
+          ...series.recurrenceRule,
+          endDate: series.isIndefinite ? undefined : series.recurrenceRule.endDate
+        } : undefined
+      };
+      const response = await axios.post(`${key}/api/event-series`, seriesData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       setSuccessMessage("Event series created successfully!");
       if (onSeriesCreated) onSeriesCreated(response.data);
-      
+
       // Reset form
       setSeries({
         name: "",
@@ -75,7 +86,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "0 auto" }}>
       <h2>Create Event Series</h2>
-      
+
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
 
