@@ -8,6 +8,8 @@ import Searchbar from "../Searchbar/Searchbar";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import CalendarComponent from "../CalendarComponent/CalendarComponent";
 import { useColorMode } from "../ui/color-mode";
+import { IoMoon } from "react-icons/io5";
+import { LuSun } from "react-icons/lu";
 import "./NavLink.css";
 
 function NavBar() {
@@ -109,7 +111,7 @@ function NavBar() {
                 onClick={toggleColorMode}
                 style={{ padding: "10px", fontSize: "20px", color: "yellow" }}
               >
-                {colorMode === "light" ? "🌙" : "☀"}
+                {colorMode === "light" ? <IoMoon /> : <LuSun />}
               </button>
             </>
           ) : (
