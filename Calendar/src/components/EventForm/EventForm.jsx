@@ -459,7 +459,7 @@ const handleParticipantChange = (index, value) => {
           </Field.Root>
 
           <Field.Root>
-            <Field.Label>AddRecurring</Field.Label>
+            <Field.Label>Add Recurring</Field.Label>
             <NativeSelect.Root>
               <NativeSelect.Field
                 value={event.isRecurring ? "yes" : "no"}
