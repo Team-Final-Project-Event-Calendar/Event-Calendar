@@ -8,7 +8,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
 
     const generateRepeatedEvents = (event) => {
-        const interval = event.repeatInterval || 1; // Колко дни напред
+        const interval = event.repeatInterval || 1; 
         const repeatType = event.repeatType || 'daily';
     
         const baseDate = new Date(event.startDateTime);
