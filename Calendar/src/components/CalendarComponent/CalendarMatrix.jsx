@@ -20,7 +20,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         }
         const repeatedEvents = [];
     
-        for (let i = 0; i < repeatCount; i++) {  
+        for (let i = 1; i <= repeatCount; i++) {  
             const newDate = new Date(baseDate);
     
             if (repeatType === 'daily') {
