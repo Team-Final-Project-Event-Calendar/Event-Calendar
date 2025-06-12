@@ -311,7 +311,7 @@ const handleParticipantChange = (index, value) => {
           </Field.Root>
 
           <Field.Root>
-  <Field.Label>Is Location?</Field.Label>
+  <Field.Label>Add Location</Field.Label>
   <NativeSelect.Root>
     <NativeSelect.Field
       value={event.isLocation ? "yes" : "no"}
@@ -459,7 +459,7 @@ const handleParticipantChange = (index, value) => {
           </Field.Root>
 
           <Field.Root>
-            <Field.Label>Is Recurring?</Field.Label>
+            <Field.Label>AddRecurring</Field.Label>
             <NativeSelect.Root>
               <NativeSelect.Field
                 value={event.isRecurring ? "yes" : "no"}
