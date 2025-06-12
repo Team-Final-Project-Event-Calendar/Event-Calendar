@@ -313,19 +313,23 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         );
     }
 
-
     if (view === "day") {
         const day = new Date(currentDate);
         const dayEvents = getEventsForDay(day);
     
-        const getEventsForHour = (hour) => {
-            return dayEvents.filter((e) => {
-                const eventDate = new Date(e.startDateTime);
-                return eventDate.getHours() === hour;
-            });
-        };
     
-        const hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
+        dayEvents.sort((a, b) => new Date(a.startDateTime) - new Date(b.startDateTime));
+    
+
+        const hours = Array.from({ length: 24 }, (_, i) => i);
+    
+
+        const renderedEventIds = new Set();
+
+        const formatTime = (dateStr) => {
+            const d = new Date(dateStr);
+            return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+        };
     
         return (
             <Box>
@@ -340,7 +344,23 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     
                 <Box borderWidth="1px" borderColor="blue.300" borderRadius="lg" bg="blue.50" boxShadow="xl">
                     {hours.map((hour) => {
-                        const hourEvents = getEventsForHour(hour);
+                    
+                        if (Array.from(renderedEventIds).some((id) => {
+                            const e = dayEvents.find(ev => ev.id === id);
+                            if (!e) return false;
+                            const start = new Date(e.startDateTime);
+                            const end = new Date(e.endDateTime);
+                            return hour > start.getHours() && hour < end.getHours();
+                        })) {
+                            return null;
+                        }
+    
+                    
+                        const startingEvents = dayEvents.filter(e => {
+                            const start = new Date(e.startDateTime);
+                            return start.getHours() === hour;
+                        });
+    
                         return (
                             <Box
                                 key={hour}
@@ -355,31 +375,48 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                                     {String(hour).padStart(2, "0")}:00
                                 </Text>
                                 <Box flex="1" pl={4}>
-                                    {hourEvents.length === 0 ? (
+                                    {startingEvents.length === 0 ? (
                                         <Text fontSize="sm" color="gray.500">
                                             No events
                                         </Text>
                                     ) : (
-                                        hourEvents.map((e, i) => (
-                                            <Box
-                                                key={i}
-                                                bg="green.300"
-                                                color="black"
-                                                px={3}
-                                                py={2}
-                                                borderRadius="md"
-                                                fontSize="sm"
-                                                mb={2}
-                                                boxShadow="md"
-                                            >
-                                                <Text fontWeight="bold">• {e.title}</Text>
-                                                {e.description && (
-                                                    <Text fontSize="xs" mt={1}>
-                                                        {e.description}
+                                        startingEvents.map((e) => {
+                                            renderedEventIds.add(e.id);
+    
+                                            const start = new Date(e.startDateTime);
+                                            const end = new Date(e.endDateTime);
+    
+                                        
+                                            const durationMinutes = (end - start) / (1000 * 60);
+                                        
+                                            const pxPerMinute = 40 / 60;
+                                            const heightPx = Math.max(durationMinutes * pxPerMinute, 40); 
+    
+                                            return (
+                                                <Box
+                                                    key={e.id}
+                                                    bg="green.300"
+                                                    color="black"
+                                                    px={3}
+                                                    py={2}
+                                                    borderRadius="md"
+                                                    fontSize="sm"
+                                                    mb={2}
+                                                    boxShadow="md"
+                                                    style={{ minHeight: `${heightPx}px` }}
+                                                >
+                                                    <Text fontWeight="bold">• {e.title}</Text>
+                                                    {e.description && (
+                                                        <Text fontSize="xs" mt={1}>
+                                                            {e.description}
+                                                        </Text>
+                                                    )}
+                                                    <Text fontSize="xs" mt={1} fontStyle="italic">
+                                                        {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
                                                     </Text>
-                                                )}
-                                            </Box>
-                                        ))
+                                                </Box>
+                                            );
+                                        })
                                     )}
                                 </Box>
                             </Box>
@@ -389,6 +426,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
             </Box>
         );
     }
+    
+    
     
 
 
