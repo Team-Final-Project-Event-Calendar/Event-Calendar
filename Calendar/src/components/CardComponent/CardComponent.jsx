@@ -261,6 +261,7 @@ function CardComponent({ event, onDelete }) {
           </Box>
         ) : isParticipant ? (
           <Button
+            style={{ maxWidth: "fit-content", marginLeft: "auto" }}
             colorScheme="red"
             flex={1}
             onClick={handleLeaveEvent}
@@ -270,6 +271,7 @@ function CardComponent({ event, onDelete }) {
           </Button>
         ) : (
           <Button
+            style={{ maxWidth: "fit-content", marginLeft: "auto" }}
             colorScheme="blue"
             flex={1}
             onClick={handleEventJoin}
