@@ -16,8 +16,9 @@ function CardComponent({ event, onDelete }) {
   const [users, setUsers] = useState([]);
   const [isJoining, setIsJoining] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
-
-  const isParticipant = event.participants?.includes(user?._id);
+  const [isParticipant, setIsParticipant] = useState(
+    event.participants?.includes(user?._id)
+  );
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   const handleInvite = async () => {
@@ -88,8 +89,7 @@ function CardComponent({ event, onDelete }) {
         },
       });
 
-      alert("You have successfully joined the event!");
-      window.location.reload();
+      setIsParticipant(true);
     } catch (error) {
       console.error(error);
       const message = error.response?.data?.error || "Failed to join event.";
@@ -109,8 +109,7 @@ function CardComponent({ event, onDelete }) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("You have successfully left the event.");
-      window.location.reload();
+      setIsParticipant(false);
     } catch (error) {
       console.error("Failed to leave event:", error);
     } finally {

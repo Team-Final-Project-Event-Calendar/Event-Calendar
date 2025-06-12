@@ -30,11 +30,15 @@ function Authentication() {
     setUser({ ...user, [prop]: e.target.value });
 
   const handleLogin = async () => {
-    if (!user.email || !user.password)
-      return alert("Please enter email and password");
+    if (!user.email || !user.password) {
+      setSuccessMessage("");
+      setError({ general: "Please enter email and password" });
+      return;
+    }
     try {
       await login(user.email, user.password);
-      alert("Login successful!");
+      setError({});
+      setSuccessMessage("✅ Successfully logged in.");
       navigate(location.state?.from?.pathname ?? "/");
     } catch (err) {
       console.error("Login failed:", err);
@@ -42,7 +46,8 @@ function Authentication() {
         err?.response?.data?.msg ||
         err?.response?.data?.message ||
         "Login failed!";
-      alert(message);
+      setError({ general: message });
+      setSuccessMessage("");
     }
   };
 
@@ -90,7 +95,6 @@ function Authentication() {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const handleRegister = async () => {
     if (!validate()) return;
     const { username, phoneNumber, email, password, firstName, lastName } = user;
@@ -124,9 +128,9 @@ function Authentication() {
         err?.response?.data?.msg ||
         "❌ Failed to register.";
       setError({ general: msg });
+      setSuccessMessage("");
     }
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -156,8 +160,8 @@ function Authentication() {
             <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
             {successMessage && <div className="success">{successMessage}</div>}
+            {error.general && <div className="error">{error.general}</div>}
 
-            
             {mode === "register" && (
               <>
                 <div>
@@ -209,7 +213,6 @@ function Authentication() {
               </>
             )}
 
-    
             <div>
               <input
                 type="email"
@@ -230,17 +233,12 @@ function Authentication() {
               {error.password && <div className="error">{error.password}</div>}
             </div>
 
-         
-            {error.general && <div className="error">{error.general}</div>}
-
             <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
           </form>
-
         </>
       )}
     </div>
   );
-
 }
 
 export default Authentication;
