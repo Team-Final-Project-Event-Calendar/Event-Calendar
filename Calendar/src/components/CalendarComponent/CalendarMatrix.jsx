@@ -6,6 +6,39 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 function CalendarMatrix({ currentDate, view, onDayClick }) {
   const [events, setEvents] = useState([]);
 
+  const generateRepeatedEvents = (event) => {
+    const repeatDays = event.recurrenceRule?.interval || 1;
+    const repeatType = event.repeatType || "daily";
+
+    const baseDate = new Date(event.startDateTime);
+    if (isNaN(baseDate.getTime())) {
+      console.warn("Invalid startDateTime for event:", event);
+      return [];
+    }
+
+    const repeatedEvents = [];
+
+    for (let i = 0; i <= repeatDays; i++) {
+      const newDate = new Date(baseDate);
+
+      if (repeatType === "daily") {
+        newDate.setDate(baseDate.getDate() + i);
+      } else if (repeatType === "weekly") {
+        newDate.setDate(baseDate.getDate() + i * 7);
+      } else if (repeatType === "monthly") {
+        newDate.setMonth(baseDate.getMonth() + i);
+      }
+
+      repeatedEvents.push({
+        ...event,
+        startDateTime: newDate.toISOString(),
+        isRepeatedInstance: i > 0,
+      });
+    }
+
+    return repeatedEvents;
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -18,11 +51,24 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         });
         if (!response.ok) throw new Error("Failed to fetch events");
         const data = await response.json();
-        setEvents(data);
+
+        let allEvents = [];
+
+        data.forEach((event) => {
+          if (event.isRecurring) {
+            const repeats = generateRepeatedEvents(event);
+            allEvents.push(...repeats);
+          } else {
+            allEvents.push(event);
+          }
+        });
+
+        setEvents(allEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
+
     fetchEvents();
   }, []);
 
@@ -49,7 +95,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
   const getEventsForDay = (date) =>
     events.filter((e) => {
-      const eventDate = new Date(e.date || e.startDateTime);
+      const eventDate = new Date(e.startDateTime);
       return eventDate.toDateString() === date.toDateString();
     });
 
@@ -72,11 +118,10 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     minH: "160px",
     userSelect: "none",
     display: "flex",
-    margin: "3px",
     flexDirection: "column",
     justifyContent: "flex-start",
     overflow: "hidden",
-    bg: "",
+    backgroundColor: "",
     boxShadow: "sm",
     transition: "transform 0.15s ease, box-shadow 0.15s ease",
     _hover: {
@@ -272,19 +317,24 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     const day = new Date(currentDate);
     const dayEvents = getEventsForDay(day);
 
-    const dayViewStyle = {
-      borderWidth: "1px",
-      borderColor: "blue.300",
-      borderRadius: "lg",
-      p: 6,
-      bg: "blue.50",
-      boxShadow: "xl",
-      transition: "all 0.2s",
+    dayEvents.sort(
+      (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
+    );
+
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+
+    const renderedEventIds = new Set();
+
+    const formatTime = (dateStr) => {
+      const d = new Date(dateStr);
+      return `${String(d.getHours()).padStart(2, "0")}:${String(
+        d.getMinutes()
+      ).padStart(2, "0")}`;
     };
 
     return (
       <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={4} textAlign="right">
+        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
           {day.toLocaleDateString(undefined, {
             weekday: "long",
             year: "numeric",
@@ -293,36 +343,96 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
           })}
         </Text>
 
-        <Box {...dayViewStyle}>
-          <Text fontWeight="bold" mb={4}>
-            Events:
-          </Text>
-          {dayEvents.length === 0 ? (
-            <Text fontSize="sm" color="gray.600">
-              No events for this day.
-            </Text>
-          ) : (
-            dayEvents.map((e, i) => (
+        <Box
+          borderWidth="1px"
+          borderColor="blue.300"
+          borderRadius="lg"
+          bg=""
+          boxShadow="xl"
+        >
+          {hours.map((hour) => {
+            if (
+              Array.from(renderedEventIds).some((id) => {
+                const e = dayEvents.find((ev) => ev.id === id);
+                if (!e) return false;
+                const start = new Date(e.startDateTime);
+                const end = new Date(e.endDateTime);
+                return hour > start.getHours() && hour < end.getHours();
+              })
+            ) {
+              return null;
+            }
+
+            const startingEvents = dayEvents.filter((e) => {
+              const start = new Date(e.startDateTime);
+              return start.getHours() === hour;
+            });
+
+            return (
               <Box
-                key={i}
-                bg="green.300"
-                color="black.900"
+                key={hour}
+                borderBottom="1px solid #CBD5E0"
                 px={4}
-                py={5}
-                borderRadius="md"
-                fontSize="sm"
-                mt={3}
-                boxShadow="md"
+                py={3}
+                display="flex"
+                alignItems="flex-start"
+                position="relative"
               >
-                <Text fontWeight="bold">• {e.title}</Text>
-                {e.description && (
-                  <Text fontSize="xs" mt={1} color="black.900">
-                    • {e.description}
-                  </Text>
-                )}
+                <Text fontWeight="bold" minW="60px">
+                  {String(hour).padStart(2, "0")}:00
+                </Text>
+                <Box flex="1" pl={4}>
+                  {startingEvents.length === 0 ? (
+                    <Text fontSize="sm" color="gray.500">
+                      No events
+                    </Text>
+                  ) : (
+                    startingEvents.map((e) => {
+                      renderedEventIds.add(e.id);
+
+                      const start = new Date(e.startDateTime);
+                      const end = new Date(e.endDateTime);
+
+                      const durationMinutes = (end - start) / (1000 * 60);
+
+                      const pxPerMinute = 40 / 60;
+                      const heightPx = Math.max(
+                        durationMinutes * pxPerMinute,
+                        40
+                      );
+
+                      return (
+                        <Box
+                          key={e.id}
+                          bg="green.300"
+                          color="black"
+                          px={3}
+                          py={2}
+                          borderRadius="md"
+                          fontSize="sm"
+                          mb={2}
+                          boxShadow="md"
+                          style={{ minHeight: `${heightPx}px` }}
+                        >
+                          <Text fontWeight="bold">• {e.title}</Text>
+                          {e.description && (
+                            <Text fontSize="xs" mt={1}>
+                              {e.description}
+                            </Text>
+                          )}
+                          <Text fontSize="xs" mt={1} fontStyle="italic">
+                            {`${formatTime(e.startDateTime)} - ${formatTime(
+                              e.endDateTime
+                            )}`}
+                          </Text>
+                        </Box>
+                      );
+                    })
+                  )}
+                </Box>
               </Box>
-            ))
-          )}
+            );
+          })}
         </Box>
       </Box>
     );
