@@ -227,10 +227,10 @@ function CardComponent({ event, onDelete }) {
                     border: "1px solid #ccc",
                     borderRadius: "4px",
                     fontSize: "14px",
-                    color: "white",
+                    color: "black",
                   }}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled >
                     Select username
                   </option>
                   {filteredUsers.map((u) => (
