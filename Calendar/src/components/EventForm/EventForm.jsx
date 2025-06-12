@@ -21,7 +21,7 @@ const EventForm = ({ onEventCreated }) => {
     endDateTime: "",
     isRecurring: false,
     isLocation: false,
-    participants: [], 
+    participants: [],
     location: {
       address: "",
       city: "",
@@ -35,7 +35,7 @@ const EventForm = ({ onEventCreated }) => {
   });
 
   const { user } = useContext(AuthContext);
-  const [users, setUsers ] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -52,15 +52,15 @@ const EventForm = ({ onEventCreated }) => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setUsers(response.data); 
+        setUsers(response.data);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
     };
-  
+
     fetchUsers();
   }, []);
-  
+
   const addParticipant = () => {
     const trimmedName = participantName.trim();
     if (trimmedName) {
@@ -68,36 +68,36 @@ const EventForm = ({ onEventCreated }) => {
         ...prev,
         participants: [...prev.participants, trimmedName],
       }));
-      setParticipantName(""); 
+      setParticipantName("");
     }
   };
-  
 
 
-const removeParticipant = (index) => {
-  setEvent((prev) => ({
-    ...prev,
-    participants: prev.participants.filter((_, i) => i !== index),
-  }));
-};
 
-
-const handleParticipantChange = (index, value) => {
-  const newParticipants = [...event.participants];
-  newParticipants[index] = value;
-  setEvent((prev) => ({
-    ...prev,
-    participants: newParticipants,
-  }));
-
-
-  if (errors.participants) {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      participants: "",
+  const removeParticipant = (index) => {
+    setEvent((prev) => ({
+      ...prev,
+      participants: prev.participants.filter((_, i) => i !== index),
     }));
-  }
-};
+  };
+
+
+  const handleParticipantChange = (index, value) => {
+    const newParticipants = [...event.participants];
+    newParticipants[index] = value;
+    setEvent((prev) => ({
+      ...prev,
+      participants: newParticipants,
+    }));
+
+
+    if (errors.participants) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        participants: "",
+      }));
+    }
+  };
 
 
   const handleChange = (prop, value) => {
@@ -189,11 +189,11 @@ const handleParticipantChange = (index, value) => {
     if (event.isRecurring) {
       const recurrenceErrors = {};
       if (!event.recurrenceRule.frequency) {
-        recurrenceErrors.frequency =
-          "Frequency is required for recurring events.";
+        recurrenceErrors.frequency = "Frequency is required for recurring events.";
       }
-      if (!event.recurrenceRule.endDate) {
-        recurrenceErrors.endDate = "End date is required for recurring events.";
+
+      if (!event.recurrenceRule.interval || event.recurrenceRule.interval < 1) {
+        recurrenceErrors.interval = "Interval must be at least 1.";
       }
 
       if (Object.keys(recurrenceErrors).length > 0) {
@@ -250,7 +250,7 @@ const handleParticipantChange = (index, value) => {
         endDateTime: "",
         isRecurring: false,
         isLocation: false,
-        participants: [], 
+        participants: [],
         location: {
           address: "",
           city: "",
@@ -311,108 +311,108 @@ const handleParticipantChange = (index, value) => {
           </Field.Root>
 
           <Field.Root>
-  <Field.Label>Add Location</Field.Label>
-  <NativeSelect.Root>
-    <NativeSelect.Field
-      value={event.isLocation ? "yes" : "no"}
-      onChange={(e) =>
-        handleChange("isLocation", e.target.value === "yes")
-      }
-    >
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </NativeSelect.Field>
-    <NativeSelect.Indicator />
-  </NativeSelect.Root>
-</Field.Root>
+            <Field.Label>Add Location</Field.Label>
+            <NativeSelect.Root>
+              <NativeSelect.Field
+                value={event.isLocation ? "yes" : "no"}
+                onChange={(e) =>
+                  handleChange("isLocation", e.target.value === "yes")
+                }
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
+          </Field.Root>
 
-{event.isLocation && (
-  <>
-    <Field.Root>
-      <Field.Label>Address</Field.Label>
-      <Input
-        value={event.location.address}
-        onChange={(e) => handleLocationChange("address", e.target.value)}
-        isInvalid={!!errors.location?.address}
-      />
-      {errors.location?.address && (
-        <Text color="red.500">{errors.location.address}</Text>
-      )}
-    </Field.Root>
+          {event.isLocation && (
+            <>
+              <Field.Root>
+                <Field.Label>Address</Field.Label>
+                <Input
+                  value={event.location.address}
+                  onChange={(e) => handleLocationChange("address", e.target.value)}
+                  isInvalid={!!errors.location?.address}
+                />
+                {errors.location?.address && (
+                  <Text color="red.500">{errors.location.address}</Text>
+                )}
+              </Field.Root>
 
-    <Field.Root>
-      <Field.Label>City</Field.Label>
-      <Input
-        value={event.location.city}
-        onChange={(e) => handleLocationChange("city", e.target.value)}
-        isInvalid={!!errors.location?.city}
-      />
-      {errors.location?.city && (
-        <Text color="red.500">{errors.location.city}</Text>
-      )}
-    </Field.Root>
+              <Field.Root>
+                <Field.Label>City</Field.Label>
+                <Input
+                  value={event.location.city}
+                  onChange={(e) => handleLocationChange("city", e.target.value)}
+                  isInvalid={!!errors.location?.city}
+                />
+                {errors.location?.city && (
+                  <Text color="red.500">{errors.location.city}</Text>
+                )}
+              </Field.Root>
 
-    <Field.Root>
-      <Field.Label>Country</Field.Label>
-      <Input
-        value={event.location.country}
-        onChange={(e) => handleLocationChange("country", e.target.value)}
-        isInvalid={!!errors.location?.country}
-      />
-      {errors.location?.country && (
-        <Text color="red.500">{errors.location.country}</Text>
-      )}
-    </Field.Root>
-  </>
-)}
+              <Field.Root>
+                <Field.Label>Country</Field.Label>
+                <Input
+                  value={event.location.country}
+                  onChange={(e) => handleLocationChange("country", e.target.value)}
+                  isInvalid={!!errors.location?.country}
+                />
+                {errors.location?.country && (
+                  <Text color="red.500">{errors.location.country}</Text>
+                )}
+              </Field.Root>
+            </>
+          )}
 
-<Field.Root>
-  <Field.Label>Participants</Field.Label>
-  <Stack direction="row" spacing={2} mb={2}>
-    <NativeSelect.Root>
-      <NativeSelect.Field
-        value={participantName}
-        onChange={(e) => setParticipantName(e.target.value)}
-      >
-        <option value="">Select a user</option>
-        {users
-          .filter((u) => u._id !== user?._id)
-          .map((u) => (
-            <option key={u._id} value={u.username}>
-              {u.username}
-            </option>
-          ))}
-      </NativeSelect.Field>
-      <NativeSelect.Indicator />
-    </NativeSelect.Root>
-    <Button onClick={addParticipant} size="sm" variant="outline">
-      + Add
-    </Button>
-  </Stack>
+          <Field.Root>
+            <Field.Label>Participants</Field.Label>
+            <Stack direction="row" spacing={2} mb={2}>
+              <NativeSelect.Root>
+                <NativeSelect.Field
+                  value={participantName}
+                  onChange={(e) => setParticipantName(e.target.value)}
+                >
+                  <option value="">Select a user</option>
+                  {users
+                    .filter((u) => u._id !== user?._id)
+                    .map((u) => (
+                      <option key={u._id} value={u.username}>
+                        {u.username}
+                      </option>
+                    ))}
+                </NativeSelect.Field>
+                <NativeSelect.Indicator />
+              </NativeSelect.Root>
+              <Button onClick={addParticipant} size="sm" variant="outline">
+                + Add
+              </Button>
+            </Stack>
 
-  {event.participants.map((participant, index) => (
-    <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
-      <Input
-        value={participant}
-        onChange={(e) => handleParticipantChange(index, e.target.value)}
-        isInvalid={!!errors.participants}
-      />
-      <Button
-        colorScheme="red"
-        onClick={() => removeParticipant(index)}
-        size="sm"
-      >
-        Remove
-      </Button>
-    </Stack>
-  ))}
+            {event.participants.map((participant, index) => (
+              <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
+                <Input
+                  value={participant}
+                  onChange={(e) => handleParticipantChange(index, e.target.value)}
+                  isInvalid={!!errors.participants}
+                />
+                <Button
+                  colorScheme="red"
+                  onClick={() => removeParticipant(index)}
+                  size="sm"
+                >
+                  Remove
+                </Button>
+              </Stack>
+            ))}
 
-  {errors.participants && (
-    <Text color="red.500" mt={1}>
-      {errors.participants}
-    </Text>
-  )}
-</Field.Root>
+            {errors.participants && (
+              <Text color="red.500" mt={1}>
+                {errors.participants}
+              </Text>
+            )}
+          </Field.Root>
 
           <Field.Root>
             <Field.Label>Type</Field.Label>
@@ -481,9 +481,7 @@ const handleParticipantChange = (index, value) => {
                 <NativeSelect.Root>
                   <NativeSelect.Field
                     value={event.recurrenceRule.frequency}
-                    onChange={(e) =>
-                      handleRecurrenceChange("frequency", e.target.value)
-                    }
+                    onChange={(e) => handleRecurrenceChange("frequency", e.target.value)}
                   >
                     <option value="">Select frequency</option>
                     <option value="daily">Daily</option>
@@ -498,30 +496,20 @@ const handleParticipantChange = (index, value) => {
               </Field.Root>
 
               <Field.Root>
-                <Field.Label>Interval</Field.Label>
+                <Field.Label>Interval (e.g. every X days/weeks/months)</Field.Label>
                 <Input
                   type="number"
                   min={1}
                   value={event.recurrenceRule.interval}
-                  onChange={(e) =>
-                    handleRecurrenceChange("interval", e.target.value)
-                  }
+                  onChange={(e) => handleRecurrenceChange("interval", Number(e.target.value))}
+                  isInvalid={!!errors.recurrenceRule?.interval}
                 />
-              </Field.Root>
-
-              <Field.Root>
-                <Field.Label>Recurrence End Date</Field.Label>
-                <Input
-                  type="date"
-                  value={event.recurrenceRule.endDate}
-                  onChange={(e) =>
-                    handleRecurrenceChange("endDate", e.target.value)
-                  }
-                />
-                {errors.recurrenceRule?.endDate && (
-                  <Text color="red.500">{errors.recurrenceRule.endDate}</Text>
+                {errors.recurrenceRule?.interval && (
+                  <Text color="red.500">{errors.recurrenceRule.interval}</Text>
                 )}
               </Field.Root>
+
+
             </>
           )}
         </Fieldset.Content>
