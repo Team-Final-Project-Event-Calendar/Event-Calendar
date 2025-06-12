@@ -8,6 +8,9 @@ import authRoutes from "./controllers/auth.controller.js";
 import verifyToken from "./verify-token.js";
 import User from "./models/user.model.js";
 import Event from "./models/event.model.js";
+import EventSeries from "./models/eventSeries.model.js";
+
+
 const app = express();
 
 app.use(
@@ -77,35 +80,35 @@ mongoose
       try {
         const { username } = req.body;
         const eventId = req.params.id;
-    
+
         if (!username) {
           return res.status(400).json({ message: "Username is required" });
         }
-    
+
 
         const userToInvite = await User.findOne({
           username: new RegExp(`^${username}$`, "i"),
         });
-    
+
         if (!userToInvite) {
           return res.status(404).json({ message: "User not found" });
         }
-    
+
 
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ message: "Event not found" });
         }
-    
-  
+
+
         if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
           return res.status(400).json({ message: "User already a participant" });
         }
-    
+
         event.participants.push(userToInvite._id);
-    
+
         await event.save();
-    
+
         res.json({ message: "User invited successfully" });
       } catch (err) {
         console.error(err);
@@ -116,44 +119,44 @@ mongoose
       try {
         const eventId = req.params.id;
         const participantId = req.params.participantId;
-    
+
         const event = await Event.findById(eventId);
-    
+
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
-    
-        
+
+
         if (event.userId.toString() !== req.user.id) {
           return res.status(403).json({ error: "You do not have permission to modify this event" });
         }
-    
-      
+
+
         const participantExists = event.participants.includes(participantId);
         if (!participantExists) {
           return res.status(400).json({ error: "Participant not found in this event" });
         }
-    
-      
+
+
         if (participantId === req.user.id) {
           return res.status(400).json({ error: "Event owner cannot remove themselves" });
         }
-    
-      
+
+
         event.participants = event.participants.filter(
           (id) => id.toString() !== participantId
         );
-    
+
         await event.save();
-    
+
         res.status(200).json({ message: "Participant removed", participants: event.participants });
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
-    
-    
-  
+
+
+
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ userId: req.user.id });
@@ -283,6 +286,79 @@ mongoose
           return res.status(404).json({ error: "Event not found" });
         }
         res.json({ message: "Event deleted successfully" });
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    // POST - Create new EventSeries
+    app.post("/api/event-series", verifyToken, async (req, res) => {
+      try {
+        const newSeries = new EventSeries({
+          name: req.body.name,
+          creatorId: req.user.id,
+          startingEventId: req.body.startingEventId,
+          endingEventId: req.body.endingEventId,
+          seriesType: req.body.seriesType,
+          recurrenceRule: req.body.recurrenceRule,
+          eventsId: req.body.eventsId,
+          isIndefinite: req.body.isIndefinite
+        });
+
+        const savedSeries = await newSeries.save();
+        res.status(201).json(savedSeries);
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    // GET - Fetch all EventSeries for a user
+    app.get("/api/event-series", verifyToken, async (req, res) => {
+      try {
+        const series = await EventSeries.find({ creatorId: req.user.id })
+          .populate('startingEventId endingEventId eventsId');
+        res.json(series);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
+    // GET - Fetch specific EventSeries
+    app.get("/api/event-series/:id", verifyToken, async (req, res) => {
+      try {
+        const series = await EventSeries.findById(req.params.id)
+          .populate('startingEventId endingEventId eventsId');
+        if (!series) {
+          return res.status(404).json({ error: "Event series not found" });
+        }
+        res.json(series);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
+    // PUT - Update EventSeries
+    app.put("/api/event-series/:id", verifyToken, async (req, res) => {
+      try {
+        const updatedSeries = await EventSeries.findByIdAndUpdate(
+          req.params.id,
+          { ...req.body },
+          { new: true }
+        );
+        res.json(updatedSeries);
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    });
+
+    // DELETE - Delete EventSeries
+    app.delete("/api/event-series/:id", verifyToken, async (req, res) => {
+      try {
+        const deletedSeries = await EventSeries.findByIdAndDelete(req.params.id);
+        if (!deletedSeries) {
+          return res.status(404).json({ error: "Event series not found" });
+        }
+        res.json({ message: "Event series deleted successfully" });
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
