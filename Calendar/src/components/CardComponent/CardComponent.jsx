@@ -1,10 +1,4 @@
-import {
-  Button,
-  Image,
-  Text,
-  Box,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Button, Image, Text, Box, useDisclosure } from "@chakra-ui/react";
 import "./CardComponent.css";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -42,8 +36,6 @@ function CardComponent({ event, onDelete, participants }) {
     }
   };
 
-
-
   const handleSendInvite = async () => {
     if (!selectedUsername) {
       setFeedback("Please select a username");
@@ -67,8 +59,7 @@ function CardComponent({ event, onDelete, participants }) {
       setSelectedUsername("");
       setIsInviteVisible(false);
     } catch (error) {
-      const msg =
-        error.response?.data?.message || "Failed to send invite";
+      const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
       console.error(error);
     }
@@ -87,38 +78,45 @@ function CardComponent({ event, onDelete, participants }) {
       _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
     >
       <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.800">
-        <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
+        <Link
+          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
+        >
           {event.title}
         </Link>
       </Text>
-  
+
       <Text fontSize="sm" color="blue.500" mb={1} ml={2}>
-        <Link to={`/eventdetails/${event._id || event.title + event.startDateTime}`}>
+        <Link
+          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
+        >
           See Details
         </Link>
       </Text>
-  
+
       <Text fontSize="md" color="gray.600" mb={3}>
         {event.description}
       </Text>
-  
+
       <Box display="flex" alignItems="center">
         <Text fontSize="sm" color="gray.500" mb={4}>
           {(event.startDateTime || event.startDate) &&
-            new Date(event.startDateTime || event.startDate).toLocaleString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            new Date(event.startDateTime || event.startDate).toLocaleString(
+              undefined,
+              {
+                year: "numeric",
+                month: "long",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}
         </Text>
-  
+
         <Text mb={1} color={typeColor} ml="auto">
           {event.type}
         </Text>
       </Box>
-  
+
       <Box display="flex" gap={2} mt={3}>
         {user && user._id === event.userId ? (
           <Box width="100%">
@@ -133,7 +131,7 @@ function CardComponent({ event, onDelete, participants }) {
             >
               Invite
             </Button>
-  
+
             {isInviteVisible && (
               <Box
                 className="invite-form"
@@ -173,7 +171,7 @@ function CardComponent({ event, onDelete, participants }) {
                     </option>
                   ))}
                 </select>
-  
+
                 <Button
                   variant="solid"
                   colorScheme="blue"
@@ -183,7 +181,7 @@ function CardComponent({ event, onDelete, participants }) {
                 >
                   Send
                 </Button>
-  
+
                 {feedback && <Text color="red.500">{feedback}</Text>}
               </Box>
             )}
@@ -193,14 +191,16 @@ function CardComponent({ event, onDelete, participants }) {
             Join Event
           </Button>
         )}
-  
+
         {user && user._id === event.userId && (
           <Button
             variant="ghost"
             color="gray"
             onClick={(e) => {
               e.stopPropagation();
-              if (window.confirm("Are you sure you want to delete this event?")) {
+              if (
+                window.confirm("Are you sure you want to delete this event?")
+              ) {
                 onDelete?.(event);
               }
             }}
@@ -211,7 +211,6 @@ function CardComponent({ event, onDelete, participants }) {
       </Box>
     </Box>
   );
-  
 }
 
 export default CardComponent;
