@@ -6,9 +6,8 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 function CalendarMatrix({ currentDate, view, onDayClick }) {
     const [events, setEvents] = useState([]);
 
-
     const generateRepeatedEvents = (event) => {
-        const interval = event.repeatInterval || 1; 
+        const repeatDays = event.recurrenceRule?.interval || 1;
         const repeatType = event.repeatType || 'daily';
     
         const baseDate = new Date(event.startDateTime);
@@ -18,9 +17,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         }
     
         const repeatedEvents = [];
-        let i = 0;
     
-        while (true) {
+        for (let i = 0; i <= repeatDays; i++) { 
             const newDate = new Date(baseDate);
     
             if (repeatType === 'daily') {
@@ -31,16 +29,11 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                 newDate.setMonth(baseDate.getMonth() + i);
             }
     
-            const diffInDays = Math.floor((newDate - baseDate) / (1000 * 60 * 60 * 24));
-            if (diffInDays > interval) break; 
-    
             repeatedEvents.push({
                 ...event,
                 startDateTime: newDate.toISOString(),
-                isRepeatedInstance: i > 0,
+                isRepeatedInstance: i > 0, 
             });
-    
-            i++;
         }
     
         return repeatedEvents;
