@@ -199,6 +199,54 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
         </div>
       )}
 
+      {/* Manual Event Selection (only for manual series) */}
+      {series.seriesType === "manual" && (
+        <div style={{ marginBottom: "1rem" }}>
+          <label>Select Events for Manual Series:</label>
+          <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "4px", maxHeight: "200px", overflowY: "auto" }}>
+            {events.length === 0 ? (
+              <p>No events available. Create some events first.</p>
+            ) : (
+              events.map((event) => (
+                <div key={event._id} style={{ marginBottom: "0.5rem" }}>
+                  <label style={{ display: "flex", alignItems: "center" }}>
+                    <input
+                      type="checkbox"
+                      checked={series.eventsId.includes(event._id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          // Add event to series
+                          setSeries({
+                            ...series,
+                            eventsId: [...series.eventsId, event._id]
+                          });
+                        } else {
+                          // Remove event from series
+                          setSeries({
+                            ...series,
+                            eventsId: series.eventsId.filter(id => id !== event._id)
+                          });
+                        }
+                      }}
+                      style={{ marginRight: "0.5rem" }}
+                    />
+                    <span>
+                      {event.title} - {new Date(event.startDateTime).toLocaleDateString()}
+                      {event.location?.city && ` (${event.location.city})`}
+                    </span>
+                  </label>
+                </div>
+              ))
+            )}
+          </div>
+          {series.eventsId.length > 0 && (
+            <p style={{ marginTop: "0.5rem", color: "#666" }}>
+              {series.eventsId.length} event(s) selected
+            </p>
+          )}
+        </div>
+      )}
+
       <button type="submit" style={{ width: "100%", padding: "0.75rem", background: "#1976d2", color: "white", border: "none", borderRadius: "4px" }}>
         Create Event Series
       </button>
