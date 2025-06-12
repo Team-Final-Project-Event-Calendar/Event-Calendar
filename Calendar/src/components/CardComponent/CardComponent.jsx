@@ -1,4 +1,11 @@
-import { Button, Image, Text, Box, useDisclosure, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Image,
+  Text,
+  Box,
+  useDisclosure,
+  Input,
+} from "@chakra-ui/react";
 import "./CardComponent.css";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -135,7 +142,7 @@ function CardComponent({ event, onDelete }) {
       transition="all 0.3s"
       _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
     >
-      <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.800">
+      <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.400">
         <Link
           to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
         >
@@ -205,7 +212,6 @@ function CardComponent({ event, onDelete }) {
                 mt="10px"
                 width="100%"
               >
-          
                 <Input
                   placeholder="Search users..."
                   value={searchTerm}
@@ -214,7 +220,6 @@ function CardComponent({ event, onDelete }) {
                   size="sm"
                 />
 
-      
                 <select
                   value={selectedUsername}
                   onChange={(e) => {
@@ -230,7 +235,7 @@ function CardComponent({ event, onDelete }) {
                     color: "black",
                   }}
                 >
-                  <option value="" disabled >
+                  <option value="" disabled>
                     Select username
                   </option>
                   {filteredUsers.map((u) => (
