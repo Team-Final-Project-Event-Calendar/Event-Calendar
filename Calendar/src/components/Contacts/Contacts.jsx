@@ -215,7 +215,7 @@ function Contacts() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search username, email or phone"
+            placeholder="Search"
             style={{
               background: "#5565dd",
               borderRadius: "5px",
