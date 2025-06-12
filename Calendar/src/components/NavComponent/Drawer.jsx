@@ -60,6 +60,13 @@ function DrawerComponent({ onLogout }) {
               <Button
                 variant="ghost"
                 fontSize={18}
+                onClick={() => navigate("/event-series")}
+              >
+                My Event Series
+              </Button>
+              <Button
+                variant="ghost"
+                fontSize={18}
                 onClick={() => navigate("/contacts")}
               >
                 Contacts

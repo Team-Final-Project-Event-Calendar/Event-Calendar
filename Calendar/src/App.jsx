@@ -14,6 +14,7 @@ import CalendarComponent from "./components/CalendarComponent/CalendarComponent"
 import EventDetails from "./pages/EventDetails/EventDetails";
 import Contacts from "./components/Contacts/Contacts";
 import UserProfile from "./components/UserProfile/UserProfile";
+import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
 function App() {
   return (
     <>
@@ -78,6 +79,15 @@ function App() {
           element={
             <ProtectedRoute>
               <EventDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/event-series"
+          element={
+            <ProtectedRoute>
+              <EventSeriesPage />
             </ProtectedRoute>
           }
         />
