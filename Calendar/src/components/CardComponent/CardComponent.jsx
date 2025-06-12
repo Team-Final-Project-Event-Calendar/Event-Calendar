@@ -1,4 +1,4 @@
-import { Button, Image, Text, Box, useDisclosure } from "@chakra-ui/react";
+import { Button, Image, Text, Box, useDisclosure, Input } from "@chakra-ui/react";
 import "./CardComponent.css";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -16,9 +16,11 @@ function CardComponent({ event, onDelete }) {
   const [users, setUsers] = useState([]);
   const [isJoining, setIsJoining] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isParticipant, setIsParticipant] = useState(
     event.participants?.includes(user?._id)
   );
+
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
   const handleInvite = async () => {
@@ -117,6 +119,10 @@ function CardComponent({ event, onDelete }) {
     }
   };
 
+  const filteredUsers = users.filter((u) =>
+    u.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Box
       className="card-container"
@@ -199,6 +205,16 @@ function CardComponent({ event, onDelete }) {
                 mt="10px"
                 width="100%"
               >
+          
+                <Input
+                  placeholder="Search users..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  mb={2}
+                  size="sm"
+                />
+
+      
                 <select
                   value={selectedUsername}
                   onChange={(e) => {
@@ -211,13 +227,13 @@ function CardComponent({ event, onDelete }) {
                     border: "1px solid #ccc",
                     borderRadius: "4px",
                     fontSize: "14px",
-                    color: "black",
+                    color: "white",
                   }}
                 >
                   <option value="" disabled>
                     Select username
                   </option>
-                  {users.map((u) => (
+                  {filteredUsers.map((u) => (
                     <option key={u._id} value={u.username}>
                       {u.username}
                     </option>
