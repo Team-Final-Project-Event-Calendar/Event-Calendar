@@ -60,7 +60,10 @@ function CalendarComponent() {
         </div>
       </div>
 
-      <div className="view-dropdown-container">
+      <div
+        className="view-dropdown-container"
+        style={{ borderRadius: "20px", padding: "10px" }}
+      >
         <div className="view-dropdown">
           <button>View: {view.charAt(0).toUpperCase() + view.slice(1)}</button>
           <div className="view-dropdown-content">
