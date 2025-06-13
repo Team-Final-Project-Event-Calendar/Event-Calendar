@@ -83,8 +83,10 @@ function ProfileDetailsComponent() {
 
   const handleDeleteRequest = async () => {
     const confirm = window.confirm(
-      setMessage('Are you sure you want to delete your account? This action cannot be undone.')
-    )
+      setMessage(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    );
     if (!confirm) return;
 
     try {
@@ -99,7 +101,6 @@ function ProfileDetailsComponent() {
           username: user.username,
           reason: "User requested account deletion",
         }),
-
       });
       const data = await response.json();
 
@@ -117,7 +118,6 @@ function ProfileDetailsComponent() {
     }
   };
 
-
   const fieldsToShow = [
     { key: "avatar", label: "Avatar" },
     { key: "firstName", label: "First Name" },
@@ -131,15 +131,15 @@ function ProfileDetailsComponent() {
     <div
       className="css-1tudbfc"
       style={{ width: "60vw", margin: "0px auto" }}
-    // style={{
-    //   maxWidth: "60vw",
-    //   margin: "40px auto",
-    //   padding: 32,
-    //   borderRadius: 16,
-    //   background: "#fff",
-    //   boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
-    //   border: "1px solid #e0e0e0",
-    // }}
+      // style={{
+      //   maxWidth: "60vw",
+      //   margin: "40px auto",
+      //   padding: 32,
+      //   borderRadius: 16,
+      //   background: "#fff",
+      //   boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+      //   border: "1px solid #e0e0e0",
+      // }}
     >
       <h2
         style={{
@@ -251,33 +251,36 @@ function ProfileDetailsComponent() {
                 Save
               </Button>
             </div>
-            <div>
-              <button
-                onClick={handleDeleteRequest}
-                style={{
-                  backgroundColor: '#dc2626',
-                  color: 'white',
-                  padding: '16px 32px',
-                  borderRadius: '8px',
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s ease',
-                }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#b91c1c'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = '#dc2626'}
-              >
-                Request Account Deletion
-              </button>
 
+            {user.role === user && (
+              <div>
+                <button
+                  onClick={handleDeleteRequest}
+                  style={{
+                    backgroundColor: "#dc2626",
+                    color: "white",
+                    padding: "16px 32px",
+                    borderRadius: "8px",
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#b91c1c")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#dc2626")
+                  }
+                >
+                  Request Account Deletion
+                </button>
 
-
-
-              {message && <p className="text-green-600 mt-2">{message}</p>}
-              {error && <p className="text-red-600 mt-2">{error}</p>}
-            </div>
-
+                {message && <p className="text-green-600 mt-2">{message}</p>}
+                {error && <p className="text-red-600 mt-2">{error}</p>}
+              </div>
+            )}
           </form>
         </ul>
       </div>
