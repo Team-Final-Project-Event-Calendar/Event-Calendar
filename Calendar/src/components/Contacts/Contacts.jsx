@@ -78,7 +78,7 @@ function Contacts() {
       <div
         className="all-contacts"
         style={{
-          width: "300px",
+          width: "250px",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           padding: "20px",

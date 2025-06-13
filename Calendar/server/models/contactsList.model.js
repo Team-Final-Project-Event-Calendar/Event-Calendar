@@ -19,4 +19,8 @@ const contactsListSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("ContactsList", contactsListSchema);
+const ContactsList =
+  mongoose.models.ContactsList ||
+  mongoose.model("ContactsList", contactsListSchema);
+
+export default ContactsList;

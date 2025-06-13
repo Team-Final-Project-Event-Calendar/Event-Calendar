@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
-
+import { FaPlus } from "react-icons/fa";
+import { FaMinus } from "react-icons/fa";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const CreateContactsListForm = () => {
@@ -10,8 +11,8 @@ const CreateContactsListForm = () => {
   const [success, setSuccess] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
   const [currentList, setCurrentList] = useState([]);
+  const [isVisible, setIsvisible] = useState(false);
 
   const addUser = (username, id) => {
     if (currentList.find((u) => u.id === id)) {
@@ -43,8 +44,6 @@ const CreateContactsListForm = () => {
         setAllUsers(response.data);
       } catch (err) {
         console.error("Error fetching contacts:", err.response?.data || err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -52,6 +51,7 @@ const CreateContactsListForm = () => {
   }, [token]);
 
   const handleSubmit = async (e) => {
+    debugger;
     e.preventDefault();
 
     if (!user?._id) {
@@ -94,86 +94,210 @@ const CreateContactsListForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-3xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-10 space-y-6"
+    <div
+      style={{
+        maxWidth: "300px",
+        margin: "0 auto",
+        padding: "24px",
+        backgroundColor: "var(--bg-color)",
+        borderRadius: "16px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        marginTop: "40px",
+      }}
     >
-      <h2 className="text-2xl font-bold text-center text-gray-800">
-        Create a Contacts List
-      </h2>
-
-      {error && <p className="text-red-500 text-center">{error}</p>}
-      {success && (
-        <p className="text-green-600 text-center">List created successfully!</p>
-      )}
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="title" className="text-sm font-semibold text-gray-600">
-          List Title
-        </label>
-        <input
-          id="title"
-          type="text"
-          placeholder="e.g. Gym Buddies"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-        />
+      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        <h2
+          style={{
+            fontSize: "1.3rem",
+            fontWeight: "bold",
+            textAlign: "center",
+            color: "var(--text-color)",
+          }}
+        >
+          Create a Contacts List
+        </h2>
+        {isVisible === true ? (
+          <div onClick={() => setIsvisible(false)}>
+            <FaMinus />
+          </div>
+        ) : (
+          <div onClick={() => setIsvisible(true)}>
+            <FaPlus></FaPlus>
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* All Users */}
-        <div className="bg-gray-100 p-4 rounded-md shadow-inner">
-          <h3 className="text-lg font-semibold mb-2 text-gray-700">
-            All Users
-          </h3>
-          <div className="max-h-60 overflow-y-auto space-y-1">
-            {allUsers.map((user) => (
-              <div
-                key={user._id}
-                onClick={() => addUser(user.username, user._id)}
-                className="cursor-pointer px-3 py-1 bg-white rounded hover:bg-blue-100 text-gray-800 border"
-              >
-                {user.username}
-              </div>
-            ))}
-            {allUsers.length === 0 && (
-              <p className="text-sm text-gray-500 italic">No users available</p>
-            )}
-          </div>
-        </div>
+      {isVisible === true ? (
+        <div>
+          {error && (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          )}
+          {success && (
+            <p style={{ color: "green", textAlign: "center" }}>
+              List created successfully!
+            </p>
+          )}
 
-        {/* Selected Users */}
-        <div className="bg-blue-50 p-4 rounded-md shadow-inner">
-          <h3 className="text-lg font-semibold mb-2 text-gray-700">
-            Selected Users
-          </h3>
-          <div className="max-h-60 overflow-y-auto space-y-1">
-            {currentList.map((u) => (
-              <div
-                key={u.id}
-                onClick={() => removeUser(u.id)}
-                className="cursor-pointer px-3 py-1 bg-white rounded hover:bg-red-100 text-gray-800 border"
-              >
-                {u.username}{" "}
-                <span className="text-xs text-red-500">(click to remove)</span>
-              </div>
-            ))}
-            {currentList.length === 0 && (
-              <p className="text-sm text-gray-500 italic">No users selected</p>
-            )}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              htmlFor="title"
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "var(--label-color)",
+              }}
+            >
+              List Title
+            </label>
+            <input
+              id="title"
+              type="text"
+              placeholder="e.g. Gym Buddies"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "8px",
+                border: "1px solid var(--border-color)",
+                borderRadius: "4px",
+                outline: "none",
+                transition: "border-color 0.3s",
+              }}
+            />
           </div>
-        </div>
-      </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
-      >
-        Create List
-      </button>
-    </form>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}
+          >
+            {/* All Users */}
+            <div
+              style={{
+                backgroundColor: "var(--all-users-bg-color)",
+                padding: "16px",
+                borderRadius: "8px",
+                boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "600",
+                  marginBottom: "8px",
+                  color: "var(--all-users-text-color)",
+                }}
+              >
+                All Users
+              </h3>
+              <div style={{ maxHeight: "240px", overflowY: "auto" }}>
+                {allUsers.map((user) => (
+                  <div
+                    key={user._id}
+                    onClick={() => addUser(user.username, user._id)}
+                    style={{
+                      cursor: "pointer",
+                      padding: "8px",
+                      backgroundColor: "var(--user-bg-color)",
+                      borderRadius: "4px",
+                      marginBottom: "4px",
+                      border: "1px solid var(--user-border-color)",
+                      transition: "background-color 0.3s",
+                    }}
+                  >
+                    {user.username}
+                  </div>
+                ))}
+                {allUsers.length === 0 && (
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "var(--no-users-text-color)",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    No users available
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Selected Users */}
+            <div
+              style={{
+                backgroundColor: "var(--selected-users-bg-color)",
+                padding: "16px",
+                borderRadius: "8px",
+                boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "600",
+                  marginBottom: "8px",
+                  color: "var(--selected-users-text-color)",
+                }}
+              >
+                Selected Users
+              </h3>
+              <div style={{ maxHeight: "240px", overflowY: "auto" }}>
+                {currentList.map((u) => (
+                  <div
+                    key={u.id}
+                    onClick={() => removeUser(u.id)}
+                    style={{
+                      cursor: "pointer",
+                      padding: "8px",
+                      backgroundColor: "var(--user-bg-color)",
+                      borderRadius: "4px",
+                      marginBottom: "4px",
+                      border: "1px solid var(--user-border-color)",
+                      transition: "background-color 0.3s",
+                    }}
+                  >
+                    {u.username}{" "}
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--remove-user-text-color)",
+                      }}
+                    >
+                      (click to remove)
+                    </span>
+                  </div>
+                ))}
+                {currentList.length === 0 && (
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "var(--no-users-text-color)",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    No users selected
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "12px",
+              borderRadius: "4px",
+              fontWeight: "600",
+              transition: "background-color 0.3s",
+            }}
+          >
+            Create List
+          </button>
+        </div>
+      ) : null}
+    </div>
   );
 };
 
