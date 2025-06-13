@@ -71,6 +71,13 @@ function DrawerComponent({ onLogout }) {
               >
                 Contacts
               </Button>
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/preferences")}
+              >
+                Preferences
+              </Button>
             </Drawer.Body>
 
             <Drawer.Footer>

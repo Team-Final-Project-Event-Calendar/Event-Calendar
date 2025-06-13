@@ -54,7 +54,7 @@ mongoose
 
       socket.on("join-room", (userId) => {
         console.log(`User ${userId} joined their room`);
-        socket.join(userId); 
+        socket.join(userId);
       });
 
       socket.on("disconnect", () => {
@@ -242,7 +242,18 @@ mongoose
             { type: "public" }
           ]
         }).populate('participants', 'username');
-    
+
+        res.json(events);
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
+    app.get("/api/events/mine", verifyToken, async (req, res) => {
+      try {
+        const events = await Event.find({ 
+          userId: req.user.id }).populate('participants', 'username');
+          
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -260,13 +271,13 @@ mongoose
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({ participants: req.user.id })
-                                  .populate('participants', 'username');
+          .populate('participants', 'username');
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
-    
+
 
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {
@@ -287,29 +298,29 @@ mongoose
       try {
         const eventId = req.params.id;
         const userId = req.user.id;
-    
+
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ message: "Event not found" });
         }
-    
-    
+
+
         if (!event.participants.some(p => p.toString() === userId)) {
           return res.status(400).json({ message: "You are not a participant of this event" });
         }
-    
-      
+
+
         event.participants = event.participants.filter(p => p.toString() !== userId);
-    
+
         await event.save();
-    
+
         res.json({ message: "Left the event successfully" });
       } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
       }
     });
-    
+
 
     app.post("/api/events/invite/:id", verifyToken, async (req, res) => {
       console.log("inside the api");

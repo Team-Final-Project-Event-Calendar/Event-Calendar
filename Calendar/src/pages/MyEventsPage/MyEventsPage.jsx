@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
-import WeatherWidget from "../../components/WeatherWidget/WeatherWidget";
+
+
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+
+
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${key}/api/events`, {
+        const response = await fetch(`${key}/api/events/mine`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

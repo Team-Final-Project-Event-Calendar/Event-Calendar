@@ -15,6 +15,8 @@ import EventDetails from "./pages/EventDetails/EventDetails";
 import Contacts from "./components/Contacts/Contacts";
 import UserProfile from "./components/UserProfile/UserProfile";
 import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
+import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
+
 function App() {
   return (
     <>
@@ -29,6 +31,14 @@ function App() {
             </PublicOnlyRoute>
           }
         />
+
+        <Route
+          path="/preferences"
+          element={
+            <PreferencesPage />
+          }
+        />
+
         <Route path="/public" element={<PublicPage />} />
 
         <Route path="/users/:id" element={<UserProfile />} />
