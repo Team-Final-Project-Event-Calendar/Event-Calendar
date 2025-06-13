@@ -61,15 +61,13 @@ const CreateContactsListForm = () => {
 
     if (!title) {
       alert("Please add title first");
+      return;
     }
     if (currentList.length < 1) {
       alert("Add at least one user to the list");
+      return;
     }
-    console.log({
-      title,
-      creator: user._id,
-      contacts: contactIds,
-    });
+
     try {
       const res = await axios.post(
         `${key}/api/contacts`,
