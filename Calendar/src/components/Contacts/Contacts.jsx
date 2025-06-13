@@ -16,6 +16,7 @@ function Contacts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
   const { user, token } = useContext(AuthContext);
+  const [currentView, setCurrentView] = useState("");
 
   const fetchAllUsers = async () => {
     try {

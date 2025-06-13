@@ -4,6 +4,9 @@ export const createContactsList = async (req, res) => {
   try {
     const { title, creator, contacts } = req.body;
     const newList = await ContactsList.create({ title, creator, contacts });
+
+    newList.save();
+
     res.status(201).json(newList);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
+import { Button } from "@chakra-ui/react";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const CreateContactsListForm = () => {
@@ -21,7 +22,6 @@ const CreateContactsListForm = () => {
     }
 
     setCurrentList((prev) => [...prev, { username, id }]);
-    setAllUsers((prev) => prev.filter((u) => u._id !== id));
   };
 
   const removeUser = (id) => {
@@ -46,12 +46,10 @@ const CreateContactsListForm = () => {
         console.error("Error fetching contacts:", err.response?.data || err);
       }
     };
-
     if (token) fetchAllUsers();
   }, [token]);
 
   const handleSubmit = async (e) => {
-    debugger;
     e.preventDefault();
 
     if (!user?._id) {
@@ -61,6 +59,12 @@ const CreateContactsListForm = () => {
 
     const contactIds = currentList.map((u) => u.id);
 
+    if (!title) {
+      alert("Please add title first");
+    }
+    if (currentList.length < 1) {
+      alert("Add at least one user to the list");
+    }
     console.log({
       title,
       creator: user._id,
@@ -282,19 +286,33 @@ const CreateContactsListForm = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "4px",
-              fontWeight: "600",
-              transition: "background-color 0.3s",
-            }}
-          >
-            Create List
-          </button>
+          <div>
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: "4px",
+                fontWeight: "600",
+                transition: "background-color 0.3s",
+              }}
+            >
+              Create List
+            </button>
+            <Button
+              onClick={() => setCurrentList([])}
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: "4px",
+                fontWeight: "600",
+                transition: "background-color 0.3s",
+              }}
+            >
+              Clear
+            </Button>
+          </div>
         </div>
       ) : null}
     </div>
