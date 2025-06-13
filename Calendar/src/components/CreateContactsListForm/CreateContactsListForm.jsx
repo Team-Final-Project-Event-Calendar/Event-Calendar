@@ -294,7 +294,18 @@ const CreateContactsListForm = () => {
                 borderRadius: "4px",
                 fontWeight: "600",
                 transition: "background-color 0.3s",
+                backgroundColor: "#4455cc",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                marginBottom: "10px",
               }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "#5565dd")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#4455cc")
+              }
             >
               Create List
             </button>

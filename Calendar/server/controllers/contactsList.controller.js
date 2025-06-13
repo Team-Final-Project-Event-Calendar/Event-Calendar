@@ -3,6 +3,7 @@ import ContactsList from "../models/contactsList.model.js";
 export const createContactsList = async (req, res) => {
   try {
     const { title, creator, contacts } = req.body;
+
     const newList = await ContactsList.create({ title, creator, contacts });
 
     newList.save();
