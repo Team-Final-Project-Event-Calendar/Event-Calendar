@@ -9,8 +9,7 @@ import verifyToken from "./verify-token.js";
 import User from "./models/user.model.js";
 import Event from "./models/event.model.js";
 import EventSeries from "./models/eventSeries.model.js";
-
-
+import contactsRoutes from "./routes/contactsList.routes.js";
 const app = express();
 
 app.use(
@@ -29,6 +28,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes);
+
+app.use("/contacts", contactsRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -85,7 +86,6 @@ mongoose
           return res.status(400).json({ message: "Username is required" });
         }
 
-
         const userToInvite = await User.findOne({
           username: new RegExp(`^${username}$`, "i"),
         });
@@ -94,15 +94,19 @@ mongoose
           return res.status(404).json({ message: "User not found" });
         }
 
-
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ message: "Event not found" });
         }
 
-
-        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
-          return res.status(400).json({ message: "User already a participant" });
+        if (
+          event.participants.some(
+            (id) => id.toString() === userToInvite._id.toString()
+          )
+        ) {
+          return res
+            .status(400)
+            .json({ message: "User already a participant" });
         }
 
         event.participants.push(userToInvite._id);
@@ -119,31 +123,36 @@ mongoose
       try {
         const eventId = req.params.id;
         const userId = req.user.id;
-    
+
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
-    
+
         const ownerId = event.userId.toString();
-        const isAlreadyParticipant = event.participants.some(p => p.toString() === userId);
-    
+        const isAlreadyParticipant = event.participants.some(
+          (p) => p.toString() === userId
+        );
+
         if (ownerId === userId) {
-          return res.status(400).json({ error: "Owner cannot join their own event" });
+          return res
+            .status(400)
+            .json({ error: "Owner cannot join their own event" });
         }
-    
+
         if (isAlreadyParticipant) {
-          return res.status(400).json({ error: "You are already a participant" });
+          return res
+            .status(400)
+            .json({ error: "You are already a participant" });
         }
-    
+
         if (event.type === "private") {
           return res.status(403).json({ error: "Cannot join private event" });
         }
-    
 
         event.participants.push(userId);
         await event.save();
-    
+
         return res.status(200).json({
           message: "Successfully joined the event",
           participants: event.participants,
@@ -153,8 +162,8 @@ mongoose
         res.status(500).json({ error: "Server error" });
       }
     });
-    
-   // POST - Create new EventSeries
+
+    // POST - Create new EventSeries
     app.post("/api/event-series", verifyToken, async (req, res) => {
       try {
         const newSeries = new EventSeries({
@@ -165,7 +174,7 @@ mongoose
           seriesType: req.body.seriesType,
           recurrenceRule: req.body.recurrenceRule,
           eventsId: req.body.eventsId,
-          isIndefinite: req.body.isIndefinite
+          isIndefinite: req.body.isIndefinite,
         });
 
         const savedSeries = await newSeries.save();
@@ -175,46 +184,54 @@ mongoose
       }
     });
 
-    app.delete("/api/events/:id/participants/:participantId", verifyToken, async (req, res) => {
-      try {
-        const eventId = req.params.id;
-        const participantId = req.params.participantId;
+    app.delete(
+      "/api/events/:id/participants/:participantId",
+      verifyToken,
+      async (req, res) => {
+        try {
+          const eventId = req.params.id;
+          const participantId = req.params.participantId;
 
-        const event = await Event.findById(eventId);
+          const event = await Event.findById(eventId);
 
-        if (!event) {
-          return res.status(404).json({ error: "Event not found" });
+          if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+          }
+
+          if (event.userId.toString() !== req.user.id) {
+            return res.status(403).json({
+              error: "You do not have permission to modify this event",
+            });
+          }
+
+          const participantExists = event.participants.includes(participantId);
+          if (!participantExists) {
+            return res
+              .status(400)
+              .json({ error: "Participant not found in this event" });
+          }
+
+          if (participantId === req.user.id) {
+            return res
+              .status(400)
+              .json({ error: "Event owner cannot remove themselves" });
+          }
+
+          event.participants = event.participants.filter(
+            (id) => id.toString() !== participantId
+          );
+
+          await event.save();
+
+          res.status(200).json({
+            message: "Participant removed",
+            participants: event.participants,
+          });
+        } catch (err) {
+          res.status(500).json({ error: err.message });
         }
-
-
-        if (event.userId.toString() !== req.user.id) {
-          return res.status(403).json({ error: "You do not have permission to modify this event" });
-        }
-
-
-        const participantExists = event.participants.includes(participantId);
-        if (!participantExists) {
-          return res.status(400).json({ error: "Participant not found in this event" });
-        }
-
-
-        if (participantId === req.user.id) {
-          return res.status(400).json({ error: "Event owner cannot remove themselves" });
-        }
-
-
-        event.participants = event.participants.filter(
-          (id) => id.toString() !== participantId
-        );
-
-        await event.save();
-
-        res.status(200).json({ message: "Participant removed", participants: event.participants });
-      } catch (err) {
-        res.status(500).json({ error: err.message });
       }
-    });
-
+    );
 
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
@@ -350,40 +367,41 @@ mongoose
       }
     });
 
-    app.delete('/api/events/:id/leave', verifyToken, async (req, res) => {
+    app.delete("/api/events/:id/leave", verifyToken, async (req, res) => {
       try {
         const eventId = req.params.id;
         const userId = req.user.id;
-    
+
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
-    
+
         const initialLength = event.participants.length;
         event.participants = event.participants.filter(
           (participantId) => participantId.toString() !== userId
         );
-    
+
         if (event.participants.length === initialLength) {
           return res.status(400).json({ error: "You are not a participant" });
         }
-    
+
         await event.save();
-        res.status(200).json({ message: "Left the event", participants: event.participants });
+        res.status(200).json({
+          message: "Left the event",
+          participants: event.participants,
+        });
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
-    
-
- 
 
     // GET - Fetch all EventSeries for a user
     app.get("/api/event-series", verifyToken, async (req, res) => {
       try {
-        const series = await EventSeries.find({ creatorId: req.user.id })
-          .populate('startingEventId endingEventId eventsId');
+        const series = await EventSeries.find({
+          creatorId: req.user.id,
+        }).populate("startingEventId endingEventId eventsId");
         res.json(series);
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -393,8 +411,9 @@ mongoose
     // GET - Fetch specific EventSeries
     app.get("/api/event-series/:id", verifyToken, async (req, res) => {
       try {
-        const series = await EventSeries.findById(req.params.id)
-          .populate('startingEventId endingEventId eventsId');
+        const series = await EventSeries.findById(req.params.id).populate(
+          "startingEventId endingEventId eventsId"
+        );
         if (!series) {
           return res.status(404).json({ error: "Event series not found" });
         }
@@ -421,7 +440,9 @@ mongoose
     // DELETE - Delete EventSeries
     app.delete("/api/event-series/:id", verifyToken, async (req, res) => {
       try {
-        const deletedSeries = await EventSeries.findByIdAndDelete(req.params.id);
+        const deletedSeries = await EventSeries.findByIdAndDelete(
+          req.params.id
+        );
         if (!deletedSeries) {
           return res.status(404).json({ error: "Event series not found" });
         }

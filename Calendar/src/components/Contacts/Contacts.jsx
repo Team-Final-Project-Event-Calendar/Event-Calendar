@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
+import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
@@ -144,7 +145,6 @@ function Contacts() {
           )}
         </ul>
       </div>
-
       {/* Center: Searched Users */}
       <div
         style={{
@@ -205,7 +205,6 @@ function Contacts() {
           </p>
         )}
       </div>
-
       {/* Right: Search Bar */}
       <div style={{ minWidth: "220px", paddingTop: "20px" }}>
         <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
@@ -226,6 +225,7 @@ function Contacts() {
             Find
           </Button>
         </div>
+        <CreateContactsListForm />
       </div>
     </div>
   );
