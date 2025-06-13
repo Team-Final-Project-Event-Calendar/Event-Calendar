@@ -107,12 +107,6 @@ function NavBar() {
             <>
               <AvatarComponent />
               <DrawerComponent onLogout={handleLogout} />
-              <button
-                onClick={toggleColorMode}
-                style={{ padding: "10px", fontSize: "20px", color: "yellow" }}
-              >
-                {colorMode === "light" ? <IoMoon /> : <LuSun />}
-              </button>
             </>
           ) : (
             <>
@@ -124,6 +118,17 @@ function NavBar() {
               </a>
             </>
           )}
+          <button
+            onClick={toggleColorMode}
+            style={{
+              padding: "10px",
+              fontSize: "20px",
+              color: "yellow",
+              backgroundColor: "transparent",
+            }}
+          >
+            {colorMode === "light" ? <IoMoon /> : <LuSun />}
+          </button>
         </div>
       </div>
     </div>
