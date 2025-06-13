@@ -26,20 +26,25 @@ function EventDetails() {
 
     const backendUrl = import.meta.env.VITE_BACK_END_URL || 'http://localhost:5000';
 
-
     useEffect(() => {
         async function fetchEvent() {
             try {
                 setLoading(true);
-                const response = await fetch(`${backendUrl}/api/events/${id}`, {
+
+                const response = await fetch(`${backendUrl}/api/events`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
 
-                if (!response.ok) throw new Error('Failed to fetch event details');
+                if (!response.ok) throw new Error('Failed to fetch events');
 
-                const data = await response.json();
+                const events = await response.json();
+
+                const data = events.find(event => event._id === id);
+
+                if (!data) throw new Error('Event not found');
+
                 setEvent({
                     ...data,
                     start: data.startDateTime || data.startDate,
@@ -52,7 +57,8 @@ function EventDetails() {
                 setLoading(false);
             }
         }
-        fetchEvent();
+
+        if (id) fetchEvent();
     }, [id, backendUrl]);
 
     useEffect(() => {
@@ -82,7 +88,6 @@ function EventDetails() {
             console.error(err);
         }
     };
-
 
     const handleLeaveEvent = async () => {
         try {
@@ -124,6 +129,7 @@ function EventDetails() {
     }
 
     const isOwner = event.userId === user._id;
+
     return (
         <Container maxW="5xl" py={15}>
             <Box
@@ -138,9 +144,9 @@ function EventDetails() {
                     <Badge colorScheme="teal" bg="black" color="blue.500">
                         {isOwner ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
-    
+
                     <Heading size="lg">{event.title}</Heading>
-    
+
                     {event.coverPhoto && (
                         <Box w="100%" maxH="400px" overflow="hidden" borderRadius="md" mb={5}>
                             <Image
@@ -152,17 +158,17 @@ function EventDetails() {
                             />
                         </Box>
                     )}
-    
+
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Start:</Text>
                         <Text>{new Date(event.start).toLocaleString()}</Text>
                     </Stack>
-    
+
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">End:</Text>
                         <Text>{new Date(event.end).toLocaleString()}</Text>
                     </Stack>
-    
+
                     {event.location && (
                         <Stack spacing={1} w="100%">
                             <Text fontWeight="bold">Location:</Text>
@@ -173,12 +179,12 @@ function EventDetails() {
                             </Text>
                         </Stack>
                     )}
-    
+
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Description:</Text>
                         <Text>{event.description}</Text>
                     </Stack>
-    
+
                     <Stack spacing={1} w="100%">
                         <Text fontWeight="bold">Participants:</Text>
                         {event.participants && event.participants.length > 0 ? (
@@ -197,8 +203,7 @@ function EventDetails() {
                                             <MdPerson style={{ marginRight: 6 }} />
                                             <Text as="span">{participant.username}</Text>
                                         </Box>
-    
-                                    
+
                                         {isOwner && participant._id !== user._id && (
                                             <Button
                                                 size="sm"
@@ -209,8 +214,7 @@ function EventDetails() {
                                                 Remove
                                             </Button>
                                         )}
-    
-                                
+
                                         {participant._id === user._id && (
                                             <Button
                                                 size="sm"
@@ -234,8 +238,6 @@ function EventDetails() {
             </Box>
         </Container>
     );
-    
-    
 }
 
 export default EventDetails;

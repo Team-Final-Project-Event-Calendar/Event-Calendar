@@ -1,26 +1,60 @@
 import mongoose from "mongoose";
 
-const contactsListSchema = new mongoose.Schema(
+const recurrenceSchema = new mongoose.Schema(
   {
-    title: {
+    frequency: {
       type: String,
-      required: true,
+      enum: ["daily", "weekly", "monthly"],
     },
-    creator: {
+    interval: {
+      type: Number,
+      default: 1,
+    },
+    endDate: {
+      type: Date,
+    },
+  },
+  { _id: false }
+);
+
+const eventSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    type: { type: String, required: true },
+    startDateTime: { type: Date, required: true },
+    endDateTime: { type: Date, required: true },
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    contacts: [
+    coverPhoto: { type: String },
+    location: {
+      address: String,
+      city: String,
+      country: String,
+    },
+    participants: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
       },
     ],
+    isRecurring: {
+      type: Boolean,
+      default: false,
+    },
+    recurrenceRule: {
+      type: recurrenceSchema,
+      default: null,
+    },
+    seriesId: {
+      type: String,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export default mongoose.model("ContactsList", contactsListSchema);
+export default mongoose.model("Event", eventSchema);

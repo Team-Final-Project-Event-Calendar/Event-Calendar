@@ -4,7 +4,9 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import verifyAdmin from "../verify-token.js";
 import verifyToken from "../verify-token.js";
+import DeleteRequest from "../models/deleteRequest.model.js";
 import mongoose from "mongoose";
+
 const router = express.Router();
 
 router.get("/admin", verifyAdmin, async (req, res) => {
@@ -54,13 +56,13 @@ router.get("/users/:id", verifyToken, async (req, res) => {
   }
 });
 
-// Edit user details
+
 router.put("/users/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
 
   const user = req.body;
 
-  // If the id that the user is sending us is not a valide one
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid id" });
   }
@@ -68,14 +70,18 @@ router.put("/users/:id", verifyToken, async (req, res) => {
   try {
     const updateFields = { ...user };
 
-    // Ensure the address field is updated or added
+    console.log("Updating user with id:", id);
+console.log("Update data:", updateFields);
+
+
+
     if (user.adress) {
       updateFields.adress = user.adress;
     }
-    // Ensure the avatar field is updated or added
     if (user.avatar) {
       updateFields.avatar = user.avatar;
     }
+
 
     const updatedUser = await User.findByIdAndUpdate(
       { _id: id },
@@ -86,6 +92,9 @@ router.put("/users/:id", verifyToken, async (req, res) => {
       }
     );
 
+
+    const io = req.app.get("io");
+    io.to(id).emit("user-updated", updatedUser);
     return res
       .status(200)
       .json({ message: "User updated successfully", user: updatedUser });
@@ -219,7 +228,7 @@ router.delete("/delete/:id", verifyAdmin, async (req, res) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 });
-// Add a new endpoint to check if a user exists by username
+
 router.get("/users/exists/:username", verifyToken, async (req, res) => {
   try {
     const userExists = await User.findOne({ username: req.params.username });
@@ -232,5 +241,62 @@ router.get("/users/exists/:username", verifyToken, async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+router.post("/delete-request", verifyToken, async (req, res) => {
+  try {
+    const existingRequest = await DeleteRequest.findOne({ userId: req.user.id });
+
+    if (existingRequest) {
+      return res.status(400).json({ message: "Delete request already exists" });
+    }
+
+    const newRequest = new DeleteRequest({
+      userId: req.user.id,
+      username: req.user.username,
+      reason: req.body.reason || "User requested account deletion",
+    });
+
+    await newRequest.save();
+    res.status(201).json({ message: "Delete request submitted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/delete-requests", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const requests = await DeleteRequest.find().populate("userId", "username email");
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/delete-requests/:id", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const request = await DeleteRequest.findById(req.params.id);
+    if (!request) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    request.status = req.body.status || request.status;
+    await request.save();
+
+    res.json({ message: "Request updated", request });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 export default router;

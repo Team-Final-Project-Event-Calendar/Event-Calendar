@@ -4,13 +4,25 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
+
 import authRoutes from "./controllers/auth.controller.js";
 import verifyToken from "./verify-token.js";
 import User from "./models/user.model.js";
 import Event from "./models/event.model.js";
 import EventSeries from "./models/eventSeries.model.js";
+import DeleteRequest from "./models/deleteRequest.model.js";
 import contactsRoutes from "./routes/contactsList.routes.js";
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.VITE_FRONT_END_URL, "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "UPDATE"],
+    credentials: true,
+  },
+});
 
 app.use(
   cors({
@@ -20,6 +32,8 @@ app.use(
   })
 );
 
+app.set("io", io);
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -28,7 +42,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/contacts", contactsRoutes);
 
 mongoose
@@ -36,7 +49,20 @@ mongoose
   .then(() => {
     console.log("✅ connect with MongoDB!");
 
-    // POST routes:
+    io.on("connection", (socket) => {
+      console.log("🟢 New client connected", socket.id);
+
+      socket.on("join-room", (userId) => {
+        console.log(`User ${userId} joined their room`);
+        socket.join(userId); 
+      });
+
+      socket.on("disconnect", () => {
+        console.log("🔴 Client disconnected", socket.id);
+      });
+    });
+
+
     app.post("/api/events", verifyToken, async (req, res) => {
       try {
         const participantUsernames = req.body.participants || [];
@@ -99,14 +125,8 @@ mongoose
           return res.status(404).json({ message: "Event not found" });
         }
 
-        if (
-          event.participants.some(
-            (id) => id.toString() === userToInvite._id.toString()
-          )
-        ) {
-          return res
-            .status(400)
-            .json({ message: "User already a participant" });
+        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
+          return res.status(400).json({ message: "User already a participant" });
         }
 
         event.participants.push(userToInvite._id);
@@ -119,6 +139,7 @@ mongoose
         res.status(500).json({ message: "Server error" });
       }
     });
+
     app.post("/api/events/:id/join", verifyToken, async (req, res) => {
       try {
         const eventId = req.params.id;
@@ -130,20 +151,14 @@ mongoose
         }
 
         const ownerId = event.userId.toString();
-        const isAlreadyParticipant = event.participants.some(
-          (p) => p.toString() === userId
-        );
+        const isAlreadyParticipant = event.participants.some(p => p.toString() === userId);
 
         if (ownerId === userId) {
-          return res
-            .status(400)
-            .json({ error: "Owner cannot join their own event" });
+          return res.status(400).json({ error: "Owner cannot join their own event" });
         }
 
         if (isAlreadyParticipant) {
-          return res
-            .status(400)
-            .json({ error: "You are already a participant" });
+          return res.status(400).json({ error: "You are already a participant" });
         }
 
         if (event.type === "private") {
@@ -163,7 +178,6 @@ mongoose
       }
     });
 
-    // POST - Create new EventSeries
     app.post("/api/event-series", verifyToken, async (req, res) => {
       try {
         const newSeries = new EventSeries({
@@ -174,7 +188,7 @@ mongoose
           seriesType: req.body.seriesType,
           recurrenceRule: req.body.recurrenceRule,
           eventsId: req.body.eventsId,
-          isIndefinite: req.body.isIndefinite,
+          isIndefinite: req.body.isIndefinite
         });
 
         const savedSeries = await newSeries.save();
@@ -184,58 +198,51 @@ mongoose
       }
     });
 
-    app.delete(
-      "/api/events/:id/participants/:participantId",
-      verifyToken,
-      async (req, res) => {
-        try {
-          const eventId = req.params.id;
-          const participantId = req.params.participantId;
+    app.delete("/api/events/:id/participants/:participantId", verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const participantId = req.params.participantId;
 
-          const event = await Event.findById(eventId);
+        const event = await Event.findById(eventId);
 
-          if (!event) {
-            return res.status(404).json({ error: "Event not found" });
-          }
-
-          if (event.userId.toString() !== req.user.id) {
-            return res.status(403).json({
-              error: "You do not have permission to modify this event",
-            });
-          }
-
-          const participantExists = event.participants.includes(participantId);
-          if (!participantExists) {
-            return res
-              .status(400)
-              .json({ error: "Participant not found in this event" });
-          }
-
-          if (participantId === req.user.id) {
-            return res
-              .status(400)
-              .json({ error: "Event owner cannot remove themselves" });
-          }
-
-          event.participants = event.participants.filter(
-            (id) => id.toString() !== participantId
-          );
-
-          await event.save();
-
-          res.status(200).json({
-            message: "Participant removed",
-            participants: event.participants,
-          });
-        } catch (err) {
-          res.status(500).json({ error: err.message });
+        if (!event) {
+          return res.status(404).json({ error: "Event not found" });
         }
+
+        if (event.userId.toString() !== req.user.id) {
+          return res.status(403).json({ error: "You do not have permission to modify this event" });
+        }
+
+        const participantExists = event.participants.includes(participantId);
+        if (!participantExists) {
+          return res.status(400).json({ error: "Participant not found in this event" });
+        }
+
+        if (participantId === req.user.id) {
+          return res.status(400).json({ error: "Event owner cannot remove themselves" });
+        }
+
+        event.participants = event.participants.filter(
+          (id) => id.toString() !== participantId
+        );
+
+        await event.save();
+
+        res.status(200).json({ message: "Participant removed", participants: event.participants });
+      } catch (err) {
+        res.status(500).json({ error: err.message });
       }
-    );
+    });
 
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
-        const events = await Event.find({ userId: req.user.id });
+        const events = await Event.find({
+          $or: [
+            { userId: req.user.id },
+            { type: "public" }
+          ]
+        }).populate('participants', 'username');
+    
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -250,15 +257,16 @@ mongoose
         res.status(500).json({ error: err.message });
       }
     });
-
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
-        const events = await Event.find({ participants: req.user.id });
+        const events = await Event.find({ participants: req.user.id })
+                                  .populate('participants', 'username');
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
+    
 
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {
@@ -275,6 +283,34 @@ mongoose
       }
     });
 
+    app.delete("/api/events/:id/leave", verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const userId = req.user.id;
+    
+        const event = await Event.findById(eventId);
+        if (!event) {
+          return res.status(404).json({ message: "Event not found" });
+        }
+    
+    
+        if (!event.participants.some(p => p.toString() === userId)) {
+          return res.status(400).json({ message: "You are not a participant of this event" });
+        }
+    
+      
+        event.participants = event.participants.filter(p => p.toString() !== userId);
+    
+        await event.save();
+    
+        res.json({ message: "Left the event successfully" });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+    
+
     app.post("/api/events/invite/:id", verifyToken, async (req, res) => {
       console.log("inside the api");
       try {
@@ -286,7 +322,6 @@ mongoose
           return res.status(400).json({ message: "Username is required" });
         }
 
-        // Find user by username (case insensitive)
         const userToInvite = await User.findOne({
           username: new RegExp(`^${username}$`, "i"),
         });
@@ -295,25 +330,16 @@ mongoose
           return res.status(404).json({ message: "User not found" });
         }
 
-        // Find event
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ message: "Event not found" });
         }
 
-        // Check if user is already invited
-        const alreadyInvited = event.invitedUsers.some(
-          (invite) => invite.userId.toString() === userToInvite._id.toString()
-        );
-        if (alreadyInvited) {
-          return res.status(400).json({ message: "User already invited" });
+        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
+          return res.status(400).json({ message: "User already a participant" });
         }
 
-        // Add user to invitedUsers with status 'pending'
-        event.invitedUsers.push({
-          userId: userToInvite._id,
-          status: "pending",
-        });
+        event.participants.push(userToInvite._id);
 
         await event.save();
 
@@ -324,145 +350,150 @@ mongoose
       }
     });
 
-    // GET routes with parameter - MUST come AFTER all specific routes(to avoid conflicts):
-    app.get("/api/events/:id", verifyToken, async (req, res) => {
-      try {
-        const event = await Event.findById(req.params.id).populate(
-          "participants",
-          "username email"
-        );
-        if (!event) {
-          return res.status(404).json({ error: "Event not found" });
-        }
-        res.json(event);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
-
-    // PUT routes with parameter:
-    app.put("/api/events/:id", verifyToken, async (req, res) => {
-      try {
-        const updatedEvent = await Event.findByIdAndUpdate(
-          req.params.id,
-          { ...req.body },
-          { new: true }
-        );
-        res.json(updatedEvent);
-      } catch (err) {
-        res.status(400).json({ error: err.message });
-      }
-    });
-
-    // DELETE routes with parameter:
     app.delete("/api/events/:id", verifyToken, async (req, res) => {
       try {
-        const deletedEvent = await Event.findByIdAndDelete(req.params.id);
-        if (!deletedEvent) {
-          return res.status(404).json({ error: "Event not found" });
-        }
-        res.json({ message: "Event deleted successfully" });
-      } catch (err) {
-        res.status(400).json({ error: err.message });
-      }
-    });
-
-    app.delete("/api/events/:id/leave", verifyToken, async (req, res) => {
-      try {
         const eventId = req.params.id;
-        const userId = req.user.id;
-
         const event = await Event.findById(eventId);
+
         if (!event) {
-          return res.status(404).json({ error: "Event not found" });
+          return res.status(404).json({ message: "Event not found" });
         }
 
-        const initialLength = event.participants.length;
-        event.participants = event.participants.filter(
-          (participantId) => participantId.toString() !== userId
-        );
-
-        if (event.participants.length === initialLength) {
-          return res.status(400).json({ error: "You are not a participant" });
+        if (event.userId.toString() !== req.user.id) {
+          return res.status(403).json({ message: "You do not have permission to delete this event" });
         }
 
-        await event.save();
-        res.status(200).json({
-          message: "Left the event",
-          participants: event.participants,
-        });
+        await Event.findByIdAndDelete(eventId);
+
+        res.status(200).json({ message: "Event deleted" });
       } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: err.message });
       }
     });
 
-    // GET - Fetch all EventSeries for a user
-    app.get("/api/event-series", verifyToken, async (req, res) => {
-      try {
-        const series = await EventSeries.find({
-          creatorId: req.user.id,
-        }).populate("startingEventId endingEventId eventsId");
-        res.json(series);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
-
-    // GET - Fetch specific EventSeries
-    app.get("/api/event-series/:id", verifyToken, async (req, res) => {
-      try {
-        const series = await EventSeries.findById(req.params.id).populate(
-          "startingEventId endingEventId eventsId"
-        );
-        if (!series) {
-          return res.status(404).json({ error: "Event series not found" });
-        }
-        res.json(series);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
-
-    // PUT - Update EventSeries
-    app.put("/api/event-series/:id", verifyToken, async (req, res) => {
-      try {
-        const updatedSeries = await EventSeries.findByIdAndUpdate(
-          req.params.id,
-          { ...req.body },
-          { new: true }
-        );
-        res.json(updatedSeries);
-      } catch (err) {
-        res.status(400).json({ error: err.message });
-      }
-    });
-
-    // DELETE - Delete EventSeries
     app.delete("/api/event-series/:id", verifyToken, async (req, res) => {
       try {
-        const deletedSeries = await EventSeries.findByIdAndDelete(
-          req.params.id
-        );
-        if (!deletedSeries) {
-          return res.status(404).json({ error: "Event series not found" });
+        const seriesId = req.params.id;
+        const series = await EventSeries.findById(seriesId);
+
+        if (!series) {
+          return res.status(404).json({ message: "Event series not found" });
         }
-        res.json({ message: "Event series deleted successfully" });
+
+        if (series.creatorId.toString() !== req.user.id) {
+          return res.status(403).json({ message: "You do not have permission to delete this event series" });
+        }
+
+        await EventSeries.findByIdAndDelete(seriesId);
+
+        res.status(200).json({ message: "Event series deleted" });
       } catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(500).json({ message: err.message });
       }
     });
 
-    // 400 handlers
-    app.use("/*splat", (req, res) => {
-      res.status(404).json({ error: "Route not found" });
+    app.delete("/api/delete-requests/:id", verifyToken, async (req, res) => {
+      try {
+        const deleteRequestId = req.params.id;
+        const deleteRequest = await DeleteRequest.findById(deleteRequestId);
+
+        if (!deleteRequest) {
+          return res.status(404).json({ message: "Delete request not found" });
+        }
+
+        if (deleteRequest.userId.toString() !== req.user.id) {
+          return res.status(403).json({ message: "You do not have permission to delete this request" });
+        }
+
+        await DeleteRequest.findByIdAndDelete(deleteRequestId);
+
+        res.status(200).json({ message: "Delete request deleted" });
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
     });
 
-    const PORT = process.env.PORT || 5000;
+    app.put("/api/events/:id", verifyToken, async (req, res) => {
+      try {
+        const eventId = req.params.id;
+        const event = await Event.findById(eventId);
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+        if (!event) {
+          return res.status(404).json({ message: "Event not found" });
+        }
+
+        if (event.userId.toString() !== req.user.id) {
+          return res.status(403).json({ message: "You do not have permission to update this event" });
+        }
+
+        Object.assign(event, req.body);
+
+        await event.save();
+
+        res.status(200).json(event);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+
+    app.put("/api/event-series/:id", verifyToken, async (req, res) => {
+      try {
+        const seriesId = req.params.id;
+        const series = await EventSeries.findById(seriesId);
+
+        if (!series) {
+          return res.status(404).json({ message: "Event series not found" });
+        }
+
+        if (series.creatorId.toString() !== req.user.id) {
+          return res.status(403).json({ message: "You do not have permission to update this event series" });
+        }
+
+        Object.assign(series, req.body);
+
+        await series.save();
+
+        res.status(200).json(series);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+
+
+    app.get("/api/event-series", verifyToken, async (req, res) => {
+      try {
+        const series = await EventSeries.find({ creatorId: req.user.id });
+        res.json(series);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+
+    app.get("/api/delete-requests", verifyToken, async (req, res) => {
+      try {
+        const requests = await DeleteRequest.find({ userId: req.user.id });
+        res.json(requests);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+
+    app.get("/api/users/me", verifyToken, async (req, res) => {
+      try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        res.json(user);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+    });
+
+    server.listen(process.env.PORT || 8000, () => {
+      console.log(`🚀 Server running on port ${process.env.PORT || 8000}`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error with connection with MongoDB:", err.message);
+    console.error("MongoDB connection error:", err);
   });
