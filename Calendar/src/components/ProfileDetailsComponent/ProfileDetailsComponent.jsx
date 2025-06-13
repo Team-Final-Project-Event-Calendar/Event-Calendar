@@ -181,6 +181,34 @@ function ProfileDetailsComponent() {
             {user.role === "admin" && (
               <h1 style={{ fontWeight: "bold" }}>Admin</h1>
             )}
+            <div>
+              <button
+                onClick={handleDeleteRequest}
+                style={{
+                  backgroundColor: "#dc2626",
+                  color: "white",
+                  padding: "16px 32px",
+                  marginTop: "50px",
+                  borderRadius: "8px",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#b91c1c")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#dc2626")
+                }
+              >
+                Request Account Deletion
+              </button>
+
+              {message && <p className="text-green-600 mt-2">{message}</p>}
+              {error && <p className="text-red-600 mt-2">{error}</p>}
+            </div>
           </div>
         ) : (
           <div className="image-container">
@@ -199,6 +227,34 @@ function ProfileDetailsComponent() {
               src="https://t4.ftcdn.net/jpg/08/23/95/89/360_F_823958944_1c9covIC7Tl7eyJtWoTiXc0L4vP6f43q.jpg"
               alt="Default Avatar"
             />
+            <div>
+              <button
+                onClick={handleDeleteRequest}
+                style={{
+                  backgroundColor: "#dc2626",
+                  color: "white",
+                  padding: "16px 32px",
+                  marginTop: "50px",
+                  borderRadius: "8px",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#b91c1c")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#dc2626")
+                }
+              >
+                Request Account Deletion
+              </button>
+
+              {message && <p className="text-green-600 mt-2">{message}</p>}
+              {error && <p className="text-red-600 mt-2">{error}</p>}
+            </div>
           </div>
         )}
 
@@ -251,36 +307,6 @@ function ProfileDetailsComponent() {
                 Save
               </Button>
             </div>
-
-            {user.role === user && (
-              <div>
-                <button
-                  onClick={handleDeleteRequest}
-                  style={{
-                    backgroundColor: "#dc2626",
-                    color: "white",
-                    padding: "16px 32px",
-                    borderRadius: "8px",
-                    fontSize: "18px",
-                    fontWeight: "700",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "background-color 0.3s ease",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#b91c1c")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#dc2626")
-                  }
-                >
-                  Request Account Deletion
-                </button>
-
-                {message && <p className="text-green-600 mt-2">{message}</p>}
-                {error && <p className="text-red-600 mt-2">{error}</p>}
-              </div>
-            )}
           </form>
         </ul>
       </div>
