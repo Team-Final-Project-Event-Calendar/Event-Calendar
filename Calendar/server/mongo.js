@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 app.use("/api/auth", authRoutes);
 
-app.use("/contacts", contactsRoutes);
+app.use("/api/contacts", contactsRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
