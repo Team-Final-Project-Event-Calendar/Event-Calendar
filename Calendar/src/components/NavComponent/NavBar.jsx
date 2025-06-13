@@ -123,7 +123,7 @@ function NavBar() {
             style={{
               padding: "10px",
               fontSize: "20px",
-              color: "yellow",
+              color: "whtie",
               backgroundColor: "transparent",
             }}
           >

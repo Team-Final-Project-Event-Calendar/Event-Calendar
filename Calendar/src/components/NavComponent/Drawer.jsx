@@ -5,7 +5,7 @@ function DrawerComponent({ onLogout }) {
   return (
     <Drawer.Root>
       <Drawer.Trigger asChild>
-        <Button variant="outline" size="sm" fontSize="17px" padding={2}>
+        <Button variant="ghost" size="sm" fontSize="17px" padding={2}>
           Menu ≡
         </Button>
       </Drawer.Trigger>
