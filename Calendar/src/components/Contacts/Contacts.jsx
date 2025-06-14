@@ -151,7 +151,7 @@ function Contacts() {
       <div
         style={{
           flexGrow: 1,
-          maxWidth: "600px",
+          maxWidth: "100%",
           padding: "20px",
           borderRadius: "10px",
           minHeight: "150px",
@@ -211,7 +211,6 @@ function Contacts() {
                 Find
               </Button>
 
-              {/* Replaced Divider */}
               <hr
                 style={{
                   border: "none",
