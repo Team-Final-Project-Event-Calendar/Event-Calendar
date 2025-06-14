@@ -18,6 +18,7 @@ function Contacts() {
   const [searchedUsers, setSearchedUsers] = useState([]);
   const { user, token } = useContext(AuthContext);
   const [currentView, setCurrentView] = useState("");
+  const [contactLists, setContactLists] = useState([]);
 
   const fetchAllUsers = async () => {
     try {
@@ -34,23 +35,38 @@ function Contacts() {
 
   const fetchAllContactsList = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${key}/api/contacts`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
+      console.log("Contact list repspone:", response.data);
+      setContactLists(response.data);
+
     } catch (error) {
       console.error(
         "Error fetching contacts list:",
         error.response?.data || error.message
       );
+      setContactLists([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+
   useEffect(() => {
-    if (token) fetchAllUsers();
+    if (token) {
+      fetchAllUsers();
+      fetchAllContactsList();
+    }
   }, [token]);
+
+  // Refresh contact lists when a new one is created
+  const handleContactListCreated = () => {
+    fetchAllContactsList();
+  };
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -80,6 +96,8 @@ function Contacts() {
       </div>
     );
   }
+
+
   return (
     <div
       style={{
@@ -293,6 +311,7 @@ function Contacts() {
             <Text fontWeight="bold" fontSize="lg" mb={3}>
               Your Contact Lists:
             </Text>
+            {/*             
             <Text color="gray.500">
               [Placeholder] Contact list will appear here.
             </Text>
@@ -301,6 +320,81 @@ function Contacts() {
       </div>
 
       <CreateContactsListForm />
+    </div> */}
+            {contactLists.length > 0 ? (
+              <div>
+                {contactLists.map((list) => (
+                  <div
+                    key={list._id}
+                    style={{
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "8px",
+                      padding: "12px",
+                      marginBottom: "12px",
+                      background: "#f8f9fa",
+                    }}
+                  >
+                    <h3 style={{
+                      fontSize: "1.1rem",
+                      fontWeight: "600",
+                      marginBottom: "8px",
+                      color: "#2c5282"
+                    }}>
+                      {list.title}
+                    </h3>
+                    <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
+                      <p>{list.contacts.length} contacts</p>
+                    </div>
+                    <div style={{
+                      marginTop: "8px",
+                      maxHeight: "120px",
+                      overflowY: "auto",
+                      padding: "8px",
+                      background: "#fff",
+                      borderRadius: "4px",
+                      border: "1px solid #e2e8f0"
+                    }}>
+                      {list.contacts.map((contact) => (
+                        <div
+                          key={contact._id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "4px 0",
+                            borderBottom: "1px solid #f0f0f0"
+                          }}
+                        >
+                          <img
+                            src={contact.avatar || DEFAULT_AVATAR}
+                            alt={contact.username}
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              marginRight: "8px"
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = DEFAULT_AVATAR;
+                            }}
+                          />
+                          <span>{contact.username}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Text color="gray.500">
+                You haven't created any contact lists yet.
+              </Text>
+            )}
+          </Box>
+        )}
+      </div>
+
+      <CreateContactsListForm onListCreated={handleContactListCreated} />
     </div>
   );
 }

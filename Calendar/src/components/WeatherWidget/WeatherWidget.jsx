@@ -4,12 +4,11 @@ import "./WeatherWidget.css";
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const spinnerCustom = () => (
-  <Spinner color="red.500" animationDuration="0.8s" borderWidth="3px" />
+  <Spinner color="red.500" animationDuration="1.2s" borderWidth="2.5px" size="xs" marginBottom="1.5px" marginLeft="6px" />
 );
 
 const WeatherWidget = () => {
-  const [city, setCity] = useState(spinnerCustom());
-  // const [region, setRegion] = useState("")
+  const [city, setCity] = useState("Weather...");
   const [temperature, setTemperature] = useState(null);
   const [condition, setCondition] = useState("");
   const [iconUrl, setIconUrl] = useState("");
@@ -41,13 +40,6 @@ const WeatherWidget = () => {
             geoData.address.hamlet ||
             "Unknown"
         );
-
-        // setRegion(
-        //   geoData.address.state ||
-        //   geoData.address.region ||
-        //   geoData.address.county ||
-        //   ""
-        // );
       });
     } else {
       setCity("Location not available!");
@@ -59,14 +51,7 @@ const WeatherWidget = () => {
       className="weather-widget"
       style={
         {
-          // display: "flex",
           flexWrap: "wrap",
-          // alignItems: "center",
-          // border: "3px solid #90caf9",
-          // borderRadius: 22,
-          // background: "#90caf9",
-          // color: "#1565c0",
-          // fontFamily: "system-ui, sans-serif",
         }
       }
     >
