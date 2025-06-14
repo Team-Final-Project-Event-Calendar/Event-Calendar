@@ -43,7 +43,6 @@ function Contacts() {
       });
       console.log("Contact list repspone:", response.data);
       setContactLists(response.data);
-
     } catch (error) {
       console.error(
         "Error fetching contacts list:",
@@ -54,7 +53,6 @@ function Contacts() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     if (token) {
@@ -97,7 +95,6 @@ function Contacts() {
     );
   }
 
-
   return (
     <div
       style={{
@@ -109,8 +106,6 @@ function Contacts() {
         gap: "20px",
       }}
     >
-      <Button onClick={() => fetchAllContactsList()}>Fetch data</Button>
-
       {/* Left: All users */}
       <div
         className="all-contacts"
@@ -334,26 +329,30 @@ function Contacts() {
                       background: "#f8f9fa",
                     }}
                   >
-                    <h3 style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "600",
-                      marginBottom: "8px",
-                      color: "#2c5282"
-                    }}>
+                    <h3
+                      style={{
+                        fontSize: "1.1rem",
+                        fontWeight: "600",
+                        marginBottom: "8px",
+                        color: "#2c5282",
+                      }}
+                    >
                       {list.title}
                     </h3>
                     <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
                       <p>{list.contacts.length} contacts</p>
                     </div>
-                    <div style={{
-                      marginTop: "8px",
-                      maxHeight: "120px",
-                      overflowY: "auto",
-                      padding: "8px",
-                      background: "#fff",
-                      borderRadius: "4px",
-                      border: "1px solid #e2e8f0"
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "8px",
+                        maxHeight: "120px",
+                        overflowY: "auto",
+                        padding: "8px",
+                        background: "#fff",
+                        borderRadius: "4px",
+                        border: "1px solid #e2e8f0",
+                      }}
+                    >
                       {list.contacts.map((contact) => (
                         <div
                           key={contact._id}
@@ -361,7 +360,7 @@ function Contacts() {
                             display: "flex",
                             alignItems: "center",
                             padding: "4px 0",
-                            borderBottom: "1px solid #f0f0f0"
+                            borderBottom: "1px solid #f0f0f0",
                           }}
                         >
                           <img
@@ -371,7 +370,7 @@ function Contacts() {
                               width: "30px",
                               height: "30px",
                               borderRadius: "50%",
-                              marginRight: "8px"
+                              marginRight: "8px",
                             }}
                             onError={(e) => {
                               e.target.onerror = null;
