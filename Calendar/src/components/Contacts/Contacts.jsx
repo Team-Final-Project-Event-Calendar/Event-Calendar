@@ -32,6 +32,22 @@ function Contacts() {
     }
   };
 
+  const fetchAllContactsList = async () => {
+    try {
+      const response = await axios.get(`${key}/api/contacts`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching contacts list:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   useEffect(() => {
     if (token) fetchAllUsers();
   }, [token]);
@@ -75,6 +91,8 @@ function Contacts() {
         gap: "20px",
       }}
     >
+      <Button onClick={() => fetchAllContactsList()}>Fetch data</Button>
+
       {/* Left: All users */}
       <div
         className="all-contacts"
