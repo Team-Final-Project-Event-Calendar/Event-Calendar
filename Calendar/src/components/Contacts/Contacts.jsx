@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
+import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
@@ -63,19 +64,18 @@ function Contacts() {
       </div>
     );
   }
-
   return (
     <div
       style={{
         width: "60vw",
-        margin: "0px auto",
+        margin: "0 auto",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
         gap: "20px",
       }}
     >
-      {/* Left: Contacts List */}
+      {/* Left: All users */}
       <div
         className="all-contacts"
         style={{
@@ -146,88 +146,144 @@ function Contacts() {
           )}
         </ul>
       </div>
-      {/* Center: Searched Users */}
+
+      {/* Center: Toggle View */}
       <div
         style={{
           flexGrow: 1,
           maxWidth: "600px",
           padding: "20px",
           borderRadius: "10px",
-          boxShadow:
-            searchedUsers.length > 0 ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
           minHeight: "150px",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        {searchedUsers.length > 0 ? (
-          <div>
-            <h3 style={{ marginBottom: "16px", fontSize: "1.2rem" }}>
-              Found {searchedUsers.length} user(s):
-            </h3>
-            {searchedUsers.map((user) => (
-              <div
-                onClick={() => navigate(`/users/${user._id}`)}
-                key={user._id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "20px",
-                  paddingBottom: "15px",
-                  marginBottom: "15px",
-                  borderBottom: "1px solid #eee",
+        {/* View Toggle Buttons */}
+        <Box mb={4} textAlign="center">
+          <ButtonGroup isAttached variant="outline" size="sm">
+            <Button
+              colorScheme={currentView === "search" ? "blue" : "gray"}
+              onClick={() => setCurrentView("search")}
+            >
+              Find Users
+            </Button>
+            <Button
+              colorScheme={currentView === "lists" ? "blue" : "gray"}
+              onClick={() => setCurrentView("lists")}
+            >
+              Contact Lists
+            </Button>
+          </ButtonGroup>
+        </Box>
+
+        {currentView === "search" && (
+          <div
+            style={{
+              paddingTop: "20px",
+              alignSelf: "center",
+              width: "300px",
+            }}
+          >
+            <Stack spacing={4}>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentView("search"); // Auto-switch to search view
                 }}
+                placeholder="Search"
+                style={{
+                  background: "#5565dd",
+                  borderRadius: "5px",
+                  padding: "8px",
+                  color: "white",
+                  border: "none",
+                }}
+              />
+              <Button
+                variant={"solid"}
+                colorScheme="blue"
+                onClick={handleSearch}
               >
-                <img
-                  src={user.avatar || DEFAULT_AVATAR}
-                  alt={user.username}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
-                  }}
-                />
-                <div>
-                  <h4 style={{ marginBottom: "5px", fontSize: "1.1rem" }}>
-                    {user.username}
-                  </h4>
-                  <p>Email: {user.email}</p>
-                  <p>Phone: {user.phoneNumber}</p>
-                </div>
-              </div>
-            ))}
+                Find
+              </Button>
+
+              {/* Replaced Divider */}
+              <hr
+                style={{
+                  border: "none",
+                  borderTop: "1px solid #ccc",
+                  margin: "16px 0",
+                }}
+              />
+            </Stack>
           </div>
+        )}
+        {/* Conditional Display */}
+        {currentView === "search" ? (
+          searchedUsers.length > 0 ? (
+            <div>
+              <h3 style={{ marginBottom: "16px", fontSize: "1.2rem" }}>
+                Found {searchedUsers.length} user(s):
+              </h3>
+              {searchedUsers.map((user) => (
+                <div
+                  onClick={() => navigate(`/users/${user._id}`)}
+                  key={user._id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "20px",
+                    paddingBottom: "15px",
+                    marginBottom: "15px",
+                    borderBottom: "1px solid #eee",
+                  }}
+                >
+                  <img
+                    src={user.avatar || DEFAULT_AVATAR}
+                    alt={user.username}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_AVATAR;
+                    }}
+                  />
+                  <div>
+                    <h4 style={{ marginBottom: "5px", fontSize: "1.1rem" }}>
+                      {user.username}
+                    </h4>
+                    <p>Email: {user.email}</p>
+                    <p>Phone: {user.phoneNumber}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Text color="gray.500">
+              Search for a user to see their profile.
+            </Text>
+          )
         ) : (
-          <p style={{ color: "#999" }}>
-            Search for a user to see their profile.
-          </p>
+          <Box>
+            <Text fontWeight="bold" fontSize="lg" mb={3}>
+              Your Contact Lists:
+            </Text>
+            <Text color="gray.500">
+              [Placeholder] Contact list will appear here.
+            </Text>
+          </Box>
         )}
       </div>
-      {/* Right: Search Bar */}
-      <div style={{ minWidth: "220px", paddingTop: "20px" }}>
-        <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search"
-            style={{
-              background: "#5565dd",
-              borderRadius: "5px",
-              padding: "8px",
-              color: "white",
-              border: "none",
-            }}
-          />
-          <Button variant={"solid"} colorScheme="blue" onClick={handleSearch}>
-            Find
-          </Button>
-        </div>
-        <CreateContactsListForm />
-      </div>
+
+      <CreateContactsListForm />
     </div>
   );
 }

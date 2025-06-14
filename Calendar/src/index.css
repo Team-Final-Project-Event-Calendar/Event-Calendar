@@ -93,3 +93,8 @@ button:focus-visible {
 .w-60 {
   width: 60vw;
 }
+
+
+.create-form-container:hover {
+  cursor: pointer;
+}
