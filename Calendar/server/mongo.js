@@ -14,6 +14,7 @@ import Event from "./models/event.model.js";
 import EventSeries from "./models/eventSeries.model.js";
 import DeleteRequest from "./models/deleteRequest.model.js";
 import contactsRoutes from "./routes/contactsList.routes.js";
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -224,11 +225,9 @@ mongoose
           }
 
           if (event.userId.toString() !== req.user.id) {
-            return res
-              .status(403)
-              .json({
-                error: "You do not have permission to modify this event",
-              });
+            return res.status(403).json({
+              error: "You do not have permission to modify this event",
+            });
           }
 
           const participantExists = event.participants.includes(participantId);
@@ -250,12 +249,10 @@ mongoose
 
           await event.save();
 
-          res
-            .status(200)
-            .json({
-              message: "Participant removed",
-              participants: event.participants,
-            });
+          res.status(200).json({
+            message: "Participant removed",
+            participants: event.participants,
+          });
         } catch (err) {
           res.status(500).json({ error: err.message });
         }
@@ -423,11 +420,9 @@ mongoose
         }
 
         if (event.userId.toString() !== req.user.id) {
-          return res
-            .status(403)
-            .json({
-              message: "You do not have permission to delete this event",
-            });
+          return res.status(403).json({
+            message: "You do not have permission to delete this event",
+          });
         }
 
         await Event.findByIdAndDelete(eventId);
@@ -448,11 +443,9 @@ mongoose
         }
 
         if (series.creatorId.toString() !== req.user.id) {
-          return res
-            .status(403)
-            .json({
-              message: "You do not have permission to delete this event series",
-            });
+          return res.status(403).json({
+            message: "You do not have permission to delete this event series",
+          });
         }
 
         await EventSeries.findByIdAndDelete(seriesId);
@@ -473,11 +466,9 @@ mongoose
         }
 
         if (deleteRequest.userId.toString() !== req.user.id) {
-          return res
-            .status(403)
-            .json({
-              message: "You do not have permission to delete this request",
-            });
+          return res.status(403).json({
+            message: "You do not have permission to delete this request",
+          });
         }
 
         await DeleteRequest.findByIdAndDelete(deleteRequestId);
@@ -498,11 +489,9 @@ mongoose
         }
 
         if (event.userId.toString() !== req.user.id) {
-          return res
-            .status(403)
-            .json({
-              message: "You do not have permission to update this event",
-            });
+          return res.status(403).json({
+            message: "You do not have permission to update this event",
+          });
         }
 
         Object.assign(event, req.body);
@@ -525,11 +514,9 @@ mongoose
         }
 
         if (series.creatorId.toString() !== req.user.id) {
-          return res
-            .status(403)
-            .json({
-              message: "You do not have permission to update this event series",
-            });
+          return res.status(403).json({
+            message: "You do not have permission to update this event series",
+          });
         }
 
         Object.assign(series, req.body);
