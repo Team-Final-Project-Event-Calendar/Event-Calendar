@@ -62,7 +62,6 @@ mongoose
       });
     });
 
-
     app.post("/api/events", verifyToken, async (req, res) => {
       try {
         const participantUsernames = req.body.participants || [];
@@ -125,8 +124,14 @@ mongoose
           return res.status(404).json({ message: "Event not found" });
         }
 
-        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
-          return res.status(400).json({ message: "User already a participant" });
+        if (
+          event.participants.some(
+            (id) => id.toString() === userToInvite._id.toString()
+          )
+        ) {
+          return res
+            .status(400)
+            .json({ message: "User already a participant" });
         }
 
         event.participants.push(userToInvite._id);
@@ -151,14 +156,20 @@ mongoose
         }
 
         const ownerId = event.userId.toString();
-        const isAlreadyParticipant = event.participants.some(p => p.toString() === userId);
+        const isAlreadyParticipant = event.participants.some(
+          (p) => p.toString() === userId
+        );
 
         if (ownerId === userId) {
-          return res.status(400).json({ error: "Owner cannot join their own event" });
+          return res
+            .status(400)
+            .json({ error: "Owner cannot join their own event" });
         }
 
         if (isAlreadyParticipant) {
-          return res.status(400).json({ error: "You are already a participant" });
+          return res
+            .status(400)
+            .json({ error: "You are already a participant" });
         }
 
         if (event.type === "private") {
@@ -188,7 +199,7 @@ mongoose
           seriesType: req.body.seriesType,
           recurrenceRule: req.body.recurrenceRule,
           eventsId: req.body.eventsId,
-          isIndefinite: req.body.isIndefinite
+          isIndefinite: req.body.isIndefinite,
         });
 
         const savedSeries = await newSeries.save();
@@ -198,50 +209,64 @@ mongoose
       }
     });
 
-    app.delete("/api/events/:id/participants/:participantId", verifyToken, async (req, res) => {
-      try {
-        const eventId = req.params.id;
-        const participantId = req.params.participantId;
+    app.delete(
+      "/api/events/:id/participants/:participantId",
+      verifyToken,
+      async (req, res) => {
+        try {
+          const eventId = req.params.id;
+          const participantId = req.params.participantId;
 
-        const event = await Event.findById(eventId);
+          const event = await Event.findById(eventId);
 
-        if (!event) {
-          return res.status(404).json({ error: "Event not found" });
+          if (!event) {
+            return res.status(404).json({ error: "Event not found" });
+          }
+
+          if (event.userId.toString() !== req.user.id) {
+            return res
+              .status(403)
+              .json({
+                error: "You do not have permission to modify this event",
+              });
+          }
+
+          const participantExists = event.participants.includes(participantId);
+          if (!participantExists) {
+            return res
+              .status(400)
+              .json({ error: "Participant not found in this event" });
+          }
+
+          if (participantId === req.user.id) {
+            return res
+              .status(400)
+              .json({ error: "Event owner cannot remove themselves" });
+          }
+
+          event.participants = event.participants.filter(
+            (id) => id.toString() !== participantId
+          );
+
+          await event.save();
+
+          res
+            .status(200)
+            .json({
+              message: "Participant removed",
+              participants: event.participants,
+            });
+        } catch (err) {
+          res.status(500).json({ error: err.message });
         }
-
-        if (event.userId.toString() !== req.user.id) {
-          return res.status(403).json({ error: "You do not have permission to modify this event" });
-        }
-
-        const participantExists = event.participants.includes(participantId);
-        if (!participantExists) {
-          return res.status(400).json({ error: "Participant not found in this event" });
-        }
-
-        if (participantId === req.user.id) {
-          return res.status(400).json({ error: "Event owner cannot remove themselves" });
-        }
-
-        event.participants = event.participants.filter(
-          (id) => id.toString() !== participantId
-        );
-
-        await event.save();
-
-        res.status(200).json({ message: "Participant removed", participants: event.participants });
-      } catch (err) {
-        res.status(500).json({ error: err.message });
       }
-    });
+    );
 
     app.get("/api/events", verifyToken, async (req, res) => {
       try {
         const events = await Event.find({
-          $or: [
-            { userId: req.user.id },
-            { type: "public" }
-          ]
-        }).populate('participants', 'username');
+          $or: [{ userId: req.user.id }, { type: "public" }],
+        }).populate("participants", "username");
 
         res.json(events);
       } catch (err) {
@@ -251,9 +276,10 @@ mongoose
 
     app.get("/api/events/mine", verifyToken, async (req, res) => {
       try {
-        const events = await Event.find({ 
-          userId: req.user.id }).populate('participants', 'username');
-          
+        const events = await Event.find({
+          userId: req.user.id,
+        }).populate("participants", "username");
+
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -270,37 +296,38 @@ mongoose
     });
     app.get("/api/events/participating", verifyToken, async (req, res) => {
       try {
-        const events = await Event.find({ participants: req.user.id })
-          .populate('participants', 'username');
+        const events = await Event.find({ participants: req.user.id }).populate(
+          "participants",
+          "username"
+        );
         res.json(events);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
 
-
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {
         const user = await User.findById(req.user.id);
-    
+
         if (user.role !== "admin") {
           return res.status(403).json({ message: "Access denied: not admin" });
         }
-    
+
         const { page = 1, limit = 5, search = "" } = req.query;
-    
+
         const query = {
           name: { $regex: search, $options: "i" },
         };
-    
+
         const totalEvents = await Event.countDocuments(query);
         const totalPages = Math.ceil(totalEvents / limit);
-    
+
         const events = await Event.find(query)
           .skip((page - 1) * limit)
           .limit(Number(limit))
           .sort({ createdAt: -1 });
-    
+
         res.json({
           events,
           totalPages,
@@ -311,7 +338,6 @@ mongoose
         res.status(500).json({ error: err.message });
       }
     });
-    
 
     app.delete("/api/events/:id/leave", verifyToken, async (req, res) => {
       try {
@@ -323,13 +349,15 @@ mongoose
           return res.status(404).json({ message: "Event not found" });
         }
 
-
-        if (!event.participants.some(p => p.toString() === userId)) {
-          return res.status(400).json({ message: "You are not a participant of this event" });
+        if (!event.participants.some((p) => p.toString() === userId)) {
+          return res
+            .status(400)
+            .json({ message: "You are not a participant of this event" });
         }
 
-
-        event.participants = event.participants.filter(p => p.toString() !== userId);
+        event.participants = event.participants.filter(
+          (p) => p.toString() !== userId
+        );
 
         await event.save();
 
@@ -339,7 +367,6 @@ mongoose
         res.status(500).json({ message: "Server error" });
       }
     });
-
 
     app.post("/api/events/invite/:id", verifyToken, async (req, res) => {
       console.log("inside the api");
@@ -365,8 +392,14 @@ mongoose
           return res.status(404).json({ message: "Event not found" });
         }
 
-        if (event.participants.some((id) => id.toString() === userToInvite._id.toString())) {
-          return res.status(400).json({ message: "User already a participant" });
+        if (
+          event.participants.some(
+            (id) => id.toString() === userToInvite._id.toString()
+          )
+        ) {
+          return res
+            .status(400)
+            .json({ message: "User already a participant" });
         }
 
         event.participants.push(userToInvite._id);
@@ -390,7 +423,11 @@ mongoose
         }
 
         if (event.userId.toString() !== req.user.id) {
-          return res.status(403).json({ message: "You do not have permission to delete this event" });
+          return res
+            .status(403)
+            .json({
+              message: "You do not have permission to delete this event",
+            });
         }
 
         await Event.findByIdAndDelete(eventId);
@@ -411,7 +448,11 @@ mongoose
         }
 
         if (series.creatorId.toString() !== req.user.id) {
-          return res.status(403).json({ message: "You do not have permission to delete this event series" });
+          return res
+            .status(403)
+            .json({
+              message: "You do not have permission to delete this event series",
+            });
         }
 
         await EventSeries.findByIdAndDelete(seriesId);
@@ -432,7 +473,11 @@ mongoose
         }
 
         if (deleteRequest.userId.toString() !== req.user.id) {
-          return res.status(403).json({ message: "You do not have permission to delete this request" });
+          return res
+            .status(403)
+            .json({
+              message: "You do not have permission to delete this request",
+            });
         }
 
         await DeleteRequest.findByIdAndDelete(deleteRequestId);
@@ -453,7 +498,11 @@ mongoose
         }
 
         if (event.userId.toString() !== req.user.id) {
-          return res.status(403).json({ message: "You do not have permission to update this event" });
+          return res
+            .status(403)
+            .json({
+              message: "You do not have permission to update this event",
+            });
         }
 
         Object.assign(event, req.body);
@@ -476,7 +525,11 @@ mongoose
         }
 
         if (series.creatorId.toString() !== req.user.id) {
-          return res.status(403).json({ message: "You do not have permission to update this event series" });
+          return res
+            .status(403)
+            .json({
+              message: "You do not have permission to update this event series",
+            });
         }
 
         Object.assign(series, req.body);
@@ -488,7 +541,6 @@ mongoose
         res.status(500).json({ message: err.message });
       }
     });
-
 
     app.get("/api/event-series", verifyToken, async (req, res) => {
       try {
