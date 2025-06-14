@@ -282,17 +282,36 @@ mongoose
     app.get("/api/events/admin", verifyToken, async (req, res) => {
       try {
         const user = await User.findById(req.user.id);
-
+    
         if (user.role !== "admin") {
           return res.status(403).json({ message: "Access denied: not admin" });
         }
-
-        const events = await Event.find();
-        res.json(events);
+    
+        const { page = 1, limit = 5, search = "" } = req.query;
+    
+        const query = {
+          name: { $regex: search, $options: "i" },
+        };
+    
+        const totalEvents = await Event.countDocuments(query);
+        const totalPages = Math.ceil(totalEvents / limit);
+    
+        const events = await Event.find(query)
+          .skip((page - 1) * limit)
+          .limit(Number(limit))
+          .sort({ createdAt: -1 });
+    
+        res.json({
+          events,
+          totalPages,
+          totalEvents,
+          currentPage: Number(page),
+        });
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
+    
 
     app.delete("/api/events/:id/leave", verifyToken, async (req, res) => {
       try {

@@ -44,6 +44,25 @@ router.get("/users", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/users/admin", verifyToken, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find().skip(skip).limit(limit);
+    const total = await User.countDocuments();
+
+    res.json({
+      users,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/users/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
@@ -55,6 +74,7 @@ router.get("/users/:id", verifyToken, async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
 
 
 router.put("/users/:id", verifyToken, async (req, res) => {
@@ -300,3 +320,6 @@ router.put("/delete-requests/:id", verifyToken, async (req, res) => {
 
 
 export default router;
+
+
+

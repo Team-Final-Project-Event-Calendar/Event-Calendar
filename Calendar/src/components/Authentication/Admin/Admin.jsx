@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
@@ -16,6 +17,11 @@ function Admin() {
   const [deleteRequests, setDeleteRequests] = useState([]);
   const [eventData, setEventData] = useState({ title: "", description: "" });
 
+  const [currentPageUsers, setCurrentPageUsers] = useState(1);
+  const [totalPagesUsers, setTotalPagesUsers] = useState(1);
+  const [currentPageEvents, setCurrentPageEvents] = useState(1);
+  const [totalPagesEvents, setTotalPagesEvents] = useState(1);
+
   useEffect(() => {
     const socket = io(key, {
       withCredentials: true,
@@ -32,12 +38,10 @@ function Admin() {
       console.error("Socket connect error:", err.message);
     });
 
-
     return () => {
       socket.disconnect();
     };
   }, []);
-
 
   useEffect(() => {
     fetch(`${key}/api/auth/delete-requests`, {
@@ -45,44 +49,58 @@ function Admin() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-      .then(res => res.json())
-      .then(data => setDeleteRequests(data))
-      .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => setDeleteRequests(data))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${key}/api/events/admin`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (!response.ok) throw new Error("Failed to fetch events");
-        const data = await response.json();
-        setSearchEvents(data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
+        const res = await fetch(
+          `${key}/api/events/admin?page=${currentPageEvents}&limit=5&search=${findEvents}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        setSearchEvents(data.events || []);
+        setTotalPagesEvents(data.totalPages || 1);
+      } catch (err) {
+        console.error("Error loading admin events", err);
       }
     };
 
     fetchEvents();
-  }, []);
+  }, [currentPageEvents, findEvents]);
 
   useEffect(() => {
-    fetch(`${key}/api/auth/users`, {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("No token found");
+      return;
+    }
+
+    fetch(`${key}/api/auth/users/admin?page=${currentPageUsers}&limit=10`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then(res => res.json())
-      .then(data => {
-        setAllUsers(Array.isArray(data) ? data : data.users || []);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
       })
-      .catch(err => console.error("Failed to fetch users", err));
-  }, []);
+      .then((data) => {
+        setAllUsers(data.users || []);
+        setTotalPagesUsers(data.totalPages || 1);
+      })
+      .catch((err) => console.error("Failed to fetch users", err));
+  }, [currentPageUsers]);
 
   const filteredUsers = allUsers.filter((user) =>
     [user.firstName, user.email, user.username, user.lastName].some((field) =>
@@ -183,7 +201,6 @@ function Admin() {
       setDeleteRequests((prev) =>
         prev.filter((r) => r.userId && r.userId._id !== userId)
       );
-      
       setAllUsers((prev) => prev.filter((u) => u._id !== userId));
     }
   };
@@ -197,22 +214,22 @@ function Admin() {
   if (!isLoggedIn || user?.role !== "admin") {
     return <Navigate to="/" replace />;
   }
+
   return (
     <div className={styles.adminContainer}>
       <h2 className={styles.adminTitle}>Administration Hub</h2>
-
+  
       <section className={styles.panel}>
         <h3 className={styles.panelTitle}>Deletion Requests</h3>
         {deleteRequests.length === 0 ? (
           <p className={styles.emptyMessage}>No pending requests</p>
         ) : (
-          deleteRequests.map(req => (
+          deleteRequests.map((req) => (
             <div key={req._id} className={styles.requestCard}>
               <p>
-                {req.userId 
-                  ? `${req.userId.username} (${req.userId.email}) requested deletion.` 
-                  : "Unknown user requested deletion."
-                }
+                {req.userId
+                  ? `${req.userId.username} (${req.userId.email}) requested deletion.`
+                  : "Unknown user requested deletion."}
               </p>
               {req.userId && (
                 <button
@@ -226,7 +243,7 @@ function Admin() {
           ))
         )}
       </section>
-
+  
       <div className={styles.sectionsContainer}>
         <section className={styles.panel}>
           <h3 className={styles.panelTitle}>Users</h3>
@@ -261,8 +278,31 @@ function Admin() {
               </li>
             ))}
           </ul>
+  
+      
+          <div className={styles.paginationControls}>
+            <button
+              onClick={() => setCurrentPageUsers((p) => Math.max(p - 1, 1))}
+              disabled={currentPageUsers === 1}
+              className={styles.pageButton}
+            >
+              Prev
+            </button>
+            <span className={styles.pageInfo}>
+              Page {currentPageUsers} of {totalPagesUsers}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPageUsers((p) => Math.min(p + 1, totalPagesUsers))
+              }
+              disabled={currentPageUsers === totalPagesUsers}
+              className={styles.pageButton}
+            >
+              Next
+            </button>
+          </div>
         </section>
-
+  
         <section className={styles.panel}>
           <h3 className={styles.panelTitle}>Events</h3>
           <input
@@ -272,48 +312,99 @@ function Admin() {
             onChange={(e) => setFindEvents(e.target.value)}
             className={styles.searchInput}
           />
-          <ul className={styles.eventList}>
+  
+          <ul className={styles.eventsList}>
             {filteredEvents.map((event) => (
-              <li key={event._id} className={styles.eventListItem}>
+              <li key={event._id} className={styles.eventItem}>
                 {editingEventId === event._id ? (
                   <>
-                    <div className={styles.eventInfo}>
-                      <input
-                        value={eventData.title}
-                        onChange={(e) => setEventData({ ...eventData, title: e.target.value })}
-                        className={styles.editInput}
-                      />
-                      <textarea
-                        value={eventData.description}
-                        onChange={(e) => setEventData({ ...eventData, description: e.target.value })}
-                        className={styles.editTextarea}
-                      />
-                    </div>
-                    <div className={styles.eventAction}>
-                      <button onClick={saveEdit} className={styles.saveButton}>Save</button>
-                      <button onClick={cancelEditing} className={styles.cancelButton}>Cancel</button>
+                    <input
+                      type="text"
+                      value={eventData.title}
+                      onChange={(e) =>
+                        setEventData((data) => ({
+                          ...data,
+                          title: e.target.value,
+                        }))
+                      }
+                      className={styles.editInput}
+                    />
+                    <textarea
+                      value={eventData.description}
+                      onChange={(e) =>
+                        setEventData((data) => ({
+                          ...data,
+                          description: e.target.value,
+                        }))
+                      }
+                      className={styles.editTextArea}
+                    />
+                    <div className={styles.editButtons}>
+                      <button onClick={saveEdit} className={styles.saveButton}>
+                        Save
+                      </button>
+                      <button
+                        onClick={cancelEditing}
+                        className={styles.cancelButton}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className={styles.eventInfo}>
-                      <h4>{event.title}</h4>
-                      <p>{event.description}</p>
-                    </div>
-                    <div className={styles.eventAction}>
-                      <button onClick={() => startEditingEvent(event)} className={styles.editButton}>Edit</button>
-                      <button onClick={() => deleteEvent(event._id)} className={styles.deleteButton}>Delete</button>
+                    <h4>{event.title}</h4>
+                    <p>{event.description}</p>
+                    <div className={styles.eventActions}>
+                      <button
+                        onClick={() => startEditingEvent(event)}
+                        className={styles.editButton}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteEvent(event._id)}
+                        className={styles.deleteButton}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </>
                 )}
               </li>
             ))}
           </ul>
+  
+      
+          <div className={styles.paginationControls}>
+            <button
+              onClick={() => setCurrentPageEvents((p) => Math.max(p - 1, 1))}
+              disabled={currentPageEvents === 1}
+              className={styles.pageButton}
+            >
+              Prev
+            </button>
+            <span className={styles.pageInfo}>
+              Page {currentPageEvents} of {totalPagesEvents}
+            </span>
+            <button
+              onClick={() =>
+                setCurrentPageEvents((p) => Math.min(p + 1, totalPagesEvents))
+              }
+              disabled={currentPageEvents === totalPagesEvents}
+              className={styles.pageButton}
+            >
+              Next
+            </button>
+          </div>
         </section>
       </div>
     </div>
   );
-
+  
+  
 }
 
 export default Admin;
+
+
