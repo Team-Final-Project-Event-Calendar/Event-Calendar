@@ -3,7 +3,7 @@ import {
   createContactsList,
   getContactsLists,
 } from "../controllers/contactsList.controller.js";
-import { verifyToken } from "../middlewares/auth.middleware.js";
+import verifyToken from "../verify-token.js";
 
 const router = express.Router();
 
