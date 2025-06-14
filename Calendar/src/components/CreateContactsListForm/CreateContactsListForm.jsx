@@ -104,7 +104,6 @@ const CreateContactsListForm = () => {
         backgroundColor: "var(--bg-color)",
         borderRadius: "16px",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        marginTop: "40px",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
