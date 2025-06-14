@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const contactsListSchema = new mongoose.Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -19,8 +23,6 @@ const contactsListSchema = new mongoose.Schema(
   }
 );
 
-const ContactsList =
-  mongoose.models.ContactsList ||
-  mongoose.model("ContactsList", contactsListSchema);
+const ContactsList = new mongoose.model("ContactsList", contactsListSchema);
 
 export default ContactsList;

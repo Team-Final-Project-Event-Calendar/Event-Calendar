@@ -6,7 +6,6 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosContacts } from "react-icons/io";
 import { GrMultiple } from "react-icons/gr";
 
-
 function DrawerComponent({ onLogout }) {
   const navigate = useNavigate();
   return (
@@ -22,7 +21,7 @@ function DrawerComponent({ onLogout }) {
           <Drawer.Content rounded="md" maxH="70vh">
             <Drawer.Header>
               <Drawer.Title
-                alignItems={"center"}
+                alignItems={"flex-start"}
                 display="flex"
                 justifyContent="center"
               >
@@ -48,6 +47,8 @@ function DrawerComponent({ onLogout }) {
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
+                alignItems: "flex-start",
+                marginLeft: "20px",
               }}
             >
               <Button
@@ -55,14 +56,16 @@ function DrawerComponent({ onLogout }) {
                 fontSize={18}
                 onClick={() => navigate("/profile")}
               >
-                <CgProfile />Profile
+                <CgProfile />
+                Profile
               </Button>
               <Button
                 variant="ghost"
                 fontSize={18}
                 onClick={() => navigate("/contacts")}
               >
-                <IoIosContacts />Contacts
+                <IoIosContacts />
+                Contacts
               </Button>
               <Button
                 variant="ghost"
@@ -76,7 +79,8 @@ function DrawerComponent({ onLogout }) {
                 fontSize={18}
                 onClick={() => navigate("/event-series")}
               >
-                <GrMultiple />My Event Series
+                <GrMultiple />
+                My Event Series
               </Button>
               <Button
                 variant="ghost"
@@ -90,9 +94,6 @@ function DrawerComponent({ onLogout }) {
             <Drawer.Footer>
               <Button onClick={onLogout}>Logout</Button>
             </Drawer.Footer>
-            <Drawer.CloseTrigger asChild>
-              <CloseButton size="md" />
-            </Drawer.CloseTrigger>
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>

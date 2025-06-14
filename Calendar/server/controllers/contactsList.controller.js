@@ -1,14 +1,15 @@
 import ContactsList from "../models/contactsList.model.js";
+import mongoose from "mongoose";
 
 export const createContactsList = async (req, res) => {
   try {
     const { title, creator, contacts } = req.body;
 
-    const newList = await ContactsList.create({ title, creator, contacts });
+    const newList = await new ContactsList({ title, creator, contacts });
 
     newList.save();
 
-    res.status(201).json(newList);
+    res.status(200).json(newList);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
