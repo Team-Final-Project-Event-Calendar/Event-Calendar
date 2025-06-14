@@ -1,5 +1,12 @@
 import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { FaGear } from "react-icons/fa6";
+import { MdEvent } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { IoIosContacts } from "react-icons/io";
+import { GrMultiple } from "react-icons/gr";
+
+
 function DrawerComponent({ onLogout }) {
   const navigate = useNavigate();
   return (
@@ -48,35 +55,35 @@ function DrawerComponent({ onLogout }) {
                 fontSize={18}
                 onClick={() => navigate("/profile")}
               >
-                Profile
-              </Button>
-              <Button
-                variant="ghost"
-                fontSize={18}
-                onClick={() => navigate("/myevents")}
-              >
-                My Events
-              </Button>
-              <Button
-                variant="ghost"
-                fontSize={18}
-                onClick={() => navigate("/event-series")}
-              >
-                My Event Series
+                <CgProfile />Profile
               </Button>
               <Button
                 variant="ghost"
                 fontSize={18}
                 onClick={() => navigate("/contacts")}
               >
-                Contacts
+                <IoIosContacts />Contacts
+              </Button>
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/myevents")}
+              >
+                <MdEvent /> My Events
+              </Button>
+              <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/event-series")}
+              >
+                <GrMultiple />My Event Series
               </Button>
               <Button
                 variant="ghost"
                 fontSize={18}
                 onClick={() => navigate("/preferences")}
               >
-                Preferences
+                <FaGear /> Preferences
               </Button>
             </Drawer.Body>
 
