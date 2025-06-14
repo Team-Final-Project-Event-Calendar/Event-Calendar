@@ -108,6 +108,8 @@ const CreateContactsListForm = () => {
     >
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <h2
+          className="create-form-container"
+          onClick={() => setIsvisible(!isVisible)}
           style={{
             fontSize: "1.3rem",
             fontWeight: "bold",
@@ -292,6 +294,8 @@ const CreateContactsListForm = () => {
                 padding: "12px",
                 borderRadius: "4px",
                 fontWeight: "600",
+                backgroundColor: "#5565dd",
+                marginBottom: "20px",
                 transition: "background-color 0.3s",
               }}
             >
