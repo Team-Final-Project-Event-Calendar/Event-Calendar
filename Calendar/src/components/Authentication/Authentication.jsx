@@ -97,7 +97,8 @@ function Authentication() {
 
   const handleRegister = async () => {
     if (!validate()) return;
-    const { username, phoneNumber, email, password, firstName, lastName } = user;
+    const { username, phoneNumber, email, password, firstName, lastName } =
+      user;
 
     try {
       await register({
@@ -139,104 +140,137 @@ function Authentication() {
   };
 
   return (
-    <div className="auth-container">
-      {isLoggedIn ? (
-        <div className="auth-logged-in">
-          <h2>Welcome, {loggedUser?.firstName || "User"}!</h2>
-          <button onClick={logout}>Logout</button>
-        </div>
-      ) : (
-        <>
-          <div className="auth-toggle">
-            <button onClick={() => setMode("login")} disabled={mode === "login"}>
-              Login
-            </button>
-            <button onClick={() => setMode("register")} disabled={mode === "register"}>
-              Register
-            </button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
+      <div className="auth-container" style={{ width: "20vw" }}>
+        {isLoggedIn ? (
+          <div className="auth-logged-in">
+            <h2>Welcome, {loggedUser?.firstName || "User"}!</h2>
+            <button onClick={logout}>Logout</button>
           </div>
-
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <h2>{mode === "login" ? "Login" : "Register"}</h2>
-
-            {successMessage && <div className="success">{successMessage}</div>}
-            {error.general && <div className="error">{error.general}</div>}
-
-            {mode === "register" && (
-              <>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    value={user.username}
-                    onChange={updateUser("username")}
-                  />
-                  {error.username && <div className="error">{error.username}</div>}
-                </div>
-
-                <div>
-                  <input
-                    type="tel"
-                    value={user.phoneNumber}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9]/g, "");
-                      setUser({ ...user, phoneNumber: val });
-                    }}
-                    name="phoneNumber"
-                    id="phoneNumber"
-                    pattern="^0\d{9}$"
-                    required
-                    placeholder="Enter phone number"
-                  />
-                  {error.phoneNumber && <div className="error">{error.phoneNumber}</div>}
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    value={user.firstName}
-                    onChange={updateUser("firstName")}
-                  />
-                  {error.firstName && <div className="error">{error.firstName}</div>}
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    value={user.lastName}
-                    onChange={updateUser("lastName")}
-                  />
-                  {error.lastName && <div className="error">{error.lastName}</div>}
-                </div>
-              </>
-            )}
-
-            <div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={user.email}
-                onChange={updateUser("email")}
-              />
-              {error.email && <div className="error">{error.email}</div>}
+        ) : (
+          <>
+            <div className="auth-toggle">
+              <button
+                onClick={() => setMode("login")}
+                disabled={mode === "login"}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setMode("register")}
+                disabled={mode === "register"}
+              >
+                Register
+              </button>
             </div>
 
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={user.password}
-                onChange={updateUser("password")}
-              />
-              {error.password && <div className="error">{error.password}</div>}
-            </div>
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
-            <button type="submit">{mode === "login" ? "Login" : "Register"}</button>
-          </form>
-        </>
-      )}
+              {successMessage && (
+                <div className="success">{successMessage}</div>
+              )}
+              {error.general && <div className="error">{error.general}</div>}
+
+              {mode === "register" && (
+                <>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Username"
+                      value={user.username}
+                      onChange={updateUser("username")}
+                    />
+                    {error.username && (
+                      <div className="error">{error.username}</div>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      type="tel"
+                      value={user.phoneNumber}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9]/g, "");
+                        setUser({ ...user, phoneNumber: val });
+                      }}
+                      name="phoneNumber"
+                      id="phoneNumber"
+                      pattern="^0\d{9}$"
+                      required
+                      placeholder="Enter phone number"
+                    />
+                    {error.phoneNumber && (
+                      <div className="error">{error.phoneNumber}</div>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      value={user.firstName}
+                      onChange={updateUser("firstName")}
+                    />
+                    {error.firstName && (
+                      <div className="error">{error.firstName}</div>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      value={user.lastName}
+                      onChange={updateUser("lastName")}
+                    />
+                    {error.lastName && (
+                      <div className="error">{error.lastName}</div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={user.email}
+                  onChange={updateUser("email")}
+                />
+                {error.email && <div className="error">{error.email}</div>}
+              </div>
+
+              <div>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={user.password}
+                  onChange={updateUser("password")}
+                />
+                {error.password && (
+                  <div className="error">{error.password}</div>
+                )}
+              </div>
+
+              <button type="submit">
+                {mode === "login" ? "Login" : "Register"}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+      <img
+        style={{ width: "80vw" }}
+        src="https://paper-leaf.com/app/uploads/2016/04/may2016wallpaper1920x1200.jpg"
+        alt=""
+      />
     </div>
   );
 }
