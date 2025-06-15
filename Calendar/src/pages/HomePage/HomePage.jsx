@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import "./HomePage.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
+import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
@@ -204,9 +204,9 @@ function HomePage() {
           className="public-events-box"
           borderRadius="xl"
           style={{ width: "60vw", margin: "0 auto" }}
-          p={6}
           bg="#f7f7f7"
           boxShadow="0 4px 24px rgba(0,0,0,0.2)"
+          pb={"3vh"}
         >
           <Heading className="heading-allEvents-searchResult">
             {displayTitle}
@@ -235,7 +235,7 @@ function HomePage() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "0px 20px",
+                padding: "0px 35px",
               }}
             >
               <div
@@ -243,12 +243,9 @@ function HomePage() {
                 style={{
                   cursor: currentPage > 1 ? "pointer" : "not-allowed",
                   opacity: currentPage > 1 ? 1 : 0.5,
-                  padding: "10px",
-                  display: "flex",
-                  alignItems: "center"
                 }}
               >
-                <MdArrowBackIos />
+                <MdArrowBackIosNew />
               </div>
 
               <div style={{ flex: 1 }}>
@@ -258,6 +255,7 @@ function HomePage() {
                       events={eventsToDisplay}
                       onDelete={handleDeleteEvent}
                       justify="center"
+                      maxWidth="1400px"
                     />
 
                     <div style={{
@@ -283,9 +281,6 @@ function HomePage() {
                 style={{
                   cursor: currentPage < totalPages ? "pointer" : "not-allowed",
                   opacity: currentPage < totalPages ? 1 : 0.5,
-                  padding: "10px",
-                  display: "flex",
-                  alignItems: "center"
                 }}
               >
                 <MdArrowForwardIos />

@@ -3,8 +3,7 @@ import "./PublicPage.css";
 import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { Card, Heading, Stack, Box } from "@chakra-ui/react";
-import { MdArrowForwardIos } from "react-icons/md";
-import { MdArrowBackIos } from "react-icons/md";
+import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { IconContext } from "react-icons";
 import { Spinner } from "@chakra-ui/react";
 
@@ -108,7 +107,7 @@ const PublicPage = () => {
               style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "0px 50px",
+                padding: "0px 35px",
               }}
             >
               <div
@@ -118,7 +117,7 @@ const PublicPage = () => {
                   opacity: currentPage > 1 ? 1 : 0.5,
                 }}
               >
-                <MdArrowBackIos />
+                <MdArrowBackIosNew />
               </div>
               <div style={{ flex: 1 }}>
                 {loading ? (
