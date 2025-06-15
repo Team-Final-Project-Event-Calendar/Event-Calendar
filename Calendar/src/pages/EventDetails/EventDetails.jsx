@@ -151,7 +151,7 @@ function EventDetails() {
         );
     }
 
-    const isOwner = user ? event.userId === user._id : false;
+    const isOwner = user ? event.userId && event.userId.toString() === user._id : false;
 
     return (
         <Container maxW="5xl" py={15}>
@@ -165,7 +165,7 @@ function EventDetails() {
             >
                 <VStack spacing={10} align="start">
                     <Badge colorScheme="teal" bg="black" color="blue.500">
-                        {user && isOwner ? `Created by ${user.username}` : 'Shared event'}
+                        {isOwner ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
 
                     <Heading size="lg">{event.title}</Heading>
