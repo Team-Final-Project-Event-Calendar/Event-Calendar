@@ -10,7 +10,7 @@ import { Spinner } from "@chakra-ui/react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-const CustomSpinner = () => (
+export const CustomSpinner = () => (
   <div style={{ textAlign: "center", padding: "50px 0" }}>
     <Spinner
       color="#5565DD"
