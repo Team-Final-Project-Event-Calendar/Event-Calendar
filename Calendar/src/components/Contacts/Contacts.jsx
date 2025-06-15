@@ -66,7 +66,15 @@ function Contacts() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log(res);
+      if (res.ok) {
+        setContactLists((prevLists) =>
+          prevLists.filter((list) => list._id !== id)
+        );
+        alert("Contact list deleted successfully");
+      } else {
+        const errorData = await res.json();
+        alert(`Failed to delete: ${errorData.message}`);
+      }
     } catch (error) {
       console.log(`Error: ${error.message}`);
     }
