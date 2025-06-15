@@ -26,6 +26,8 @@ function Contacts() {
   const [isInviting, setIsInviting] = useState(false);
   const [events, setEvents] = useState([]);
   const invitePopupRef = useRef(null);
+  const [feedback, setFeedback] = useState("");
+  const [selectedUsername, setSelectedUsername] = useState("");
 
   const fetchEvents = async () => {
     try {
@@ -43,6 +45,39 @@ function Contacts() {
       setEvents(data);
     } catch (error) {
       console.error("Error fetching events:", error);
+    }
+  };
+
+  const handleSendInvite = async (event) => {
+    if (!selectedUsername) {
+      setFeedback("Please select a username");
+      return;
+    }
+    if (!event._id) {
+      setFeedback("No ID found");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${key}/api/events/${event._id}/participants`,
+        { username: selectedUsername },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log(response);
+      setFeedback(
+        response.data.message || `Invite sent to ${selectedUsername}!`
+      );
+      setSelectedUsername("");
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to send invite";
+      setFeedback(msg);
+      console.error(error);
     }
   };
 
@@ -138,7 +173,8 @@ function Contacts() {
     fetchAllContactsList();
   };
 
-  const handleInvite = async () => {
+  const setInvite = async (contact) => {
+    setSelectedUsername(contact.username);
     setBlured(true);
     setIsInviting(true);
   };
@@ -228,6 +264,7 @@ function Contacts() {
               </div>
               {events.map((e, index) => (
                 <div
+                  onClick={() => handleSendInvite(e)}
                   className="event-block"
                   key={index}
                   style={{
@@ -551,7 +588,7 @@ function Contacts() {
                             />
                             <span>{contact.username}</span>
                             <Button
-                              onClick={() => handleInvite()}
+                              onClick={() => setInvite(contact)}
                               padding={"0px 10px"}
                               variant={"ghost"}
                               marginLeft={"10px"}
