@@ -16,6 +16,7 @@ import Contacts from "./components/Contacts/Contacts";
 import UserProfile from "./components/UserProfile/UserProfile";
 import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
 import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
+import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
 
 function App() {
   return (
@@ -87,9 +88,9 @@ function App() {
         <Route
           path="/eventdetails/:id"
           element={
-            <ProtectedRoute>
+            <SharedRoute>
               <EventDetails />
-            </ProtectedRoute>
+            </SharedRoute>
           }
         />
 

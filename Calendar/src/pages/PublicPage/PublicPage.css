@@ -12,12 +12,13 @@
 /* Public Welcome_Section: (CHAKRA_UI Card) .Root */
 .public-welcome-chakra_Card-Root {
   text-align: center;
-  background-color: white;
+  background-color: #e2f1ff;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 0px 80px -25px,
     rgba(0, 0, 0, 0.3) 0px 30px 50px -30px,
     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
   border-radius: 40px;
   border-color: #e6e6e6eb;
+  border: 2px solid #5565DD;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,6 +74,7 @@
   font-weight: bold;
   border-radius: 18px;
   background-color: #e2f1ff;
+  border: 1px solid #5565DD;
   padding: 3px 6rem;
   margin-top: 3vh;
   display: inline-block;

@@ -260,7 +260,7 @@
 
 .dark .public-welcome-chakra_Card-Root {
   background-color: var(--dark-bg-secondary);
-  border: 1px solid var(--dark-border-primary);
+  border: 2px solid  #5565DD;
   box-shadow: 0 0 80px -25px rgba(0, 0, 0, 0.5),
     0 30px 50px -30px rgba(0, 0, 0, 0.6),
     0 -2px 6px 0px rgba(255, 255, 255, 0.05) inset;

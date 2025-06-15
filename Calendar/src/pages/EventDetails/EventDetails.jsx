@@ -14,6 +14,7 @@ import { MdPerson } from 'react-icons/md';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../components/Authentication/AuthContext';
+import { CustomSpinner } from '../PublicPage/PublicPage';
 
 function EventDetails() {
     const { id } = useParams();
@@ -31,25 +32,47 @@ function EventDetails() {
             try {
                 setLoading(true);
 
-                const response = await fetch(`${backendUrl}/api/events`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                });
+                //Checks for token (logged in user)
+                const token = localStorage.getItem("token")
 
-                if (!response.ok) throw new Error('Failed to fetch events');
+                if (token) {
+                    const response = await fetch(`${backendUrl}/api/events`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    });
 
-                const events = await response.json();
+                    if (!response.ok) throw new Error('Failed to fetch events');
 
-                const data = events.find(event => event._id === id);
+                    const events = await response.json();
+                    const data = events.find(event => event._id === id);
 
-                if (!data) throw new Error('Event not found');
+                    if (!data) throw new Error('Event not found');
 
-                setEvent({
-                    ...data,
-                    start: data.startDateTime || data.startDate,
-                    end: data.endDateTime || data.endDate,
-                });
+                    setEvent({
+                        ...data,
+                        start: data.startDateTime || data.startDate,
+                        end: data.endDateTime || data.endDate,
+                    });
+
+                } else {
+                    // IF NOT (anon user) - fetch public event
+                    const response = await fetch(`${backendUrl}/api/events/public`);
+
+                    if (!response.ok) throw new Error('Failed to fetch public events');
+
+                    const publicEvents = await response.json();
+                    const data = publicEvents.find(event => event._id === id);
+
+                    if (!data) throw new Error('Event not found or not public');
+
+                    setEvent({
+                        ...data,
+                        start: data.startDateTime || data.startDate,
+                        end: data.endDateTime || data.endDate,
+                    });
+                }
+
             } catch (err) {
                 console.error(err);
                 setEvent(null);
@@ -114,8 +137,8 @@ function EventDetails() {
 
     if (loading) {
         return (
-            <Box textAlign="center" py={10}>
-                <Spinner size="xl" />
+            <Box textAlign="center">
+                <CustomSpinner />
             </Box>
         );
     }
@@ -128,7 +151,7 @@ function EventDetails() {
         );
     }
 
-    const isOwner = event.userId === user._id;
+    const isOwner = user ? event.userId === user._id : false;
 
     return (
         <Container maxW="5xl" py={15}>
@@ -142,7 +165,7 @@ function EventDetails() {
             >
                 <VStack spacing={10} align="start">
                     <Badge colorScheme="teal" bg="black" color="blue.500">
-                        {isOwner ? `Created by ${user.username}` : 'Shared event'}
+                        {user && isOwner ? `Created by ${user.username}` : 'Shared event'}
                     </Badge>
 
                     <Heading size="lg">{event.title}</Heading>
@@ -184,56 +207,61 @@ function EventDetails() {
                         <Text fontWeight="bold">Description:</Text>
                         <Text>{event.description}</Text>
                     </Stack>
+                    {user ? (
+                        <Stack spacing={1} w="100%">
+                            <Text fontWeight="bold">Participants:</Text>
+                            {event.participants && event.participants.length > 0 ? (
+                                <Box as="ul" style={{ listStyleType: 'none', paddingLeft: 0 }}>
+                                    {event.participants.map((participant) => (
+                                        <Box
+                                            as="li"
+                                            key={participant._id}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            mb={1}
+                                            pr={2}
+                                        >
+                                            <Box display="flex" alignItems="center">
+                                                <MdPerson style={{ marginRight: 6 }} />
+                                                <Text as="span">{participant.username}</Text>
+                                            </Box>
 
-                    <Stack spacing={1} w="100%">
-                        <Text fontWeight="bold">Participants:</Text>
-                        {event.participants && event.participants.length > 0 ? (
-                            <Box as="ul" style={{ listStyleType: 'none', paddingLeft: 0 }}>
-                                {event.participants.map((participant) => (
-                                    <Box
-                                        as="li"
-                                        key={participant._id}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="space-between"
-                                        mb={1}
-                                        pr={2}
-                                    >
-                                        <Box display="flex" alignItems="center">
-                                            <MdPerson style={{ marginRight: 6 }} />
-                                            <Text as="span">{participant.username}</Text>
+                                            {isOwner && participant._id !== user._id && (
+                                                <Button
+                                                    size="sm"
+                                                    colorScheme="red"
+                                                    background={'red.600'}
+                                                    onClick={() => handleRemoveParticipant(participant._id)}
+                                                >
+                                                    Remove
+                                                </Button>
+                                            )}
+
+                                            {participant._id === user._id && (
+                                                <Button
+                                                    size="sm"
+                                                    colorScheme="orange"
+                                                    background={'orange.600'}
+                                                    onClick={handleLeaveEvent}
+                                                    isLoading={isLeaving}
+                                                    loadingText="Leaving..."
+                                                >
+                                                    Leave
+                                                </Button>
+                                            )}
                                         </Box>
-
-                                        {isOwner && participant._id !== user._id && (
-                                            <Button
-                                                size="sm"
-                                                colorScheme="red"
-                                                background={'red.600'}
-                                                onClick={() => handleRemoveParticipant(participant._id)}
-                                            >
-                                                Remove
-                                            </Button>
-                                        )}
-
-                                        {participant._id === user._id && (
-                                            <Button
-                                                size="sm"
-                                                colorScheme="orange"
-                                                background={'orange.600'}
-                                                onClick={handleLeaveEvent}
-                                                isLoading={isLeaving}
-                                                loadingText="Leaving..."
-                                            >
-                                                Leave
-                                            </Button>
-                                        )}
-                                    </Box>
-                                ))}
-                            </Box>
-                        ) : (
-                            <Text>No participants yet.</Text>
-                        )}
-                    </Stack>
+                                    ))}
+                                </Box>
+                            ) : (
+                                <Text>No participants yet.</Text>
+                            )}
+                        </Stack>
+                    ) : (
+                        <Stack spacing={1} w="100%">
+                            <Text fontWeight="bold">Login to see participants and join this event</Text>
+                        </Stack>
+                    )}
                 </VStack>
             </Box>
         </Container>
