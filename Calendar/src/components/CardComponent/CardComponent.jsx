@@ -159,7 +159,9 @@ function CardComponent({ event, onDelete }) {
       </Text>
 
       <Text fontSize="md" color="gray.600" mb={3}>
-        {event.description}
+        {event.description.length > 50
+          ? event.description.slice(0, 50) + "..."
+          : event.description}
       </Text>
 
       <Box display="flex" alignItems="center">

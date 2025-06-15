@@ -353,19 +353,30 @@ function Contacts() {
                       background: "#f8f9fa",
                     }}
                   >
-                    <h3
+                    <div
                       style={{
-                        fontSize: "1.1rem",
-                        fontWeight: "600",
-                        marginBottom: "8px",
-                        color: "#2c5282",
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                     >
-                      {list.title}
-                    </h3>
-                    <button onClick={() => handleDeteLIst(list._id)}>
-                      Delete List
-                    </button>
+                      <h3
+                        style={{
+                          fontSize: "1.1rem",
+                          fontWeight: "600",
+                          marginBottom: "8px",
+                          color: "#2c5282",
+                        }}
+                      >
+                        {list.title}
+                      </h3>
+                      <Button
+                        padding="0px 10px"
+                        backgroundColor={"red"}
+                        onClick={() => handleDeteLIst(list._id)}
+                      >
+                        Delete List
+                      </Button>
+                    </div>
                     <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
                       <p>{list.contacts.length} contacts</p>
                     </div>
