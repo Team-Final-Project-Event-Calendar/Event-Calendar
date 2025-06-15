@@ -75,13 +75,10 @@ router.get("/users/:id", verifyToken, async (req, res) => {
   }
 });
 
-
-
 router.put("/users/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
 
   const user = req.body;
-
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid id" });
@@ -91,9 +88,7 @@ router.put("/users/:id", verifyToken, async (req, res) => {
     const updateFields = { ...user };
 
     console.log("Updating user with id:", id);
-console.log("Update data:", updateFields);
-
-
+    console.log("Update data:", updateFields);
 
     if (user.adress) {
       updateFields.adress = user.adress;
@@ -101,7 +96,6 @@ console.log("Update data:", updateFields);
     if (user.avatar) {
       updateFields.avatar = user.avatar;
     }
-
 
     const updatedUser = await User.findByIdAndUpdate(
       { _id: id },
@@ -111,7 +105,6 @@ console.log("Update data:", updateFields);
         runValidators: true,
       }
     );
-
 
     const io = req.app.get("io");
     io.to(id).emit("user-updated", updatedUser);
@@ -263,7 +256,9 @@ router.get("/users/exists/:username", verifyToken, async (req, res) => {
 });
 router.post("/delete-request", verifyToken, async (req, res) => {
   try {
-    const existingRequest = await DeleteRequest.findOne({ userId: req.user.id });
+    const existingRequest = await DeleteRequest.findOne({
+      userId: req.user.id,
+    });
 
     if (existingRequest) {
       return res.status(400).json({ message: "Delete request already exists" });
@@ -289,7 +284,10 @@ router.get("/delete-requests", verifyToken, async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const requests = await DeleteRequest.find().populate("userId", "username email");
+    const requests = await DeleteRequest.find().populate(
+      "userId",
+      "username email"
+    );
     res.json(requests);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -317,9 +315,4 @@ router.put("/delete-requests/:id", verifyToken, async (req, res) => {
   }
 });
 
-
-
 export default router;
-
-
-

@@ -98,3 +98,7 @@ button:focus-visible {
 .create-form-container:hover {
   cursor: pointer;
 }
+
+.blured {
+  filter: blur(20px);
+}

@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
-import { addPointerEvent } from "framer-motion";
-import ContactsList from "../../../server/models/contactsList.model";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
@@ -21,6 +19,7 @@ function Contacts() {
   const { user, token } = useContext(AuthContext);
   const [currentView, setCurrentView] = useState("");
   const [contactLists, setContactLists] = useState([]);
+  const [blured, setBlured] = useState(false);
 
   const fetchAllUsers = async () => {
     try {
@@ -123,6 +122,7 @@ function Contacts() {
 
   return (
     <div
+      className={blured ? "blured" : ""}
       style={{
         width: "60vw",
         margin: "0 auto",
