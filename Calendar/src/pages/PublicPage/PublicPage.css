@@ -55,16 +55,13 @@
 /*_____________________*** Public Events Section ***______________________*/
 /* Public Events_Section: (CHAKRA_UI Box) */
 .public-events-chakra_Box {
-  background: white;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-    rgba(0, 0, 0, 0.3) 0px 30px 50px -30px,
-    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-  padding: 1rem;
+  background: #f7f7f7;
+  box-shadow: "0 4px 24px rgba(0,0,0,0.1)";
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
+  max-width: 70wv;
 
 }
 
@@ -75,8 +72,8 @@
   font-weight: bold;
   border-radius: 18px;
   background-color: #e2f1ff;
-  padding: 3px 10rem;
-  margin-top: 1vh;
+  padding: 3px 6rem;
+  margin-top: 3vh;
   display: inline-block;
   text-align: center;
   margin-bottom: 2vh;
@@ -86,11 +83,11 @@
 .public-events-chakra_Box-list {
   margin-top: 1vh;
   margin-bottom: 1rem;
-  padding: 0px 10px 10px;
   display: flex;
-  max-height: 395px;
-  max-width: 1200px;
-
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 
@@ -103,4 +100,11 @@ BOX SHADOW: Number #14 Original:
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
      rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
      rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+*/
+
+/*  BOX SHADOW: Number 80 (i neshto) Custom
+ box-shadow: rgba(50, 50, 93, 0.25) 0px 0px 80px -25px,
+    rgba(0, 0, 0, 0.3) 0px 30px 50px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
 */

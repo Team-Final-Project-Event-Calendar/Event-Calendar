@@ -46,7 +46,7 @@ const PublicPage = () => {
 
       {/* Public Events Section */}
       <div className="public-Events-container">
-        <Box className="public-events-chakra_Box" borderRadius="xl">
+        <Box className="public-events-chakra_Box" borderRadius="xl" style={{ justifyContent: "space-between", display:"flex"}}>
           <h2 className="public-events-chakra_Box-title">
             Public Events
           </h2>
