@@ -3,8 +3,16 @@ import "./PublicPage.css";
 import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { Card, Heading, Stack, Box } from "@chakra-ui/react";
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaRegArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
+import { MdArrowForwardIos } from "react-icons/md";
+import { MdArrowBackIos } from "react-icons/md";
 
-const key = import.meta.env.VITE_BACK_END_URL|| "http://localhost:5000";
+
+const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+
+
 const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
 
@@ -50,11 +58,22 @@ const PublicPage = () => {
           <h2 className="public-events-chakra_Box-title">
             Public Events
           </h2>
-            <CardsListComponent 
-            className="public-events-chakra_Box-list" 
-            events={publicEvents}
-            justify="center"
+          <div className="arrows-cardlist-container" style={{
+            displey:"flex", 
+            justifyContent:"space-between", 
+            alignItems:"center",
+            width:"100%",
+            
+            }}> 
+            <MdArrowBackIos />
+
+            <CardsListComponent
+              className="public-events-chakra_Box-list"
+              events={publicEvents}
+              justify="center"
             />
+            <MdArrowForwardIos />
+          </div>
         </Box>
       </div >
 
