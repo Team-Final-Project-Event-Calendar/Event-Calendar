@@ -130,7 +130,7 @@ function ProfileDetailsComponent() {
   return (
     <div
       className="css-1tudbfc"
-      style={{ width: "60vw", margin: "0px auto" }}
+      style={{ width: "60vw", margin: "20px auto" }}
       // style={{
       //   maxWidth: "60vw",
       //   margin: "40px auto",

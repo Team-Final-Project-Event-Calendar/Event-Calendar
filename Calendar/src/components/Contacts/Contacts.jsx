@@ -220,7 +220,7 @@ function Contacts() {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "20px" }}>
       {isInviting && (
         <div className="invite-form ">
           {isInviting && (
