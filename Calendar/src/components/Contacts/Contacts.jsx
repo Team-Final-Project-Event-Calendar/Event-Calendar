@@ -77,7 +77,7 @@ function Contacts() {
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
-      console.error(error);
+      console.error(error.message);
     }
   };
 
@@ -542,7 +542,16 @@ function Contacts() {
                         <Button
                           padding="0px 10px"
                           backgroundColor={"red"}
-                          onClick={() => handleDeleteLIst(list._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              window.confirm(
+                                "Are you sure you want to delete this event?"
+                              )
+                            ) {
+                              handleDeleteLIst?.(list._id);
+                            }
+                          }}
                         >
                           Delete List
                         </Button>
