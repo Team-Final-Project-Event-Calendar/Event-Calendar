@@ -1,0 +1,13 @@
+.heading-allEvents-searchResult {
+  color: #5565DD;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 18px;
+  background-color: #e2f1ff;
+  border: 1px solid #5565DD;
+  padding: 7px 6rem 7px;
+  margin-top: 1vh;
+  display: inline-block;
+  text-align: center;
+  margin-bottom: 2vh;
+}

@@ -28,7 +28,7 @@
 /* Public Welcome_Section: (CHAKRA_UI Card) .Header-heading */
 .public-welcome-chakra_Card-heading {
   font-size: 25px;
-  color: black;
+  color: #5565DD;
   font-weight: bold;
 }
 
@@ -57,7 +57,8 @@
 /* Public Events_Section: (CHAKRA_UI Box) */
 .public-events-chakra_Box {
   background: #f7f7f7;
-  box-shadow: "0 4px 24px rgba(0,0,0,0.1)";
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 24px;
+   
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -69,7 +70,7 @@
 
 /* Public Events_Section: (CHAKRA_UI Box) <h2 style> */
 .public-events-chakra_Box-title {
-  color: black;
+  color: #5565DD;
   font-size: 24px;
   font-weight: bold;
   border-radius: 18px;

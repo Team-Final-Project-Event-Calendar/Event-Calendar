@@ -5,6 +5,8 @@ import { useState, useEffect, useMemo } from "react";
 import "./HomePage.css";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
+import { IconContext } from "react-icons";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -14,8 +16,23 @@ function HomePage() {
   const [participatingEvents, setParticipatingEvents] = useState([]);
   const [searchResults, setSearchResults] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const eventsPerPage = 6;
 
   const location = useLocation()
+
+  // Handle navigation - pagination
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
 
   const handleDeleteEvent = async (event) => {
     if (!event._id) return;
@@ -36,7 +53,7 @@ function HomePage() {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (location.state?.searchResults && location.state?.searchTerm) {
       setSearchResults(location.state.searchResults);
       setSearchTerm(location.state.searchTerm);
@@ -142,8 +159,20 @@ function HomePage() {
     return Array.from(allEventsMap.values());
   }, [publicEvents, myEvents, participatingEvents]);
 
-  // Determine what events to display
-  const eventsToDisplay = searchResults !== null ? searchResults : uniqueEvents;
+
+  // Display events pagination
+  const allEvents = searchResults !== null ? searchResults : uniqueEvents;
+
+  // Calculate total pages
+  const totalPages = Math.ceil(allEvents.length / eventsPerPage);
+
+  // Get current events for display
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const eventsToDisplay = allEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+
+  // Display 'search results' or 'all events'
+  // const eventsToDisplay = searchResults !== null ? searchResults : uniqueEvents;
   const displayTitle = searchResults !== null
     ? `Search Results for "${searchTerm}"`
     : "All Events";
@@ -151,6 +180,7 @@ function HomePage() {
   const clearSearch = () => {
     setSearchResults(null);
     setSearchTerm("");
+    setCurrentPage(1); // Reset to fist page
     // Also clear the search in NavComponent
     window.dispatchEvent(new CustomEvent('clearNavSearch'));
   };
@@ -158,10 +188,10 @@ function HomePage() {
 
   return (
     <div className="home-page-container">
-      <Heading as="h1" size="xl" textAlign="center" mb={8} color="#1976d2">
+      <Heading className="homepage-heading-welcome" as="h1" size="xl" textAlign="center" fontSize={30} fontWeight={"bold"} mb={5} mt={8} color="#1976d2">
         Welcome to Event Calendar
       </Heading>
-      <Text textAlign="center" fontSize="lg" mb={12} color="#555">
+      <Text className="homepage-heading-welcome-second" textAlign="center" fontSize="lg" mb={12} color="#555">
         Discover and manage events effortlessly
       </Text>
 
@@ -173,46 +203,95 @@ function HomePage() {
           justifyItems={"center"}
           className="public-events-box"
           borderRadius="xl"
-          style={{ width: "80vw", margin: "0 auto" }}
+          style={{ width: "60vw", margin: "0 auto" }}
           p={6}
           bg="#f7f7f7"
-          boxShadow="0 4px 24px rgba(0,0,0,0.1)"
+          boxShadow="0 4px 24px rgba(0,0,0,0.2)"
         >
-          <Heading as="h2" size="lg" mb={4} color="#1976d2" textAlign="center">
+          <Heading className="heading-allEvents-searchResult">
             {displayTitle}
             {searchResults !== null && (
               <button
                 onClick={clearSearch}
                 style={{
-                  marginLeft: "1rem",
-                  background: "#1976d2",
+                  marginLeft: "3rem",
+                  background: "#DC2626",
                   color: "white",
                   border: "none",
                   padding: "0.25rem 0.75rem",
                   borderRadius: "4px",
                   cursor: "pointer",
-                  fontSize: "0.8rem"
+                  fontSize: "1rem"
                 }}
               >
                 Clear
               </button>
             )}
           </Heading>
+          {/* Pagination */}
+          <IconContext.Provider value={{ size: "5em" }}>
+            <div
+              className="arrows-cardlist-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0px 20px",
+              }}
+            >
+              <div
+                onClick={handlePrevPage}
+                style={{
+                  cursor: currentPage > 1 ? "pointer" : "not-allowed",
+                  opacity: currentPage > 1 ? 1 : 0.5,
+                  padding: "10px",
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                <MdArrowBackIos />
+              </div>
 
-          {eventsToDisplay.length > 0 ? (
-            <CardsListComponent
-              events={eventsToDisplay}
-              onDelete={handleDeleteEvent}
-              justify="center"
-            />
-          ) : (
-            <Text textAlign="center" color="#666">
-              {searchResults !== null
-                ? `No events found for "${searchTerm}"`
-                : "No events available"
-              }
-            </Text>
-          )}
+              <div style={{ flex: 1 }}>
+                {eventsToDisplay.length > 0 ? (
+                  <>
+                    <CardsListComponent
+                      events={eventsToDisplay}
+                      onDelete={handleDeleteEvent}
+                      justify="center"
+                    />
+
+                    <div style={{
+                      textAlign: "center",
+                      marginTop: "20px",
+                      fontSize: "1rem",
+                      color: "#666"
+                    }}>
+                      Page {currentPage} of {totalPages || 1}
+                    </div>
+                  </>
+                ) : (
+                  <Text textAlign="center" color="#666">
+                    {searchResults !== null
+                      ? `No events found for "${searchTerm}"`
+                      : "No events available"
+                    }
+                  </Text>
+                )}
+              </div>
+              <div
+                onClick={handleNextPage}
+                style={{
+                  cursor: currentPage < totalPages ? "pointer" : "not-allowed",
+                  opacity: currentPage < totalPages ? 1 : 0.5,
+                  padding: "10px",
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                <MdArrowForwardIos />
+              </div>
+            </div>
+          </IconContext.Provider>
         </Box>
       </div>
     </div>

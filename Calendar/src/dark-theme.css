@@ -836,3 +836,18 @@
   background: rgba(40, 40, 40, 0.15) !important;
   border: 0.1px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+/* HomePage - Heading fo All Events & Search results */
+.dark .heading-allEvents-searchResult {
+  color: var(--dark-text-primary);
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--dark-brand-primary);
+}
+
+.dark .homepage-heading-welcome{
+ color: var(--dark-text-primary);
+}
+.dark .homepage-heading-welcome-second{
+ color: var(--dark-text-secondary);
+ 
+}

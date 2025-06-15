@@ -34,7 +34,7 @@ const PublicPage = () => {
 
 
   useEffect(() => {
-    setLoading(true); //dobavi spinner za ui friendliness, dokat zarejda
+    setLoading(true);
     fetch(`${key}/api/events/public`)
       .then((res) => res.json())
       .then((data) => {
