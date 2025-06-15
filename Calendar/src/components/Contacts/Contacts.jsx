@@ -75,6 +75,7 @@ function Contacts() {
     if (token) {
       fetchAllUsers();
       fetchAllContactsList();
+      handleDeteLIst();
     }
   }, [token]);
 

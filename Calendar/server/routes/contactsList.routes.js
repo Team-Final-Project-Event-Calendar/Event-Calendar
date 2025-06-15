@@ -21,6 +21,5 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 });
-// router.delete("/:id", verifyToken, deleteContactsList);
 
 export default router;
