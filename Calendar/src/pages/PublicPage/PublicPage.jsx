@@ -46,13 +46,15 @@ const PublicPage = () => {
 
       {/* Public Events Section */}
       <div className="public-Events-container">
-        <Box className="public-events-chakra_Box" borderRadius="xl" style={{ justifyContent: "space-between", display:"flex"}}>
+        <Box className="public-events-chakra_Box" borderRadius="xl">
           <h2 className="public-events-chakra_Box-title">
             Public Events
           </h2>
-          <span className="public-events-chakra_Box-list">
-            <CardsListComponent events={publicEvents} />
-          </span>
+            <CardsListComponent 
+            className="public-events-chakra_Box-list" 
+            events={publicEvents}
+            justify="center"
+            />
         </Box>
       </div >
 
