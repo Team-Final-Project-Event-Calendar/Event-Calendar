@@ -221,6 +221,12 @@ function Contacts() {
               <input
                 type="text"
                 value={searchQuery}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setSearchQuery(e.target.value);
+                    handleSearch();
+                  }
+                }}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setCurrentView("search"); // Auto-switch to search view
