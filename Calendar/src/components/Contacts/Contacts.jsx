@@ -56,10 +56,11 @@ function Contacts() {
     }
   };
 
-  const handleDeteLIst = async (contactList) => {
-    console.log(contactList._id);
+  const handleDeteLIst = async (id) => {
+    console.log(id);
+
     try {
-      const res = await fetch(`${key}/api/contacts/delete/${contactList._id}`, {
+      const res = await fetch(`${key}/api/contacts/delete/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -354,7 +355,7 @@ function Contacts() {
                     >
                       {list.title}
                     </h3>
-                    <button onClick={() => handleDeteLIst(list)}>
+                    <button onClick={() => handleDeteLIst(list._id)}>
                       Delete List
                     </button>
                     <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
