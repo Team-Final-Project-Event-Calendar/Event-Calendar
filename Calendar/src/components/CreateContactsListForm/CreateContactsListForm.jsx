@@ -6,7 +6,7 @@ import { FaMinus } from "react-icons/fa";
 import { Button } from "@chakra-ui/react";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
-const CreateContactsListForm = ({onListCreated}) => {
+const CreateContactsListForm = ({ onListCreated }) => {
   const { user, token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [success, setSuccess] = useState(false);
@@ -89,11 +89,10 @@ const CreateContactsListForm = ({onListCreated}) => {
       setTitle("");
       setCurrentList([]);
 
-       // Call the callback to refresh the lists
+      // Call the callback to refresh the lists
       if (onListCreated) {
         onListCreated();
       }
-      
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Failed to create list.");

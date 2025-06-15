@@ -229,7 +229,7 @@ function Contacts() {
                 }}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setCurrentView("search"); // Auto-switch to search view
+                  setCurrentView("search");
                 }}
                 placeholder="Search"
                 style={{
@@ -312,16 +312,7 @@ function Contacts() {
             <Text fontWeight="bold" fontSize="lg" mb={3}>
               Your Contact Lists:
             </Text>
-            {/*             
-            <Text color="gray.500">
-              [Placeholder] Contact list will appear here.
-            </Text>
-          </Box>
-        )}
-      </div>
 
-      <CreateContactsListForm />
-    </div> */}
             {contactLists.length > 0 ? (
               <div>
                 {contactLists.map((list) => (
