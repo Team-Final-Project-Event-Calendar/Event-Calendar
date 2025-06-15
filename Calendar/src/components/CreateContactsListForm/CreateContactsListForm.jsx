@@ -28,10 +28,6 @@ const CreateContactsListForm = ({ onListCreated }) => {
     const removedUser = currentList.find((u) => u.id === id);
     if (removedUser) {
       setCurrentList((prev) => prev.filter((u) => u.id !== id));
-      setAllUsers((prev) => [
-        ...prev,
-        { _id: id, username: removedUser.username },
-      ]);
     }
   };
 
@@ -199,23 +195,26 @@ const CreateContactsListForm = ({ onListCreated }) => {
                 All Users
               </h3>
               <div style={{ maxHeight: "240px", overflowY: "auto" }}>
-                {allUsers.map((user) => (
-                  <div
-                    key={user._id}
-                    onClick={() => addUser(user.username, user._id)}
-                    style={{
-                      cursor: "pointer",
-                      padding: "8px",
-                      backgroundColor: "var(--user-bg-color)",
-                      borderRadius: "4px",
-                      marginBottom: "4px",
-                      border: "1px solid var(--user-border-color)",
-                      transition: "background-color 0.3s",
-                    }}
-                  >
-                    {user.username}
-                  </div>
-                ))}
+                {allUsers.map(
+                  (u) =>
+                    u._id !== user._id && (
+                      <div
+                        key={user._id}
+                        onClick={() => addUser(u.username, u._id)}
+                        style={{
+                          cursor: "pointer",
+                          padding: "8px",
+                          backgroundColor: "var(--user-bg-color)",
+                          borderRadius: "4px",
+                          marginBottom: "4px",
+                          border: "1px solid var(--user-border-color)",
+                          transition: "background-color 0.3s",
+                        }}
+                      >
+                        {u.username}
+                      </div>
+                    )
+                )}
                 {allUsers.length === 0 && (
                   <p
                     style={{
