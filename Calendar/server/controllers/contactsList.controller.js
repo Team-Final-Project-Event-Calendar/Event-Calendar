@@ -32,16 +32,28 @@ export const getContactsLists = async (req, res) => {
   }
 };
 
-export const deleteContactsList = async (req, res) => {
+const deleteContactsList = async (req, res) => {
   try {
-    const deleteContactsList = await ContactsList.findByIdAndDelete(
-      req.params.id
-    );
-    if (!deleteContactsList) {
-      return res.status(404).json({ message: "Contact list not found" });
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-    res.json({ message: "Contact list deleted successfully" });
+    res.json({ message: "User deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to delete contact list" });
+    res.status(500).json({ message: "Failed to delete user" });
   }
 };
+
+// export const deleteContactsList = async (req, res) => {
+//   try {
+//     const deleteContactsList = await ContactsList.findByIdAndDelete(
+//       req.params.id
+//     );
+//     if (!deleteContactsList) {
+//       return res.status(404).json({ message: "Contact list not found" });
+//     }
+//     res.json({ message: "Contact list deleted successfully" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Failed to delete contact list" });
+//   }
+// };

@@ -6,6 +6,7 @@ import { Button } from "@chakra-ui/react";
 import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
 import { addPointerEvent } from "framer-motion";
+import ContactsList from "../../../server/models/contactsList.model";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
@@ -58,15 +59,13 @@ function Contacts() {
   const handleDeteLIst = async (contactList) => {
     console.log(contactList._id);
     try {
-      const response = await axios.delete(
-        `${key}/api/contacts/${contactList._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response);
+      const res = await fetch(`${key}/api/contacts/delete/${contactList._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log(res);
     } catch (error) {
       console.log(`Error: ${error.message}`);
     }
