@@ -8,7 +8,7 @@ import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIos } from "react-icons/md";
-
+import { IconContext} from "react-icons";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -58,6 +58,8 @@ const PublicPage = () => {
           <h2 className="public-events-chakra_Box-title">
             Public Events
           </h2>
+
+          <IconContext.Provider value={{size:"4em", }}>
           <div className="arrows-cardlist-container" style={{
             displey:"flex", 
             justifyContent:"space-between", 
@@ -74,6 +76,7 @@ const PublicPage = () => {
             />
             <MdArrowForwardIos />
           </div>
+           </IconContext.Provider >
         </Box>
       </div >
 
