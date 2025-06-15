@@ -1,0 +1,17 @@
+.event-block {
+    background-color: #f5f5f5;
+    /* default background */
+    color: #000;
+    /* default text color */
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.event-block:hover {
+    background-color: #5565dd;
+    color: #f0f0f0;
+    /* lighter text color on hover */
+}

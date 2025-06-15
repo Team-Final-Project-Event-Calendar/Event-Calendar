@@ -7,6 +7,7 @@ import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
 import CardsListComponent from "../CardsListComponent/CardsListComponent";
 import { useRef } from "react";
+import "./Contacts.css";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
@@ -185,11 +186,11 @@ function Contacts() {
   return (
     <div>
       {isInviting && (
-        <div className="invite-form">
+        <div className="invite-form ">
           {isInviting && (
             <div
               ref={invitePopupRef}
-              className="pop-up"
+              className="pop-up "
               style={{
                 position: "fixed",
                 zIndex: "1000",
@@ -227,13 +228,13 @@ function Contacts() {
               </div>
               {events.map((e, index) => (
                 <div
+                  className="event-block"
                   key={index}
                   style={{
                     border: "1px solid #ddd",
                     borderRadius: "8px",
                     padding: "12px 16px",
                     marginBottom: "12px",
-                    backgroundColor: "#f9f9f9",
                   }}
                 >
                   <h3 style={{ margin: "0 0 6px" }}>{e.title}</h3>
