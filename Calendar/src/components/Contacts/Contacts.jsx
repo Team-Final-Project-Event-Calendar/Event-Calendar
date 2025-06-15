@@ -171,6 +171,17 @@ function Contacts() {
     );
   }
 
+  // Helper function to format date as DD/MM/YYYY
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return dateString;
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div>
       {isInviting && (
@@ -194,9 +205,26 @@ function Contacts() {
                 padding: "20px",
               }}
             >
-              <h2 style={{ textAlign: "center", marginBottom: "16px" }}>
-                Invite to Event
-              </h2>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                }}
+              >
+                <h2
+                  style={{
+                    textAlign: "center",
+                    marginBottom: "16px",
+                    fontWeight: "700",
+                  }}
+                >
+                  Invite to Event
+                </h2>
+                <h3 style={{ color: "grey", marginBottom: "20px" }}>
+                  Click on the Event to Invite
+                </h3>
+              </div>
               {events.map((e, index) => (
                 <div
                   key={index}
@@ -213,10 +241,10 @@ function Contacts() {
                     {e.description}
                   </p>
                   <p style={{ margin: "0 0 4px", fontSize: "14px" }}>
-                    <strong>{`Start: ${e.startDateTime}`}</strong>
+                    <strong>{`Start: ${formatDate(e.startDateTime)}`}</strong>
                   </p>
                   <p style={{ margin: 0, fontSize: "14px" }}>
-                    <strong>{`End: ${e.endDateTime}`}</strong>{" "}
+                    <strong>{`End: ${formatDate(e.endDateTime)}`}</strong>{" "}
                   </p>
                 </div>
               ))}
