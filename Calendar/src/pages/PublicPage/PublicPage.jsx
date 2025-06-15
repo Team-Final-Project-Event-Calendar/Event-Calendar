@@ -13,7 +13,7 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const CustomSpinner = () => (
   <div style={{ textAlign: "center", padding: "50px 0" }}>
     <Spinner
-      color="red.500"
+      color="#5565DD"
       size="xl"
       animationDuration="0.8"
       borderWidth="20px"
@@ -21,10 +21,10 @@ const CustomSpinner = () => (
       margin= "0px 565px 123px"
       />
 
-    <p style={{ color: "white", fontSize:"30px" }}>Loading...</p>
+    <p style={{ color: "#666", fontSize:"30px" }}>Loading...</p>
   </div>
 );
-
+//#5565DD - HERO color
 
 const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
