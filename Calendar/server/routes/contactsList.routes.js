@@ -13,8 +13,10 @@ router.get("/", verifyToken, getContactsLists);
 
 router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
-    const deletedUser = await ContactsList.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
+    const deleteContactsList = await ContactsList.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deleteContactsList) {
       return res.status(404).json({ message: "User not found" });
     }
     res.json({ message: "Contacts list deleted successfully" });
