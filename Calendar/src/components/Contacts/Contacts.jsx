@@ -69,10 +69,10 @@ function Contacts() {
         }
       );
 
-      console.log(response);
       setFeedback(
         response.data.message || `Invite sent to ${selectedUsername}!`
       );
+      alert(`Invite has been send to user ${user.username}`);
       setSelectedUsername("");
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
