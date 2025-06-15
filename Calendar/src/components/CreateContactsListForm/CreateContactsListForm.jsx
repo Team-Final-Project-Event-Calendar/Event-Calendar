@@ -199,7 +199,7 @@ const CreateContactsListForm = ({ onListCreated }) => {
                   (u) =>
                     u._id !== user._id && (
                       <div
-                        key={user._id}
+                        key={u._id}
                         onClick={() => addUser(u.username, u._id)}
                         style={{
                           cursor: "pointer",
