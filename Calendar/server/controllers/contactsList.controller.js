@@ -31,3 +31,17 @@ export const getContactsLists = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const deleteContactsList = async (req, res) => {
+  try {
+    const deleteContactsList = await ContactsList.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deleteContactsList) {
+      return res.status(404).json({ message: "Contact list not found" });
+    }
+    res.json({ message: "Contact list deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete contact list" });
+  }
+};

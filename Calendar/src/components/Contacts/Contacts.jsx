@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
+import { addPointerEvent } from "framer-motion";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
@@ -51,6 +52,23 @@ function Contacts() {
       setContactLists([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeteLIst = async (contactList) => {
+    console.log(contactList._id);
+    try {
+      const response = await axios.delete(
+        `${key}/api/contacts/${contactList._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(`Error: ${error.message}`);
     }
   };
 
@@ -317,6 +335,7 @@ function Contacts() {
               <div>
                 {contactLists.map((list) => (
                   <div
+                    className="contact-container"
                     key={list._id}
                     style={{
                       border: "1px solid #e2e8f0",
@@ -336,6 +355,9 @@ function Contacts() {
                     >
                       {list.title}
                     </h3>
+                    <button onClick={() => handleDeteLIst(list)}>
+                      Delete List
+                    </button>
                     <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
                       <p>{list.contacts.length} contacts</p>
                     </div>
