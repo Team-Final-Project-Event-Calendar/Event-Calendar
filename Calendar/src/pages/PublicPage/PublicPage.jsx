@@ -8,10 +8,9 @@ import { FaRegArrowAltCircleRight } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdArrowBackIos } from "react-icons/md";
-import { IconContext} from "react-icons";
+import { IconContext } from "react-icons";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
-
 
 const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
@@ -21,8 +20,7 @@ const PublicPage = () => {
       .then((res) => res.json())
       .then((data) => setPublicEvents(data))
       .catch((err) => console.error("Failed to fetch public events:", err));
-  }, [])
-
+  }, []);
 
   return (
     <>
@@ -32,7 +30,8 @@ const PublicPage = () => {
           <Card.Root className="public-welcome-chakra_Card-Root" size="sm">
             <Card.Header>
               <Heading className="public-welcome-chakra_Card-heading" size="lg">
-                Welcome to Event Calendar!<hr />
+                Welcome to Event Calendar!
+                <hr />
               </Heading>
             </Card.Header>
             <Card.Body className="public-welcome-chakra_Card-Body">
@@ -55,34 +54,32 @@ const PublicPage = () => {
       {/* Public Events Section */}
       <div className="public-Events-container">
         <Box className="public-events-chakra_Box" borderRadius="xl">
-          <h2 className="public-events-chakra_Box-title">
-            Public Events
-          </h2>
+          <h2 className="public-events-chakra_Box-title">Public Events</h2>
 
-          <IconContext.Provider value={{size:"4em", }}>
-          <div className="arrows-cardlist-container" style={{
-            displey:"flex", 
-            justifyContent:"space-between", 
-            alignItems:"center",
-            width:"100%",
-            
-            }}> 
-            <MdArrowBackIos />
+          <IconContext.Provider value={{ size: "10em" }}>
+            <div
+              className="arrows-cardlist-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0px 50px",
+              }}
+            >
+              <MdArrowBackIos />
 
-            <CardsListComponent
-              className="public-events-chakra_Box-list"
-              events={publicEvents}
-              justify="center"
-            />
-            <MdArrowForwardIos />
-          </div>
-           </IconContext.Provider >
+              <CardsListComponent
+                className="public-events-chakra_Box-list"
+                events={publicEvents}
+                justify="center"
+                maxWidth="1400px"
+              />
+              <MdArrowForwardIos />
+            </div>
+          </IconContext.Provider>
         </Box>
-      </div >
-
-
+      </div>
     </>
   );
-}
+};
 
 export default PublicPage;

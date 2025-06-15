@@ -2,13 +2,18 @@ import React from "react";
 import CardComponent from "../CardComponent/CardComponent";
 import "./CardsListComponent.css";
 
-function CardsListComponent({ events = [], onDelete, justify="flex-start" }) {
+function CardsListComponent({
+  events = [],
+  onDelete,
+  justify = "flex-start",
+  maxWidth = "60vw",
+}) {
   return (
     <div
       style={{
         display: "flex",
         flexWrap: "wrap",
-        maxWidth: "70vw",
+        maxWidth: maxWidth,
         margin: "0 auto",
         gap: "20px",
         justifyContent: justify,
