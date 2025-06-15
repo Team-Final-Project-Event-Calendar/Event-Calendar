@@ -31,7 +31,7 @@ function NavBar() {
         justifyContent: "center",
         alignItems: "center",
         padding: "10px 20px",
-        marginBottom: "20px",
+        // marginBottom: "20px",
       }}
     >
       <div
