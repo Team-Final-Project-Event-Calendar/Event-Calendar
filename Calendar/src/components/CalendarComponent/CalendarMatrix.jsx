@@ -5,6 +5,7 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 function CalendarMatrix({ currentDate, view, onDayClick }) {
   const [events, setEvents] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   const generateRepeatedEvents = (event) => {
     const repeatDays = event.recurrenceRule?.interval || 1;
@@ -41,23 +42,30 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const currentUserId = user?._id;
+      setUserId(currentUserId);
+
       try {
         const response = await fetch(`${key}/api/events`, {
-          method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+
         if (!response.ok) throw new Error("Failed to fetch events");
+
         const data = await response.json();
 
-        let allEvents = [];
+      
+        const filteredEvents = data.filter((event) =>
+          event.participants?.some((p) => p._id === currentUserId)
+        );
 
-        data.forEach((event) => {
+        let allEvents = [];
+        filteredEvents.forEach((event) => {
           if (event.isRecurring) {
-            const repeats = generateRepeatedEvents(event);
-            allEvents.push(...repeats);
+            allEvents.push(...generateRepeatedEvents(event));
           } else {
             allEvents.push(event);
           }
@@ -82,6 +90,16 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     );
   };
 
+
+
+  const getEventsForDay = (date) => {
+    return events.filter((event) => {
+      const eventDate = new Date(event.startDateTime);
+      return eventDate.toDateString() === date.toDateString();
+    });
+  };
+
+
   const getWeekDays = () => {
     const start = new Date(currentDate);
     start.setHours(0, 0, 0, 0);
@@ -93,16 +111,15 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     );
   };
 
-  const getEventsForDay = (date) =>
-    events.filter((e) => {
-      const eventDate = new Date(e.startDateTime);
-      return eventDate.toDateString() === date.toDateString();
-    });
-
+  
   const isToday = (date) => {
     const now = new Date();
     return date.toDateString() === now.toDateString();
   };
+  if (!userId) {
+  return <div>Loading user data...</div>;
+}
+
 
   const getMonthName = (date) =>
     date.toLocaleDateString(undefined, { month: "long" });
@@ -192,7 +209,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
             <Box key={`blank-${i}`} />
           ))}
           {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day);
+            const dayEvents = getEventsForDay(day,userId);
             return (
               <Box
                 key={i}
