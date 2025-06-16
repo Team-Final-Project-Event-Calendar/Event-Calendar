@@ -1,6 +1,6 @@
 const Footer = () => {
   const footerStyle = {
-    marginTop: "50px",
+    marginTop: "auto",
     backgroundColor: "#3f7279",
     color: "white",
     padding: "10px 20px",

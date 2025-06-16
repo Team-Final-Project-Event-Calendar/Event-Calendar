@@ -27,7 +27,7 @@ function App() {
         flexDirection: "column",
         justifyContent: "space-between",
 
-        minHeight: "100%",
+        minHeight: "100vh",
       }}
     >
       <NavBar />
