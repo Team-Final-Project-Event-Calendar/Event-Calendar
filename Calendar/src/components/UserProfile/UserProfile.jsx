@@ -165,7 +165,7 @@ function UserProfile() {
             <strong>Phone:</strong> {userData.phoneNumber || "N/A"}
           </div>
           <div style={{ marginBottom: "12px", color: subTextColor }}>
-            <strong>Joined:</strong> {userData.role.toUpperCase()}
+            <strong>Profile:</strong> {userData.role.toUpperCase()}
           </div>
         </div>
       </div>
