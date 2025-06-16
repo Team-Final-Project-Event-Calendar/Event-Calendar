@@ -179,6 +179,28 @@ function Contacts() {
     setIsInviting(true);
   };
 
+  const handleRemoveFromList = async (listId, userId) => {
+    console.log(listId, userId);
+    try {
+      const res = await axios.delete(
+        `${key}/api/contacts/${listId}/contacts/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setContactLists((prev) =>
+        prev.map((list) =>
+          list._id === listId ? { ...list, contacts: res.data.contacts } : list
+        )
+      );
+      toast.success("Contact removed.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to remove contact.");
+    }
+  };
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       setSearchedUsers([]); // Reset result view
@@ -614,6 +636,9 @@ function Contacts() {
                               Invite
                             </Button>
                             <Button
+                              onClick={() =>
+                                handleRemoveFromList(list._id, contact._id)
+                              }
                               marginLeft={"auto"}
                               variant={"ghost"}
                               color={"red"}

@@ -32,7 +32,9 @@ function App() {
     >
       <NavBar />
 
-      <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+      <div
+        style={{ marginTop: "auto", marginBottom: "auto", minWidth: "60vw" }}
+      >
         <Routes>
           <Route path="/contacts" element={<Contacts></Contacts>}></Route>
           <Route
