@@ -46,7 +46,6 @@ const Footer = () => {
       <h2 style={titleStyle}>Built With</h2>
 
       <div style={iconsContainerStyle}>
-        {/* React */}
         <a
           href="https://react.dev/"
           target="_blank"
@@ -64,7 +63,6 @@ const Footer = () => {
           />
         </a>
 
-        {/* JavaScript */}
         <a
           href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
           target="_blank"
@@ -82,7 +80,6 @@ const Footer = () => {
           />
         </a>
 
-        {/* MongoDB */}
         <a
           href="https://www.mongodb.com/"
           target="_blank"
@@ -100,7 +97,6 @@ const Footer = () => {
           />
         </a>
 
-        {/* Express */}
         <a
           href="https://expressjs.com/"
           target="_blank"
