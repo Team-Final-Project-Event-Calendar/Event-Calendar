@@ -47,7 +47,8 @@
     margin: 0 auto 2rem auto;
     text-align: center;
     width: 140px;
-    z-index: 10;
+    z-index: 9999;
+    
 }
 
 

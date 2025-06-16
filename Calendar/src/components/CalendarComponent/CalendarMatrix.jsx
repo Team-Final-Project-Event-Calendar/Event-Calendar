@@ -57,7 +57,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         const data = await response.json();
 
-      
+
         const filteredEvents = data.filter((event) =>
           event.participants?.some((p) => p._id === currentUserId)
         );
@@ -111,14 +111,14 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     );
   };
 
-  
+
   const isToday = (date) => {
     const now = new Date();
     return date.toDateString() === now.toDateString();
   };
   if (!userId) {
-  return <div>Loading user data...</div>;
-}
+    return <div>Loading user data...</div>;
+  }
 
 
   const getMonthName = (date) =>
@@ -163,9 +163,9 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
   };
 
   const renderEventTitles = (eventList) =>
-    eventList.slice(0, 3).map((e, i) => (
+    eventList.slice(0, 3).map((e) => (
       <Box
-        key={i}
+        key={e.id}  // use event id, not i.id
         bg="blue.100"
         color="blue.800"
         px={2}
@@ -178,282 +178,406 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         • {e.title}
       </Box>
     ));
-
-  if (view === "month") {
-    const days = getMonthDays();
-    const firstDayIndex = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    ).getDay();
-    const blanks = Array.from({ length: firstDayIndex });
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          {getMonthName(currentDate)} {currentDate.getFullYear()}
-        </Text>
-
-        <SimpleGrid columns={7} spacing={3}>
-          {weekdayShortNames.map((day) => (
-            <Box
-              key={day}
-              textAlign="center"
-              fontWeight="semibold"
-              color="gray.600"
-            >
-              {day}
-            </Box>
-          ))}
-          {blanks.map((_, i) => (
-            <Box key={`blank-${i}`} />
-          ))}
-          {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day,userId);
-            return (
+    if (view === "month") {
+      const days = getMonthDays();
+      const firstDayIndex = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      ).getDay();
+      const blanks = Array.from({ length: firstDayIndex });
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            {getMonthName(currentDate)} {currentDate.getFullYear()}
+          </Text>
+    
+          <SimpleGrid columns={7} spacing={3}>
+            {weekdayShortNames.map((day) => (
               <Box
-                key={i}
-                {...(isToday(day) ? todayStyle : dayCellStyle)}
-                onClick={() => onDayClick(day)}
+                key={day}
+                textAlign="center"
+                fontWeight="semibold"
+                color="gray.600"
               >
-                <Text fontWeight="bold" mb={2}>
-                  {day.getDate()}
-                </Text>
-                {renderEventTitles(dayEvents)}
+                {day}
               </Box>
-            );
-          })}
-        </SimpleGrid>
-      </Box>
-    );
-  }
-
-  if (view === "week") {
-    const days = getWeekDays();
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          Week of{" "}
-          {days[0].toLocaleDateString(undefined, {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Text>
-
-        <SimpleGrid columns={7} spacing={3}>
-          {days.map((day, i) => (
-            <Box
-              key={`header-${i}`}
-              textAlign="center"
-              fontWeight="semibold"
-              color="gray.600"
-              borderBottom="2px solid"
-              borderColor="blue.300"
-              pb={2}
-            >
-              {day.toLocaleDateString(undefined, {
-                weekday: "short",
-                day: "numeric",
-              })}
-            </Box>
-          ))}
-          {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day);
-            return (
-              <Box
-                key={i}
-                {...(isToday(day) ? todayStyle : dayCellStyle)}
-                onClick={() => onDayClick(day)}
-              >
-                <Text fontWeight="bold" mb={2}>
-                  {day.getDate()}
-                </Text>
-                {renderEventTitles(dayEvents)}
-              </Box>
-            );
-          })}
-        </SimpleGrid>
-      </Box>
-    );
-  }
-
-  if (view === "workWeek") {
-    const days = getWeekDays().slice(1, 6);
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          Work Week of{" "}
-          {days[0].toLocaleDateString(undefined, {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Text>
-
-        <SimpleGrid columns={5} spacing={3}>
-          {days.map((day, i) => (
-            <Box
-              key={`header-${i}`}
-              textAlign="center"
-              fontWeight="semibold"
-              color="gray.600"
-              borderBottom="2px solid"
-              borderColor="blue.300"
-              pb={2}
-            >
-              {day.toLocaleDateString(undefined, {
-                weekday: "short",
-                day: "numeric",
-              })}
-            </Box>
-          ))}
-          {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day);
-            return (
-              <Box
-                key={i}
-                {...(isToday(day) ? todayStyle : dayCellStyle)}
-                onClick={() => onDayClick(day)}
-              >
-                <Text fontWeight="bold" mb={2}>
-                  {day.getDate()}
-                </Text>
-                {renderEventTitles(dayEvents)}
-              </Box>
-            );
-          })}
-        </SimpleGrid>
-      </Box>
-    );
-  }
-
-  if (view === "day") {
-    const day = new Date(currentDate);
-    const dayEvents = getEventsForDay(day);
-
-    dayEvents.sort(
-      (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime)
-    );
-
-    const hours = Array.from({ length: 24 }, (_, i) => i);
-
-    const renderedEventIds = new Set();
-
-    const formatTime = (dateStr) => {
-      const d = new Date(dateStr);
-      return `${String(d.getHours()).padStart(2, "0")}:${String(
-        d.getMinutes()
-      ).padStart(2, "0")}`;
-    };
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          {day.toLocaleDateString(undefined, {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </Text>
-
-        <Box
-          borderWidth="1px"
-          borderColor="blue.300"
-          borderRadius="lg"
-          bg=""
-          boxShadow="xl"
-        >
-          {hours.map((hour) => {
-            if (
-              Array.from(renderedEventIds).some((id) => {
-                const e = dayEvents.find((ev) => ev.id === id);
-                if (!e) return false;
-                const start = new Date(e.startDateTime);
-                const end = new Date(e.endDateTime);
-                return hour > start.getHours() && hour < end.getHours();
-              })
-            ) {
-              return null;
-            }
-
-            const startingEvents = dayEvents.filter((e) => {
-              const start = new Date(e.startDateTime);
-              return start.getHours() === hour;
-            });
-
-            return (
-              <Box
-                key={hour}
-                borderBottom="1px solid #CBD5E0"
-                px={4}
-                py={3}
-                display="flex"
-                alignItems="flex-start"
-                position="relative"
-              >
-                <Text fontWeight="bold" minW="60px">
-                  {String(hour).padStart(2, "0")}:00
-                </Text>
-                <Box flex="1" pl={4}>
-                  {startingEvents.length === 0 ? (
-                    <Text fontSize="sm" color="gray.500">
-                      No events
-                    </Text>
-                  ) : (
-                    startingEvents.map((e) => {
-                      renderedEventIds.add(e.id);
-
+            ))}
+            {blanks.map((_, i) => (
+              <Box key={`blank-${i}`} />
+            ))}
+            {days.map((day) => {
+              const dayEvents = getEventsForDay(day, userId);
+              return (
+                <Box
+                  key={day.toISOString()}
+                  {...(isToday(day) ? todayStyle : dayCellStyle)}
+                  onClick={() => onDayClick(day)}
+                >
+                  <Text fontWeight="bold" mb={2}>
+                    {day.getDate()}
+                  </Text>
+                  {renderEventTitles(dayEvents)}
+                </Box>
+              );
+            })}
+          </SimpleGrid>
+        </Box>
+      );
+    }
+    
+    if (view === "week") {
+      const days = getWeekDays();
+      const hourHeight = 25;
+      const timelineHeight = 24 * hourHeight;
+      const formatTime = (dateStr) => {
+        const d = new Date(dateStr);
+        return `${String(d.getHours()).padStart(2, "0")}:${String(
+          d.getMinutes()
+        ).padStart(2, "0")}`;
+      };
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            Week of{" "}
+            {days[0].toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Text>
+    
+          <SimpleGrid columns={7} spacing={3} minChildWidth="120px">
+            {days.map((day) => {
+              const dayEvents = getEventsForDay(day);
+    
+              return (
+                <Box
+                  key={day.toISOString()}
+                  borderWidth="1px"
+                  borderColor="blue.300"
+                  borderRadius="md"
+                  boxShadow="md"
+                  height={`${timelineHeight + 30}px`}
+                  position="relative"
+                  {...(isToday(day) ? todayStyle : dayCellStyle)}
+                  onClick={() => onDayClick(day)}
+                  overflow="hidden"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box
+                    textAlign="center"
+                    fontWeight="semibold"
+                    color="gray.600"
+                    borderBottom="2px solid"
+                    borderColor="blue.300"
+                    py={1}
+                    position="sticky"
+                    top={0}
+                    bg="white"
+                    zIndex={10}
+                    flexShrink={0}
+                  >
+                    {day.toLocaleDateString(undefined, {
+                      weekday: "short",
+                      day: "numeric",
+                    })}
+                  </Box>
+    
+                  <Box position="relative" flex="1" overflow="hidden">
+                    {Array.from({ length: 24 }, (_, hour) => (
+                      <Box
+                        key={`hour-${hour}`}
+                        position="absolute"
+                        top={`${hour * hourHeight}px`}
+                        width="100%"
+                        height={`${hourHeight}px`}
+                        borderTop="1px solid #CBD5E0"
+                        px={1}
+                        fontSize="xs"
+                        color="gray.500"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Text ml={1} minW="28px">
+                          {String(hour).padStart(2, "0")}:00
+                        </Text>
+                      </Box>
+                    ))}
+    
+                    {dayEvents.map((e) => {
                       const start = new Date(e.startDateTime);
                       const end = new Date(e.endDateTime);
-
-                      const durationMinutes = (end - start) / (1000 * 60);
-
-                      const pxPerMinute = 40 / 60;
-                      const heightPx = Math.max(
-                        durationMinutes * pxPerMinute,
-                        40
-                      );
-
+    
+                      const startMinutes = start.getHours() * 60 + start.getMinutes();
+                      const endMinutes = end.getHours() * 60 + end.getMinutes();
+    
+                      const top = (startMinutes / 60) * hourHeight;
+                      const height = ((endMinutes - startMinutes) / 60) * hourHeight;
+    
                       return (
                         <Box
                           key={e.id}
+                          position="absolute"
+                          top={`${top}px`}
+                          left="2px"
+                          right="2px"
+                          height={`${height}px`}
                           bg="green.300"
                           color="black"
-                          px={3}
-                          py={2}
+                          px={1}
+                          py={0.5}
                           borderRadius="md"
-                          fontSize="sm"
-                          mb={2}
-                          boxShadow="md"
-                          style={{ minHeight: `100px` }}
+                          fontSize="xs"
+                          overflow="hidden"
+                          whiteSpace="nowrap"
+                          textOverflow="ellipsis"
                         >
-                          <Text fontWeight="bold">• {e.title}</Text>
-                          {e.description && (
-                            <Text fontSize="xs" mt={1}>
-                              {e.description}
-                            </Text>
-                          )}
+                          • {e.title}
                           <Text fontSize="xs" mt={1} fontStyle="italic">
-                            {`${formatTime(e.startDateTime)} - ${formatTime(
-                              e.endDateTime
-                            )}`}
+                            {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
                           </Text>
                         </Box>
                       );
-                    })
-                  )}
+                    })}
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })}
+              );
+            })}
+          </SimpleGrid>
         </Box>
-      </Box>
-    );
-  }
+      );
+    }
+    
+    if (view === "workWeek") {
+      const days = getWeekDays().slice(1, 6);
+      const hourHeight = 25;
+      const timelineHeight = 24 * hourHeight;
+      const formatTime = (dateStr) => {
+        const d = new Date(dateStr);
+        return `${String(d.getHours()).padStart(2, "0")}:${String(
+          d.getMinutes()
+        ).padStart(2, "0")}`;
+      };
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            Work Week of{" "}
+            {days[0].toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Text>
+    
+          <SimpleGrid columns={5} spacing={3} minChildWidth="120px">
+            {days.map((day) => {
+              const dayEvents = getEventsForDay(day);
+    
+              return (
+                <Box
+                  key={day.toISOString()}
+                  borderWidth="1px"
+                  borderColor="blue.300"
+                  borderRadius="md"
+                  boxShadow="md"
+                  height={`${timelineHeight + 30}px`}
+                  position="relative"
+                  {...(isToday(day) ? todayStyle : dayCellStyle)}
+                  onClick={() => onDayClick(day)}
+                  overflow="hidden"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box
+                    textAlign="center"
+                    fontWeight="semibold"
+                    color="gray.600"
+                    borderBottom="2px solid"
+                    borderColor="blue.300"
+                    py={1}
+                    position="sticky"
+                    top={0}
+                    bg="white"
+                    zIndex={10}
+                    flexShrink={0}
+                  >
+                    {day.toLocaleDateString(undefined, {
+                      weekday: "short",
+                      day: "numeric",
+                    })}
+                  </Box>
+    
+                  <Box position="relative" flex="1" overflow="hidden">
+                    {Array.from({ length: 24 }, (_, hour) => (
+                      <Box
+                        key={`hour-${hour}`}
+                        position="absolute"
+                        top={`${hour * hourHeight}px`}
+                        width="100%"
+                        height={`${hourHeight}px`}
+                        borderTop="1px solid #CBD5E0"
+                        px={1}
+                        fontSize="xs"
+                        color="gray.500"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Text ml={1} minW="28px">
+                          {String(hour).padStart(2, "0")}:00
+                        </Text>
+                      </Box>
+                    ))}
+    
+                    {dayEvents.map((e) => {
+                      const start = new Date(e.startDateTime);
+                      const end = new Date(e.endDateTime);
+    
+                      const startMinutes = start.getHours() * 60 + start.getMinutes();
+                      const endMinutes = end.getHours() * 60 + end.getMinutes();
+    
+                      const top = (startMinutes / 60) * hourHeight;
+                      const height = ((endMinutes - startMinutes) / 60) * hourHeight;
+    
+                      return (
+                        <Box
+                          key={e.id}
+                          position="absolute"
+                          top={`${top}px`}
+                          left="1px"
+                          right="0px"
+                          height={`${height}px`}
+                          bg="green.300"
+                          color="black"
+                          px={2}
+                          py={1}
+                          borderRadius="md"
+                          fontSize="xs"
+                          overflow="hidden"
+                          whiteSpace="normal"
+                          textOverflow="clip"
+                        >
+                          <Box fontWeight="bold" isTruncated>
+                            • {e.title}
+                          </Box>
+                          <Text fontSize="xs" mt={1} fontStyle="italic">
+                            {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
+                          </Text>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </Box>
+              );
+            })}
+          </SimpleGrid>
+        </Box>
+      );
+    }
+    
+    if (view === "day") {
+      const day = new Date(currentDate);
+      const dayEvents = getEventsForDay(day);
+    
+      const formatTime = (dateStr) => {
+        const d = new Date(dateStr);
+        return `${String(d.getHours()).padStart(2, "0")}:${String(
+          d.getMinutes()
+        ).padStart(2, "0")}`;
+      };
+    
+      const hourHeight = 60;
+      const timelineHeight = 24 * hourHeight;
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            {day.toLocaleDateString(undefined, {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
+    
+          <Box
+            borderWidth="1px"
+            borderColor="blue.300"
+            borderRadius="lg"
+            boxShadow="xl"
+            position="relative"
+            height={`${timelineHeight}px`}
+            overflow="hidden"
+          >
+            {Array.from({ length: 24 }, (_, hour) => (
+              <Box
+                key={`hour-${hour}`}
+                position="absolute"
+                top={`${hour * hourHeight}px`}
+                width="100%"
+                height={`${hourHeight}px`}
+                borderTop="1px solid #CBD5E0"
+                px={2}
+                fontSize="sm"
+                color="gray.600"
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+              >
+                <Text ml={2} minW="40px">
+                  {String(hour).padStart(2, "0")}:00
+                </Text>
+              </Box>
+            ))}
+    
+            {dayEvents.map((e) => {
+              const start = new Date(e.startDateTime);
+              const end = new Date(e.endDateTime);
+    
+              const startMinutes = start.getHours() * 60 + start.getMinutes();
+              const endMinutes = end.getHours() * 60 + end.getMinutes();
+    
+              const top = (startMinutes / 60) * hourHeight;
+              const height = ((endMinutes - startMinutes) / 60) * hourHeight;
+    
+              return (
+                <Box
+                  key={e.id}
+                  position="absolute"
+                  top={`${top}px`}
+                  left="4px"
+                  right="4px"
+                  height={`${height}px`}
+                  bg="green.400"
+                  color="black"
+                  px={3}
+                  py={2}
+                  borderRadius="md"
+                  fontSize="sm"
+                  overflow="hidden"
+                  whiteSpace="normal"
+                  textOverflow="ellipsis"
+                >
+                  <Box fontWeight="bold" isTruncated>
+                    • {e.title}
+                  </Box>
+                  <Text fontSize="xs" mt={1} fontStyle="italic">
+                    {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
+                  </Text>
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      );
+    }
+    
 
   return null;
 }
