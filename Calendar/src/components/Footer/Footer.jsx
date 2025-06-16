@@ -3,7 +3,7 @@ const Footer = () => {
     marginTop: "50px",
     backgroundColor: "#3f7279",
     color: "white",
-    padding: "20px 20px",
+    padding: "10px 20px",
     textAlign: "center",
   };
 
