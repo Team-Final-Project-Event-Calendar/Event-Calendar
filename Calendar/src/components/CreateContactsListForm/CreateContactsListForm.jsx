@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
 import { Button } from "@chakra-ui/react";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreateContactsListForm = ({ onListCreated }) => {
   const { user, token } = useContext(AuthContext);
@@ -79,7 +80,6 @@ const CreateContactsListForm = ({ onListCreated }) => {
         }
       );
 
-      console.log("Created list:", res.data);
       setSuccess(true);
       setError("");
       setTitle("");
@@ -89,6 +89,8 @@ const CreateContactsListForm = ({ onListCreated }) => {
       if (onListCreated) {
         onListCreated();
       }
+
+      toast.success(`${currentList.title} has been created`);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Failed to create list.");
@@ -320,6 +322,7 @@ const CreateContactsListForm = ({ onListCreated }) => {
           </div>
         </div>
       ) : null}
+      <ToastContainer></ToastContainer>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { AuthContext } from "../../components/Authentication/AuthContext";
 import { Avatar, Code, Stack, useAvatar } from "@chakra-ui/react";
-
+import { ToastContainer, toast } from "react-toastify";
 const API_BASE_URL =
   import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -27,17 +27,17 @@ function ProfileDetailsComponent() {
       !formData.phoneNumber ||
       !formData.address
     ) {
-      alert("All fields must be filled out");
+      toast.error("All fields must be filled out");
       return;
     }
 
     if (!/^0[0-9]{9}$/.test(formData.phoneNumber)) {
-      alert("Phone number must be 10 digits long!");
+      toast.error("Phone number must be 10 digits long!");
       return;
     }
 
     if (!formData.avatar) {
-      alert("Avatar URL must be provided");
+      toast.error("Avatar URL must be provided");
       return;
     }
 
@@ -62,7 +62,7 @@ function ProfileDetailsComponent() {
 
       if (!response.ok) {
         const error = await response.json();
-        alert(`Failed to update profile: ${error.message}`);
+        toast.error(`Failed to update profile: ${error.message}`);
         return;
       }
 
@@ -74,10 +74,10 @@ function ProfileDetailsComponent() {
 
       // Update the user context and local state
       setFormData(updatedUser.user);
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("An error occurred while updating the profile.");
+      toast.error("An error occurred while updating the profile.");
     }
   };
 
@@ -310,6 +310,7 @@ function ProfileDetailsComponent() {
           </form>
         </ul>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

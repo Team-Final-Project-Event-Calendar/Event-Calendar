@@ -9,6 +9,8 @@ import CardsListComponent from "../CardsListComponent/CardsListComponent";
 import { useRef } from "react";
 import "./Contacts.css";
 
+import { ToastContainer, toast } from "react-toastify";
+
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
   "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg";
@@ -72,13 +74,12 @@ function Contacts() {
       setFeedback(
         response.data.message || `Invite sent to ${selectedUsername}!`
       );
-      alert(`Invite has been send to user ${user.username}`);
+      toast.success(`Invite send to ${selectedUsername} `);
       setSelectedUsername("");
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
-      alert("User already participating in this event");
-      console.error(error.message);
+      toast.error("User already participating in this event");
     }
   };
 
@@ -117,8 +118,6 @@ function Contacts() {
   };
 
   const handleDeleteLIst = async (id) => {
-    console.log(id);
-
     try {
       const res = await fetch(`${key}/api/contacts/delete/${id}`, {
         method: "DELETE",
@@ -130,10 +129,10 @@ function Contacts() {
         setContactLists((prevLists) =>
           prevLists.filter((list) => list._id !== id)
         );
-        alert("Contact list deleted successfully");
+        toast.success(`Contact list deleted successfully`);
       } else {
         const errorData = await res.json();
-        alert(`Failed to delete: ${errorData.message}`);
+        toast.error(`Failed to delete: ${errorData.message}`);
       }
     } catch (error) {
       console.log(`Error: ${error.message}`);
@@ -638,6 +637,7 @@ function Contacts() {
 
         <CreateContactsListForm onListCreated={handleContactListCreated} />
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }
