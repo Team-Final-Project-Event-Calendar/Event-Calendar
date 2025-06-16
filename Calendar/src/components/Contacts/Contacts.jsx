@@ -500,7 +500,8 @@ function Contacts() {
                       onClick={() => setInvite(user)}
                       padding={"0px 10px"}
                       variant={"ghost"}
-                      marginLeft={"10px"}
+                      marginLeft={"auto"}
+                      marginRight={"20px"}
                     >
                       Invite
                     </Button>
