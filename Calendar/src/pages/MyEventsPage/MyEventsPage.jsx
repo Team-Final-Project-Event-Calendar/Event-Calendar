@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
-
+import { ToastContainer, toast } from "react-toastify";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
-
 
 function MyEventsPage() {
   const [events, setEvents] = useState([]);
@@ -46,9 +45,10 @@ function MyEventsPage() {
         },
       });
       setEvents((prev) => prev.filter((e) => e._id !== event._id));
+      toast.success(`Event successfully deleted`);
     } catch (err) {
       alert("Failed to delete event");
-      console.error(err);
+      toast.error(err);
     }
   };
 

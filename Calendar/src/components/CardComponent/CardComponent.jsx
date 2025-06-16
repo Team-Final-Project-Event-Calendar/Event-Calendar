@@ -11,6 +11,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -71,10 +72,11 @@ function CardComponent({ event, onDelete }) {
       );
       setSelectedUsername("");
       setIsInviteVisible(false);
+      toast.success(`Invite Send`);
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
-      console.error(error);
+      toast.error(error);
     }
   };
 
@@ -99,10 +101,11 @@ function CardComponent({ event, onDelete }) {
       });
 
       setIsParticipant(true);
+      toast.success(`Succesfully joint Event`);
     } catch (error) {
       console.error(error);
       const message = error.response?.data?.error || "Failed to join event.";
-      alert(message);
+      toast.error(message);
     } finally {
       setIsJoining(false);
     }
@@ -119,8 +122,10 @@ function CardComponent({ event, onDelete }) {
       });
 
       setIsParticipant(false);
+      toast.success("Succesfully left the Event");
     } catch (error) {
       console.error("Failed to leave event:", error);
+      toast.error(error);
     } finally {
       setIsLeaving(false);
     }
@@ -131,176 +136,183 @@ function CardComponent({ event, onDelete }) {
   );
 
   return (
-    <Box
-      className="card-container"
-      maxW="sm"
-      minW="400px"
-      bg="white"
-      boxShadow="md"
-      borderRadius="xl"
-      p={5}
-      transition="all 0.3s"
-      _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
-    >
-      <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.400">
-        <Link
-          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
-        >
-          {event.title}
-        </Link>
-      </Text>
-
-      <Text fontSize="sm" color="blue.500" mb={1} ml={2}>
-        <Link
-          to={`/eventdetails/${event._id || event.title + event.startDateTime}`}
-        >
-          See Details
-        </Link>
-      </Text>
-
-      <Text fontSize="md" color="gray.600" mb={3}>
-        {event.description.length > 50
-          ? event.description.slice(0, 50) + "..."
-          : event.description}
-      </Text>
-
-      <Box display="flex" alignItems="center">
-        <Text fontSize="sm" color="gray.500" mb={4}>
-          {(event.startDateTime || event.startDate) &&
-            new Date(event.startDateTime || event.startDate).toLocaleString(
-              undefined,
-              {
-                year: "numeric",
-                month: "long",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              }
-            )}
+    <div>
+      <Box
+        className="card-container"
+        maxW="sm"
+        minW="400px"
+        bg="white"
+        boxShadow="md"
+        borderRadius="xl"
+        p={5}
+        transition="all 0.3s"
+        _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
+      >
+        <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.400">
+          <Link
+            to={`/eventdetails/${
+              event._id || event.title + event.startDateTime
+            }`}
+          >
+            {event.title}
+          </Link>
         </Text>
 
-        <Text mb={1} color={typeColor} ml="auto">
-          {event.type}
+        <Text fontSize="sm" color="blue.500" mb={1} ml={2}>
+          <Link
+            to={`/eventdetails/${
+              event._id || event.title + event.startDateTime
+            }`}
+          >
+            See Details
+          </Link>
         </Text>
-      </Box>
 
-      <Box display="flex" gap={2} mt={3}>
-        {user && user._id === event.userId ? (
-          <Box width="100%">
+        <Text fontSize="md" color="gray.600" mb={3}>
+          {event.description.length > 50
+            ? event.description.slice(0, 50) + "..."
+            : event.description}
+        </Text>
+
+        <Box display="flex" alignItems="center">
+          <Text fontSize="sm" color="gray.500" mb={4}>
+            {(event.startDateTime || event.startDate) &&
+              new Date(event.startDateTime || event.startDate).toLocaleString(
+                undefined,
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+          </Text>
+
+          <Text mb={1} color={typeColor} ml="auto">
+            {event.type}
+          </Text>
+        </Box>
+
+        <Box display="flex" gap={2} mt={3}>
+          {user && user._id === event.userId ? (
+            <Box width="100%">
+              <Button
+                variant="ghost"
+                color="gray"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen();
+                  handleInvite();
+                }}
+              >
+                Invite
+              </Button>
+
+              {isInviteVisible && (
+                <Box
+                  className="invite-form"
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="column"
+                  gap="8px"
+                  p="8px"
+                  bg="#f1f1f1"
+                  border="1px solid #ccc"
+                  borderRadius="6px"
+                  boxShadow="sm"
+                  mt="10px"
+                  width="100%"
+                >
+                  <Input
+                    placeholder="Search users..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    mb={2}
+                    size="sm"
+                  />
+
+                  <select
+                    value={selectedUsername}
+                    onChange={(e) => {
+                      setSelectedUsername(e.target.value);
+                      setFeedback("");
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "6px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      color: "black",
+                    }}
+                  >
+                    <option value="" disabled>
+                      Select username
+                    </option>
+                    {filteredUsers.map((u) => (
+                      <option key={u._id} value={u.username}>
+                        {u.username}
+                      </option>
+                    ))}
+                  </select>
+
+                  <Button
+                    variant="solid"
+                    colorScheme="blue"
+                    size="sm"
+                    onClick={handleSendInvite}
+                    isDisabled={!selectedUsername}
+                  >
+                    Send
+                  </Button>
+
+                  {feedback && <Text color="red.500">{feedback}</Text>}
+                </Box>
+              )}
+            </Box>
+          ) : isParticipant ? (
+            <Button
+              style={{ maxWidth: "fit-content", marginLeft: "auto" }}
+              colorScheme="red"
+              flex={1}
+              onClick={handleLeaveEvent}
+              isLoading={isLeaving}
+            >
+              Leave Event
+            </Button>
+          ) : (
+            <Button
+              style={{ maxWidth: "fit-content", marginLeft: "auto" }}
+              colorScheme="blue"
+              flex={1}
+              onClick={handleEventJoin}
+              isLoading={isJoining}
+            >
+              Join Event
+            </Button>
+          )}
+
+          {user && user._id === event.userId && (
             <Button
               variant="ghost"
               color="gray"
               onClick={(e) => {
                 e.stopPropagation();
-                onOpen();
-                handleInvite();
+                if (
+                  window.confirm("Are you sure you want to delete this event?")
+                ) {
+                  onDelete?.(event);
+                }
               }}
             >
-              Invite
+              Delete
             </Button>
-
-            {isInviteVisible && (
-              <Box
-                className="invite-form"
-                display="flex"
-                alignItems="center"
-                flexDirection="column"
-                gap="8px"
-                p="8px"
-                bg="#f1f1f1"
-                border="1px solid #ccc"
-                borderRadius="6px"
-                boxShadow="sm"
-                mt="10px"
-                width="100%"
-              >
-                <Input
-                  placeholder="Search users..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  mb={2}
-                  size="sm"
-                />
-
-                <select
-                  value={selectedUsername}
-                  onChange={(e) => {
-                    setSelectedUsername(e.target.value);
-                    setFeedback("");
-                  }}
-                  style={{
-                    width: "100%",
-                    padding: "6px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                    color: "black",
-                  }}
-                >
-                  <option value="" disabled>
-                    Select username
-                  </option>
-                  {filteredUsers.map((u) => (
-                    <option key={u._id} value={u.username}>
-                      {u.username}
-                    </option>
-                  ))}
-                </select>
-
-                <Button
-                  variant="solid"
-                  colorScheme="blue"
-                  size="sm"
-                  onClick={handleSendInvite}
-                  isDisabled={!selectedUsername}
-                >
-                  Send
-                </Button>
-
-                {feedback && <Text color="red.500">{feedback}</Text>}
-              </Box>
-            )}
-          </Box>
-        ) : isParticipant ? (
-          <Button
-            style={{ maxWidth: "fit-content", marginLeft: "auto" }}
-            colorScheme="red"
-            flex={1}
-            onClick={handleLeaveEvent}
-            isLoading={isLeaving}
-          >
-            Leave Event
-          </Button>
-        ) : (
-          <Button
-            style={{ maxWidth: "fit-content", marginLeft: "auto" }}
-            colorScheme="blue"
-            flex={1}
-            onClick={handleEventJoin}
-            isLoading={isJoining}
-          >
-            Join Event
-          </Button>
-        )}
-
-        {user && user._id === event.userId && (
-          <Button
-            variant="ghost"
-            color="gray"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (
-                window.confirm("Are you sure you want to delete this event?")
-              ) {
-                onDelete?.(event);
-              }
-            }}
-          >
-            Delete
-          </Button>
-        )}
+          )}
+        </Box>
       </Box>
-    </Box>
+      <ToastContainer></ToastContainer>
+    </div>
   );
 }
 

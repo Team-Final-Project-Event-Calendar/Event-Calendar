@@ -26,14 +26,17 @@ function App() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-
         minHeight: "100vh",
       }}
     >
       <NavBar />
 
       <div
-        style={{ marginTop: "auto", marginBottom: "auto", minWidth: "60vw" }}
+        style={{
+          marginTop: "auto",
+          marginBottom: "100px",
+          minWidth: "60vw",
+        }}
       >
         <Routes>
           <Route path="/contacts" element={<Contacts></Contacts>}></Route>
