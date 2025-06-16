@@ -1,4 +1,5 @@
 import ContactsList from "../models/contactsList.model.js";
+import verifyToken from "../verify-token.js";
 
 export const createContactsList = async (req, res) => {
   try {
@@ -31,24 +32,6 @@ export const getContactsLists = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-router.delete("/:listId/contacts/:userId", authMiddleware, async (req, res) => {
-  const { listId, userId } = req.params;
-  try {
-    const list = await ContactList.findById(listId);
-    if (!list) return res.status(404).json({ message: "List not found" });
-
-    list.contacts = list.contacts.filter(
-      (contact) => contact.toString() !== userId
-    );
-
-    await list.save();
-    res.json({ message: "Contact removed", contacts: list.contacts });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 
 // const deleteContactsList = async (req, res) => {
 //   try {
