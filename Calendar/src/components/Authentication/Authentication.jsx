@@ -268,7 +268,7 @@ function Authentication() {
       </div>
       <img
         style={{ width: "80vw" }}
-        src="https://paper-leaf.com/app/uploads/2016/04/may2016wallpaper1920x1200.jpg"
+        src="https://sdmntprukwest.oaiusercontent.com/files/00000000-e750-6243-96c9-64ec8d74fe83/raw?se=2025-06-16T15%3A42%3A52Z&sp=r&sv=2024-08-04&sr=b&scid=57085a38-4b8e-5bf7-b96a-5fb452ff9178&skoid=b928fb90-500a-412f-a661-1ece57a7c318&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-16T06%3A50%3A11Z&ske=2025-06-17T06%3A50%3A11Z&sks=b&skv=2024-08-04&sig=VTwj95y5tlt5jcb81aGzLVtKj1YVz9jWK9FdMTllP/Q%3D"
         alt=""
       />
     </div>
