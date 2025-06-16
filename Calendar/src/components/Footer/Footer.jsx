@@ -17,13 +17,14 @@ const Footer = () => {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
+    alignItems: "center",
     gap: "30px",
-    marginBottom: "30px",
+    marginBottom: "20px",
   };
 
   const iconStyle = {
-    width: "48px",
-    height: "48px",
+    width: "30px",
+    height: "30px",
     transition: "transform 0.3s",
     cursor: "pointer",
   };
