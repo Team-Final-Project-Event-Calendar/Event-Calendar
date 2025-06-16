@@ -77,6 +77,7 @@ function Contacts() {
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
+      alert("User already participating in this event");
       console.error(error.message);
     }
   };
@@ -463,7 +464,6 @@ function Contacts() {
                 </h3>
                 {searchedUsers.map((user) => (
                   <div
-                    onClick={() => navigate(`/users/${user._id}`)}
                     key={user._id}
                     style={{
                       display: "flex",
@@ -475,6 +475,7 @@ function Contacts() {
                     }}
                   >
                     <img
+                      onClick={() => navigate(`/users/${user._id}`)}
                       src={user.avatar || DEFAULT_AVATAR}
                       alt={user.username}
                       style={{
@@ -488,13 +489,21 @@ function Contacts() {
                         e.target.src = DEFAULT_AVATAR;
                       }}
                     />
-                    <div>
+                    <div onClick={() => navigate(`/users/${user._id}`)}>
                       <h4 style={{ marginBottom: "5px", fontSize: "1.1rem" }}>
                         {user.username}
                       </h4>
                       <p>Email: {user.email}</p>
                       <p>Phone: {user.phoneNumber}</p>
                     </div>
+                    <Button
+                      onClick={() => setInvite(user)}
+                      padding={"0px 10px"}
+                      variant={"ghost"}
+                      marginLeft={"10px"}
+                    >
+                      Invite
+                    </Button>
                   </div>
                 ))}
               </div>
