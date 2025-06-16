@@ -31,93 +31,96 @@ function App() {
       }}
     >
       <NavBar />
-      <Routes>
-        <Route path="/contacts" element={<Contacts></Contacts>}></Route>
-        <Route
-          path="/authentication"
-          element={
-            <PublicOnlyRoute>
-              <Authentication />
-            </PublicOnlyRoute>
-          }
-        />
 
-        <Route path="/preferences" element={<PreferencesPage />} />
+      <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+        <Routes>
+          <Route path="/contacts" element={<Contacts></Contacts>}></Route>
+          <Route
+            path="/authentication"
+            element={
+              <PublicOnlyRoute>
+                <Authentication />
+              </PublicOnlyRoute>
+            }
+          />
 
-        <Route path="/public" element={<PublicPage />} />
+          <Route path="/preferences" element={<PreferencesPage />} />
 
-        <Route path="/users/:id" element={<UserProfile />} />
+          <Route path="/public" element={<PublicPage />} />
 
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <CalendarComponent />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/homepage"
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/authentication/admin"
-          element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/myevents"
-          element={
-            <ProtectedRoute>
-              <MyEventsPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route path="/users/:id" element={<UserProfile />} />
 
-        <Route
-          path="/eventdetails/:id"
-          element={
-            <SharedRoute>
-              <EventDetails />
-            </SharedRoute>
-          }
-        />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <CalendarComponent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/homepage"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/authentication/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/myevents"
+            element={
+              <ProtectedRoute>
+                <MyEventsPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/event-series"
-          element={
-            <ProtectedRoute>
-              <EventSeriesPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/eventdetails/:id"
+            element={
+              <SharedRoute>
+                <EventDetails />
+              </SharedRoute>
+            }
+          />
 
-        <Route path="/about" element={<AboutPage />} />
+          <Route
+            path="/event-series"
+            element={
+              <ProtectedRoute>
+                <EventSeriesPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <CalendarComponent />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+          <Route path="/about" element={<AboutPage />} />
+
+          <Route
+            path="*"
+            element={
+              <ProtectedRoute>
+                <CalendarComponent />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
       <Footer></Footer>
     </div>
   );
