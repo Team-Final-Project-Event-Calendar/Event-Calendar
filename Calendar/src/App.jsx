@@ -17,6 +17,7 @@ import UserProfile from "./components/UserProfile/UserProfile";
 import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
 import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
 import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -33,12 +34,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/preferences"
-          element={
-            <PreferencesPage />
-          }
-        />
+        <Route path="/preferences" element={<PreferencesPage />} />
 
         <Route path="/public" element={<PublicPage />} />
 
@@ -114,6 +110,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer></Footer>
     </>
   );
 }
