@@ -1,21 +1,70 @@
 import mongoose from 'mongoose';
 
+
+// Location schema
+const locationSchema = new mongoose.Schema({
+    address: String,
+    city: String,
+    country: String
+}, { _id: false });
+
+// Event time schema for start/end hours
+const eventTimeSchema = new mongoose.Schema({
+    hour: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 23
+    },
+    minute: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 59
+    }
+}, { _id: false });
+
+// Recurrence rule schema
 const recurrenceSchema = new mongoose.Schema({
     frequency: {
         type: String,
-        enum: ['daily', 'weekly', 'monthly'],
+        enum: ['daily', 'weekly', 'monthly', 'yearly'],
         required: true
-    },
-    interval: {
-        type: Number,
-        default: 1
     },
     endDate: {
         type: Date
     }
 }, { _id: false });
 
+// Event template schema for starting/ending events
+const eventTemplateSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    startDateTime: {
+        type: Date,
+        required: true
+    },
+    startTime: {
+        type: eventTimeSchema,
+        required: true
+    },
+    endTime: {
+        type: eventTimeSchema,
+        required: true
+    },
+    location: {
+        type: locationSchema
+    }
+}, { _id: false });
 
+
+//MAIN Series of Events schema
 const eventSeriesSchema = new mongoose.Schema({
     name: { type: String, required: true },
     creatorId: {
@@ -23,34 +72,36 @@ const eventSeriesSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    startingEventId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Event',
-        required: true
-    },
-    // Ending event (optional - can run  indefinitely)
-    endingEventId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Event'
-    },
-    isIndefinite: {
-        type: Boolean,
-        default: false
-    },
-    seriesType: {
+seriesType: {
         type: String,
         enum: ['recurring', 'manual'],
         required: true,
         default: 'recurring'
     },
-    //reccurence (automatic scheduling)
+    isIndefinite: {
+        type: Boolean,
+        default: false
+    },
+    // Starting event as embedded document instead of reference
+    startingEvent: {
+        type: eventTemplateSchema,
+        required: true
+    },
+    // Ending event as embedded document (optional if indefinite)
+    endingEvent: {
+        type: eventTemplateSchema,
+        required: function() {
+            return !this.isIndefinite;
+        }
+    },
+    // Recurrence rules for recurring series
     recurrenceRule: {
         type: recurrenceSchema,
-        required: function () {
+        required: function() {
             return this.seriesType === 'recurring';
         }
     },
-    // For manual series
+    // For manual series - references to actual events
     eventsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
@@ -58,6 +109,7 @@ const eventSeriesSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
 
 //mongodb performance, to jump directly to creatorId,wihtout going through whole collec.
 //eventSeriesSchema.index({ creatorId: 1 });

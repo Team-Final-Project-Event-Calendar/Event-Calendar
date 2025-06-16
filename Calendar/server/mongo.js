@@ -195,17 +195,18 @@ mongoose
         const newSeries = new EventSeries({
           name: req.body.name,
           creatorId: req.user.id,
-          startingEventId: req.body.startingEventId,
-          endingEventId: req.body.endingEventId,
           seriesType: req.body.seriesType,
-          recurrenceRule: req.body.recurrenceRule,
-          eventsId: req.body.eventsId,
           isIndefinite: req.body.isIndefinite,
+          startingEvent: req.body.startingEvent,
+          endingEvent: req.body.isIndefinite ? undefined : req.body.endingEvent,
+          recurrenceRule: req.body.seriesType === "recurring" ? req.body.recurrenceRule : undefined,
+          eventsId: req.body.seriesType === "manual" ? req.body.eventsId : []
         });
 
         const savedSeries = await newSeries.save();
         res.status(201).json(savedSeries);
       } catch (err) {
+        console.error("Error creating event series:", err);
         res.status(400).json({ error: err.message });
       }
     });

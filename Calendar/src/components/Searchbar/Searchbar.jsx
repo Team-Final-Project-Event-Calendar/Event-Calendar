@@ -131,7 +131,7 @@ const Searchbar = () => {
         alignItems: "center",
       }}
     >
-      <input
+      <input className="searchbar-field"
         type="text"
         value={query}
         placeholder="Search for events..."

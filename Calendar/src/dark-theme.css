@@ -260,7 +260,7 @@
 
 .dark .public-welcome-chakra_Card-Root {
   background-color: var(--dark-bg-secondary);
-  border: 2px solid  #5565DD;
+  border: 2px solid #5565DD;
   box-shadow: 0 0 80px -25px rgba(0, 0, 0, 0.5),
     0 30px 50px -30px rgba(0, 0, 0, 0.6),
     0 -2px 6px 0px rgba(255, 255, 255, 0.05) inset;
@@ -844,10 +844,30 @@
   border: 1px solid var(--dark-brand-primary);
 }
 
-.dark .homepage-heading-welcome{
- color: var(--dark-text-primary);
+.dark .homepage-heading-welcome {
+  color: var(--dark-text-primary);
 }
-.dark .homepage-heading-welcome-second{
- color: var(--dark-text-secondary);
- 
+
+.dark .homepage-heading-welcome-second {
+  color: var(--dark-text-secondary);
+
+}
+
+/* ===========================================
+   SEARCHBAR component CUSTOMIZATION
+   =========================================== */
+.searchbar-field::placeholder {
+  color: #626262 !important;
+}
+
+.dark .searchbar-field {
+  background: white !important;
+  /* Keep white background even in dark mode */
+  color: #111 !important;
+  /* Keep dark text for contrast against white */
+  border-color: #1976d2;
+}
+
+.dark .searchbar-field::placeholder {
+  color: #626262 !important;
 }
