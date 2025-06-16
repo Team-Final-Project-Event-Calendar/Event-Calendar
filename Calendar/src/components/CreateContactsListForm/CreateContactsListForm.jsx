@@ -6,6 +6,7 @@ import { FaMinus } from "react-icons/fa";
 import { Button } from "@chakra-ui/react";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreateContactsListForm = ({ onListCreated }) => {
   const { user, token } = useContext(AuthContext);
@@ -18,7 +19,7 @@ const CreateContactsListForm = ({ onListCreated }) => {
 
   const addUser = (username, id) => {
     if (currentList.find((u) => u.id === id)) {
-      alert("User already added");
+      toast.error("User already added");
       return;
     }
 
@@ -57,11 +58,11 @@ const CreateContactsListForm = ({ onListCreated }) => {
     const contactIds = currentList.map((u) => u.id);
 
     if (!title) {
-      alert("Please add title first");
+      toast.error("Please add title first");
       return;
     }
     if (currentList.length < 1) {
-      alert("Add at least one user to the list");
+      toast.error("Add at least one user to the list");
       return;
     }
 

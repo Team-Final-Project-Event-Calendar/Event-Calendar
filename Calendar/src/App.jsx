@@ -21,7 +21,15 @@ import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+
+        minHeight: "100vh",
+      }}
+    >
       <NavBar />
       <Routes>
         <Route path="/contacts" element={<Contacts></Contacts>}></Route>
@@ -111,7 +119,7 @@ function App() {
         />
       </Routes>
       <Footer></Footer>
-    </>
+    </div>
   );
 }
 
