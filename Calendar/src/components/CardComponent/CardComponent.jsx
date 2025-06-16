@@ -148,11 +148,10 @@ function CardComponent({ event, onDelete }) {
         transition="all 0.3s"
         _hover={{ transform: "scale(1.02)", boxShadow: "xl" }}
       >
-        <Text fontSize="xl" fontWeight="bold" mb={1} color="gray.400">
+        <Text className="cardcomponent-title" fontSize="xl" fontWeight="bold" mb={1} color="gray.700">
           <Link
-            to={`/eventdetails/${
-              event._id || event.title + event.startDateTime
-            }`}
+            to={`/eventdetails/${event._id || event.title + event.startDateTime
+              }`}
           >
             {event.title}
           </Link>
@@ -160,15 +159,14 @@ function CardComponent({ event, onDelete }) {
 
         <Text fontSize="sm" color="blue.500" mb={1} ml={2}>
           <Link
-            to={`/eventdetails/${
-              event._id || event.title + event.startDateTime
-            }`}
+            to={`/eventdetails/${event._id || event.title + event.startDateTime
+              }`}
           >
             See Details
           </Link>
         </Text>
 
-        <Text fontSize="md" color="gray.600" mb={3}>
+        <Text className="cardcomponent-description" fontSize="md" color="gray.600" mb={3}>
           {event.description.length > 50
             ? event.description.slice(0, 50) + "..."
             : event.description}
@@ -198,8 +196,10 @@ function CardComponent({ event, onDelete }) {
           {user && user._id === event.userId ? (
             <Box width="100%">
               <Button
-                variant="ghost"
-                color="gray"
+                variant="subtle"
+                color="#5565DD"
+                size={"md"}
+                fontSize={16}
                 onClick={(e) => {
                   e.stopPropagation();
                   onOpen();
@@ -295,8 +295,10 @@ function CardComponent({ event, onDelete }) {
 
           {user && user._id === event.userId && (
             <Button
-              variant="ghost"
-              color="gray"
+              variant="subtle"
+              color="red.500"
+              size={"md"}
+              fontSize={15}
               onClick={(e) => {
                 e.stopPropagation();
                 if (

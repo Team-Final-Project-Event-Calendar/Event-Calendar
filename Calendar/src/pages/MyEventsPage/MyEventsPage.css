@@ -1,0 +1,53 @@
+/* .myevents-main-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    min-width: 100%;
+} */
+
+.myevents-main-container {
+    display: grid;
+    grid-template-rows: 100px 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    justify-items: center;
+    align-items: center;
+    grid-template-areas:
+        ". myevents-title-h1 myevents-title-h1 myevents-title-h1 ."
+        "myevents-cardslist myevents-cardslist myevents-cardslist myevents-eventform .";
+}
+
+.myevents-cardslist {
+    justify-self: center ;
+    align-self: flex-start;
+    grid-area: myevents-cardslist;;
+    padding-left: 296px;
+    padding-top: 20px
+}
+
+.myevents-eventform {
+    justify-self: center;
+    align-self: flex-start;
+    padding: 15px 20px;
+    grid-area: myevents-eventform;
+}
+
+
+
+.myevents-title-h1 {
+    justify-self: center;
+    grid-area: myevents-title-h1;
+    width: fit-content;
+    white-space: nowrap;
+    align-self: center;
+    color: #5565DD;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 5px 10px;
+    background-color: #e2f1ff;
+    border: 1px solid #5565dd95;
+    border-radius: 18px;
+}

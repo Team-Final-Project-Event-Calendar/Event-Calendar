@@ -871,3 +871,19 @@
 .dark .searchbar-field::placeholder {
   color: #626262 !important;
 }
+
+.dark .cardcomponent-title {
+color: #b7fee0 
+}
+
+.dark .cardcomponent-description{
+  color:#faf7e5
+}
+
+/* #5fbd9f */
+
+.dark .myevents-title-h1 {
+   color: var(--dark-text-primary);
+  background-color: rgba(59, 131, 246, 0.242);
+  border: 1px solid var(--dark-brand-primary);
+}

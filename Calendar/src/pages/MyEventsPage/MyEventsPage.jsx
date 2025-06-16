@@ -3,6 +3,7 @@ import CardsListComponent from "../../components/CardsListComponent/CardsListCom
 import EventForm from "../../components/EventForm/EventForm";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import "./MyEventsPage.css";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -53,22 +54,17 @@ function MyEventsPage() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "50px",
-        margin: "50px auto",
-        justifyContent: "space-between",
-        width: "60vw",
-      }}
-    >
-      <div>
+    <>
+    <div className="myevents-main-container">
+        <h1 className="myevents-title-h1">Manage Your Events</h1>
+      <div className="myevents-cardslist">
         <CardsListComponent events={events} onDelete={handleDeleteEvent} />
       </div>
-      <div>
+      <div className="myevents-eventform">
         <EventForm onEventCreated={handleEventCreated} />
       </div>
     </div>
+</>
   );
 }
 

@@ -9,12 +9,12 @@ function CardsListComponent({
   maxWidth = "60vw",
 }) {
   return (
-    <div
+    <div className="cards-list-container123"
       style={{
         display: "flex",
         flexWrap: "wrap",
         maxWidth: maxWidth,
-        margin: "0 auto",
+        margin: "0px auto",
         gap: "20px",
         justifyContent: justify,
       }}

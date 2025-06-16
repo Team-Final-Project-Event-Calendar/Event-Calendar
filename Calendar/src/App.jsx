@@ -21,7 +21,7 @@ import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
-    <div
+    <div className="app-header-container"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -31,9 +31,9 @@ function App() {
     >
       <NavBar />
 
-      <div
+      <div className="app-body-container"
         style={{
-          marginTop: "auto",
+          // marginTop: "auto",
           marginBottom: "100px",
           minWidth: "60vw",
         }}
