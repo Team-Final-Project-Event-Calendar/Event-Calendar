@@ -35,8 +35,13 @@ router.delete("/:listId/contacts/:userId", verifyToken, async (req, res) => {
       (contact) => contact.toString() !== userId
     );
 
+    const updatedList = await ContactsList.findById(listId).populate(
+      "contacts",
+      "username email phone"
+    );
+
     await list.save();
-    res.json({ message: "Contact removed", contacts: list.contacts });
+    res.json({ message: "Contact removed", contacts: updatedList.contacts });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

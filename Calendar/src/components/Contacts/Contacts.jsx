@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
-import CardsListComponent from "../CardsListComponent/CardsListComponent";
 import { useRef } from "react";
 import "./Contacts.css";
 
@@ -188,6 +187,8 @@ function Contacts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      console.log(res.data.contacts);
 
       setContactLists((prev) =>
         prev.map((list) =>
