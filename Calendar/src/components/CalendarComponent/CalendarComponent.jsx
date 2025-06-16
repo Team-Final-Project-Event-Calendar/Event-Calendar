@@ -52,7 +52,7 @@ function CalendarComponent() {
   return (
     <div
       className="calendar-component"
-      style={{ marginTop: "50px", paddingBottom: "50px" }}
+      style={{ marginTop: "50px", paddingBottom: "50px", minWidth: "60vw" }}
     >
       <div className="calendar-controls-container">
         <div className="calendar-controls">
