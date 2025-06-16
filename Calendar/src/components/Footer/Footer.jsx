@@ -10,7 +10,7 @@ const Footer = () => {
   const titleStyle = {
     fontSize: "24px",
     fontWeight: "bold",
-    marginBottom: "30px",
+    marginBottom: "10px",
   };
 
   const iconsContainerStyle = {
@@ -19,12 +19,12 @@ const Footer = () => {
     justifyContent: "center",
     alignItems: "center",
     gap: "30px",
-    marginBottom: "20px",
+    marginBottom: "10px",
   };
 
   const iconStyle = {
-    width: "30px",
-    height: "30px",
+    width: "38px",
+    height: "38px",
     transition: "transform 0.3s",
     cursor: "pointer",
   };
