@@ -594,7 +594,7 @@ function Contacts() {
                       <div
                         style={{
                           marginTop: "8px",
-                          maxHeight: "120px",
+                          maxHeight: "200px",
                           overflowY: "auto",
                           padding: "8px",
                           background: "#fff",
