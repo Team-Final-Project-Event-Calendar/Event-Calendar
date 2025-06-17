@@ -79,9 +79,9 @@ mongoose
 
         const participantIds = participantUsers.map((user) => user._id);
 
-        // if (!participantIds.includes(req.user.id)) {
-        //   participantIds.push(req.user.id);
-        // }
+        if (!participantIds.includes(req.user.id)) {
+          participantIds.push(req.user.id);
+        }
 
         const newEvent = new Event({
           title: req.body.title,

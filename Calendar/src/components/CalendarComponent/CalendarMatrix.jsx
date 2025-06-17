@@ -51,6 +51,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
       try {
         const response = await fetch(`${key}/api/events`, {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -88,18 +89,26 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     const recurrenceRule = series.recurrenceRule || {};
     const frequency = recurrenceRule.frequency || "daily";
     const endDate = recurrenceRule.endDate ? new Date(recurrenceRule.endDate) : toDate;
-
+  
     let currentDate = new Date(Math.max(startDate, fromDate));
-
+  
     while (currentDate <= endDate && currentDate <= toDate) {
+      const instanceDate = new Date(currentDate);
+      instanceDate.setHours(
+        startDate.getHours(),
+        startDate.getMinutes(),
+        startDate.getSeconds(),
+        startDate.getMilliseconds()
+      );
+  
       instances.push({
         ...series.startingEvent,
-        startDateTime: currentDate.toISOString(),
+        startDateTime: instanceDate.toISOString(),
         seriesName: series.name,
         seriesId: series._id,
         isSeriesInstance: true,
       });
-
+  
       if (frequency === "daily") {
         currentDate.setDate(currentDate.getDate() + 1);
       } else if (frequency === "weekly") {
@@ -110,9 +119,10 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         break;
       }
     }
-
+  
     return instances;
   };
+  
 
   useEffect(() => {
     const handleSeriesEvents = async () => {
@@ -482,7 +492,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         <SimpleGrid columns={5} spacing={3} minChildWidth="120px">
           {days.map((day) => {
-           const dayEvents = [...getEventsForDay(day), ...getSeriesEventsForDay(day)];
+          const dayEvents = [...getEventsForDay(day), ...getSeriesEventsForDay(day)];
 
 
             return (
