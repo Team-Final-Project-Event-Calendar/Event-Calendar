@@ -186,15 +186,26 @@ function Contacts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+  
       toast.success("Contact removed.");
-
-      await fetchAllContactsList();
+  
+      setContactLists((prevLists) =>
+        prevLists.map(list => {
+          if (list._id === listId) {
+            return {
+              ...list,
+              contacts: list.contacts.filter(contact => contact._id !== userId),
+            };
+          }
+          return list;
+        })
+      );
     } catch (err) {
       console.error(err);
       toast.error("Failed to remove contact.");
     }
   };
+  
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
