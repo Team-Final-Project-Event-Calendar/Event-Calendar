@@ -13,12 +13,12 @@ function MyEventsPage() {
   const [myEvents, setMyEvents] = useState([]);
   const [participatingEvents, setParticipatingEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       setIsLoading(true);
       try {
-        // Fetch my events
         const myResponse = await fetch(`${key}/api/events/mine`, {
           method: "GET",
           headers: {
@@ -34,7 +34,6 @@ function MyEventsPage() {
         const myData = await myResponse.json();
         setMyEvents(myData);
 
-        // Fetch participating events
         const participatingResponse = await fetch(
           `${key}/api/events/participating`,
           {
@@ -53,7 +52,7 @@ function MyEventsPage() {
         const participatingData = await participatingResponse.json();
         const markedParticipatingData = participatingData.map((event) => ({
           ...event,
-          isUserParticipant: true, // Add a special flag
+          isUserParticipant: true,
         }));
         setParticipatingEvents(markedParticipatingData);
       } catch (error) {
@@ -67,19 +66,15 @@ function MyEventsPage() {
     fetchEvents();
   }, []);
 
-  // Custom useEffect to handle handleLeaveEvent custom notify window in CardComponent.jsx
   useEffect(() => {
-    // Listen for the eventLeft custom event
     const handleEventLeft = (e) => {
       const { eventId } = e.detail;
-      // Filter out the left event from participatingEvents
       setParticipatingEvents((prev) =>
         prev.filter((event) => event._id !== eventId)
       );
     };
 
     window.addEventListener("eventLeft", handleEventLeft);
-    // Clean up event listener
     return () => {
       window.removeEventListener("eventLeft", handleEventLeft);
     };
@@ -107,79 +102,104 @@ function MyEventsPage() {
   };
 
   return (
-    <div className="myevents-container-with-tabs">
-      <h1 className="myevents-title-h1">Manage & Create Your Events</h1>
-
-      <Box className="myevents-box-container-tabs"
-        width="60vw"
-        mx="auto"
-        mt={3}
-        backgroundColor={"#f9f9f9"}
-        borderRadius="md"
-        boxShadow="md"
-        minH={"850px"}
+    <>
+      <div
+        className={`myevents-container-with-tabs ${
+          showCreateForm ? "blurred" : ""
+        }`}
       >
-        <Tabs.Root defaultValue="myEvents">
-          <Tabs.List className="myevents-box-container-tablist" bg="#f8f3f3" justifyContent="center" p={"2"}>
-            <Tabs.Trigger value="myEvents" fontSize={"18px"} fw={"bold"}>
-              My Events
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="create"
-              fontSize={"24px"}
-              fw="bold"
-              backgroundColor="#5565DD"
-              borderRadius="22px"
-              color="#fff"
-              _hover={{ backgroundColor: "#4454BB" }}
+        <h1 className="myevents-title-h1">Manage & Create Your Events</h1>
+
+        <Box
+          className="myevents-box-container-tabs"
+          width="60vw"
+          mx="auto"
+          mt={3}
+          backgroundColor={"#f9f9f9"}
+          borderRadius="md"
+          boxShadow="md"
+          minH={"850px"}
+        >
+          <Tabs.Root defaultValue="myEvents">
+            <Tabs.List
+              className="myevents-box-container-tablist"
+              bg="#f8f3f3"
+              justifyContent="center"
+              p={"2"}
             >
-              Create Event
-            </Tabs.Trigger>
-            <Tabs.Trigger value="participating" fontSize={"18px"} fw={"bold"}>
-              Participating
-            </Tabs.Trigger>
-          </Tabs.List>
+              <Tabs.Trigger value="myEvents" fontSize={"18px"} fw={"bold"}>
+                My Events
+              </Tabs.Trigger>
 
-          <Tabs.Content value="myEvents" p={4}>
-            {isLoading ? (
-              <CustomSpinner />
-            ) : myEvents.length > 0 ? (
-              <CardsListComponent
-                events={myEvents}
-                onDelete={handleDeleteEvent}
-                maxWidth="100%"
-                justify="center"
-              />
-            ) : (
-              <p>You haven't created any events yet.</p>
-            )}
-          </Tabs.Content>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  backgroundColor: "#5565DD",
+                  borderRadius: "22px",
+                  color: "#fff",
+                  padding: "0.5rem 1.5rem",
+                  margin: "0 1rem",
+                  cursor: "pointer",
+                }}
+              >
+                Create Event
+              </button>
 
-          <Tabs.Content value="participating" p={4}>
-            {isLoading ? (
-              <CustomSpinner />
-            ) : participatingEvents.length > 0 ? (
-              <CardsListComponent
-                events={participatingEvents}
-                showCreator={true}
-                maxWidth="100%"
-                justify="center"
-              />
-            ) : (
-              <p>You're not participating in any events yet.</p>
-            )}
-          </Tabs.Content>
+              <Tabs.Trigger value="participating" fontSize={"18px"} fw={"bold"}>
+                Participating
+              </Tabs.Trigger>
+            </Tabs.List>
 
-          <Tabs.Content value="create" p={4}>
-            <Box maxWidth="19vw" mx="auto" p={4} backgroundColor="#fff" borderRadius="md" boxShadow="md">
-              <EventForm onEventCreated={handleEventCreated} />
-            </Box>
-          </Tabs.Content>
-        </Tabs.Root>
-      </Box>
+            <Tabs.Content value="myEvents" p={4}>
+              {isLoading ? (
+                <CustomSpinner />
+              ) : myEvents.length > 0 ? (
+                <CardsListComponent
+                  events={myEvents}
+                  onDelete={handleDeleteEvent}
+                  maxWidth="100%"
+                  justify="center"
+                />
+              ) : (
+                <p>You haven't created any events yet.</p>
+              )}
+            </Tabs.Content>
 
-      <ToastContainer position="bottom-right" />
-    </div>
+            <Tabs.Content value="participating" p={4}>
+              {isLoading ? (
+                <CustomSpinner />
+              ) : participatingEvents.length > 0 ? (
+                <CardsListComponent
+                  events={participatingEvents}
+                  showCreator={true}
+                  maxWidth="100%"
+                  justify="center"
+                />
+              ) : (
+                <p>You're not participating in any events yet.</p>
+              )}
+            </Tabs.Content>
+          </Tabs.Root>
+        </Box>
+
+        <ToastContainer position="bottom-right" />
+      </div>
+
+      {showCreateForm && (
+        <div className="modal-overlay" onClick={() => setShowCreateForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <EventForm
+              onEventCreated={(newEvent) => {
+                handleEventCreated(newEvent);
+                setShowCreateForm(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
