@@ -186,15 +186,17 @@ function Contacts() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       toast.success("Contact removed.");
-  
+
       setContactLists((prevLists) =>
-        prevLists.map(list => {
+        prevLists.map((list) => {
           if (list._id === listId) {
             return {
               ...list,
-              contacts: list.contacts.filter(contact => contact._id !== userId),
+              contacts: list.contacts.filter(
+                (contact) => contact._id !== userId
+              ),
             };
           }
           return list;
@@ -205,7 +207,6 @@ function Contacts() {
       toast.error("Failed to remove contact.");
     }
   };
-  
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -403,7 +404,8 @@ function Contacts() {
         </div>
 
         {/* Center: Toggle View */}
-        <div className="contact-primary-box-yourcontactlists"
+        <div
+          className="contact-primary-box-yourcontactlists"
           style={{
             flexGrow: 1,
             maxWidth: "100%",
@@ -541,7 +543,7 @@ function Contacts() {
               </Text>
             )
           ) : (
-            <Box >
+            <Box>
               <Text fontWeight="bold" fontSize="lg" mb={3}>
                 Your Contact Lists:
               </Text>
@@ -566,7 +568,8 @@ function Contacts() {
                           justifyContent: "space-between",
                         }}
                       >
-                        <h3 className="contact-container-contactlists-button"
+                        <h3
+                          className="contact-container-contactlists-button"
                           style={{
                             fontSize: "1.1rem",
                             fontWeight: "600",
@@ -576,7 +579,8 @@ function Contacts() {
                         >
                           {list.title}
                         </h3>
-                        <Button className="contact-container-contactlists-button"
+                        <Button
+                          className="contact-container-contactlists-button"
                           padding="0px 10px"
                           backgroundColor={"red"}
                           onClick={(e) => {
@@ -594,9 +598,12 @@ function Contacts() {
                         </Button>
                       </div>
                       <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                        <p className="contact-container-contactlists-contactcounter">{list.contacts.length} contacts</p>
+                        <p className="contact-container-contactlists-contactcounter">
+                          {list.contacts.length} contacts
+                        </p>
                       </div>
-                      <div className="contact-container-contactlists-contacts"
+                      <div
+                        className="contact-container-contactlists-contacts"
                         style={{
                           marginTop: "8px",
                           maxHeight: "200px",
@@ -608,8 +615,8 @@ function Contacts() {
                         }}
                       >
                         {list.contacts.map((contact) => (
-                          <div className="contact-container-contactlists-contacts"
-                            onClick={() => console.log(contact)}
+                          <div
+                            className="contact-container-contactlists-contacts"
                             key={contact._id}
                             style={{
                               display: "flex",
@@ -619,6 +626,7 @@ function Contacts() {
                             }}
                           >
                             <img
+                              onClick={() => navigate(`/users/${contact._id}`)}
                               src={contact.avatar || DEFAULT_AVATAR}
                               alt={contact.username}
                               style={{
@@ -632,7 +640,11 @@ function Contacts() {
                                 e.target.src = DEFAULT_AVATAR;
                               }}
                             />
-                            <span>{contact.username}</span>
+                            <span
+                              onClick={() => navigate(`/users/${contact._id}`)}
+                            >
+                              {contact.username}
+                            </span>
                             <Button
                               onClick={() => setInvite(contact)}
                               padding={"0px 10px"}

@@ -99,7 +99,8 @@ const CreateContactsListForm = ({ onListCreated }) => {
   };
 
   return (
-    <div className="createcontactlist-primary-container"
+    <div
+      className="createcontactlist-primary-container"
       style={{
         maxWidth: "300px",
         margin: "0 auto",
@@ -109,7 +110,13 @@ const CreateContactsListForm = ({ onListCreated }) => {
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
         <h2
           className="create-form-container"
           onClick={() => setIsvisible(!isVisible)}

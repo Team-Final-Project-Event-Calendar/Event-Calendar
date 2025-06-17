@@ -6,6 +6,7 @@ import {
   NativeSelect,
   Stack,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState, useEffect, useContext } from "react";
@@ -40,8 +41,6 @@ const EventForm = ({ onEventCreated }) => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
-
-
   const [participantName, setParticipantName] = useState("");
 
   useEffect(() => {
@@ -72,15 +71,12 @@ const EventForm = ({ onEventCreated }) => {
     }
   };
 
-
-
   const removeParticipant = (index) => {
     setEvent((prev) => ({
       ...prev,
       participants: prev.participants.filter((_, i) => i !== index),
     }));
   };
-
 
   const handleParticipantChange = (index, value) => {
     const newParticipants = [...event.participants];
@@ -90,7 +86,6 @@ const EventForm = ({ onEventCreated }) => {
       participants: newParticipants,
     }));
 
-
     if (errors.participants) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -98,7 +93,6 @@ const EventForm = ({ onEventCreated }) => {
       }));
     }
   };
-
 
   const handleChange = (prop, value) => {
     setEvent({ ...event, [prop]: value });
@@ -189,7 +183,8 @@ const EventForm = ({ onEventCreated }) => {
     if (event.isRecurring) {
       const recurrenceErrors = {};
       if (!event.recurrenceRule.frequency) {
-        recurrenceErrors.frequency = "Frequency is required for recurring events.";
+        recurrenceErrors.frequency =
+          "Frequency is required for recurring events.";
       }
 
       if (!event.recurrenceRule.interval || event.recurrenceRule.interval < 1) {
@@ -232,8 +227,6 @@ const EventForm = ({ onEventCreated }) => {
     }
 
     try {
-
-
       const res = await axios.post(`${key}/api/events`, preparedEvent, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -271,7 +264,7 @@ const EventForm = ({ onEventCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ minWidth: "350px" }}>
       <Fieldset.Root size="lg" maxW="md">
         <Stack>
           <Fieldset.Legend style={{ color: "black" }}>
@@ -300,7 +293,7 @@ const EventForm = ({ onEventCreated }) => {
 
           <Field.Root>
             <Field.Label>Description</Field.Label>
-            <Input
+            <Textarea
               value={event.description}
               onChange={(e) => handleChange("description", e.target.value)}
               isInvalid={!!errors.description}
@@ -332,7 +325,9 @@ const EventForm = ({ onEventCreated }) => {
                 <Field.Label>Address</Field.Label>
                 <Input
                   value={event.location.address}
-                  onChange={(e) => handleLocationChange("address", e.target.value)}
+                  onChange={(e) =>
+                    handleLocationChange("address", e.target.value)
+                  }
                   isInvalid={!!errors.location?.address}
                 />
                 {errors.location?.address && (
@@ -356,7 +351,9 @@ const EventForm = ({ onEventCreated }) => {
                 <Field.Label>Country</Field.Label>
                 <Input
                   value={event.location.country}
-                  onChange={(e) => handleLocationChange("country", e.target.value)}
+                  onChange={(e) =>
+                    handleLocationChange("country", e.target.value)
+                  }
                   isInvalid={!!errors.location?.country}
                 />
                 {errors.location?.country && (
@@ -391,10 +388,18 @@ const EventForm = ({ onEventCreated }) => {
             </Stack>
 
             {event.participants.map((participant, index) => (
-              <Stack key={index} direction="row" spacing={2} align="center" mb={2}>
+              <Stack
+                key={index}
+                direction="row"
+                spacing={2}
+                align="center"
+                mb={2}
+              >
                 <Input
                   value={participant}
-                  onChange={(e) => handleParticipantChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleParticipantChange(index, e.target.value)
+                  }
                   isInvalid={!!errors.participants}
                 />
                 <Button
@@ -481,7 +486,9 @@ const EventForm = ({ onEventCreated }) => {
                 <NativeSelect.Root>
                   <NativeSelect.Field
                     value={event.recurrenceRule.frequency}
-                    onChange={(e) => handleRecurrenceChange("frequency", e.target.value)}
+                    onChange={(e) =>
+                      handleRecurrenceChange("frequency", e.target.value)
+                    }
                   >
                     <option value="">Select frequency</option>
                     <option value="daily">Daily</option>
@@ -496,20 +503,22 @@ const EventForm = ({ onEventCreated }) => {
               </Field.Root>
 
               <Field.Root>
-                <Field.Label>Interval (e.g. every X days/weeks/months)</Field.Label>
+                <Field.Label>
+                  Interval (e.g. every X days/weeks/months)
+                </Field.Label>
                 <Input
                   type="number"
                   min={1}
                   value={event.recurrenceRule.interval}
-                  onChange={(e) => handleRecurrenceChange("interval", Number(e.target.value))}
+                  onChange={(e) =>
+                    handleRecurrenceChange("interval", Number(e.target.value))
+                  }
                   isInvalid={!!errors.recurrenceRule?.interval}
                 />
                 {errors.recurrenceRule?.interval && (
                   <Text color="red.500">{errors.recurrenceRule.interval}</Text>
                 )}
               </Field.Root>
-
-
             </>
           )}
         </Fieldset.Content>
