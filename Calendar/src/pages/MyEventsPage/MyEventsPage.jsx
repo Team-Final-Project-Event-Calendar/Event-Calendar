@@ -48,7 +48,11 @@ function MyEventsPage() {
         }
 
         const participatingData = await participatingResponse.json();
-        setParticipatingEvents(participatingData);
+        const markedParticipatingData = participatingData.map(event => ({
+          ...event,
+          isUserParticipant: true // Add a special flag
+        }));
+        setParticipatingEvents(markedParticipatingData);
       } catch (error) {
         console.error("Error fetching events:", error);
         toast.error("Failed to load events");
@@ -58,6 +62,22 @@ function MyEventsPage() {
     };
 
     fetchEvents();
+  }, []);
+
+  // Custom useEffect to handle handleLeaveEvent custom notify window in CardComponent.jsx
+  useEffect(() => {
+    // Listen for the eventLeft custom event
+    const handleEventLeft = (e) => {
+      const { eventId } = e.detail;
+      // Filter out the left event from participatingEvents
+      setParticipatingEvents(prev => prev.filter(event => event._id !== eventId));
+    };
+
+    window.addEventListener('eventLeft', handleEventLeft);
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('eventLeft', handleEventLeft);
+    };
   }, []);
 
   const handleEventCreated = (newEvent) => {
@@ -81,21 +101,6 @@ function MyEventsPage() {
     }
   };
 
-  const handleLeaveEvent = async (event) => {
-    if (!event._id) return;
-    try {
-      await axios.delete(`${key}/api/events/${event._id}/leave`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setParticipatingEvents((prev) => prev.filter((e) => e._id !== event._id));
-      toast.success(`Left event successfully`);
-    } catch (err) {
-      toast.error("Failed to leave event");
-      console.error(err);
-    }
-  };
 
   return (
     <div className="myevents-container-with-tabs">
@@ -103,21 +108,22 @@ function MyEventsPage() {
 
       <Box width="60vw" mx="auto" mt={3} backgroundColor={"#f9f9f9"} borderRadius="md" boxShadow="md">
         <Tabs.Root defaultValue="myEvents">
-          <Tabs.List>
-            <Tabs.Trigger value="myEvents" fontSize={"18px"}>
+          <Tabs.List bg="#f8f3f3" justifyContent="center" p={"2"}>
+            <Tabs.Trigger value="myEvents" fontSize={"18px"} fw={"bold"}>
               My Events
             </Tabs.Trigger>
-            <Tabs.Trigger value="participating" fontSize={"18px"}>
-              Participating Events
-            </Tabs.Trigger>
-            <Tabs.Trigger value="create" fontSize={"22px"} >
+            <Tabs.Trigger value="create" fontSize={"24px"} fw="bold" backgroundColor="#5565DD" borderRadius="22px" color="#fff" _hover={{ backgroundColor: "#4454BB" }}> 
               Create Event
             </Tabs.Trigger>
+            <Tabs.Trigger value="participating" fontSize={"18px"} fw={"bold"}>
+              Participating
+            </Tabs.Trigger>
+            
           </Tabs.List>
 
           <Tabs.Content value="myEvents" p={4}>
             {isLoading ? (
-              <CustomSpinner/>
+              <CustomSpinner />
             ) : myEvents.length > 0 ? (
               <CardsListComponent
                 events={myEvents}
@@ -132,12 +138,10 @@ function MyEventsPage() {
 
           <Tabs.Content value="participating" p={4}>
             {isLoading ? (
-              <CustomSpinner/>
+              <CustomSpinner />
             ) : participatingEvents.length > 0 ? (
               <CardsListComponent
                 events={participatingEvents}
-                actionLabel="Leave"
-                onAction={handleLeaveEvent}
                 showCreator={true}
                 maxWidth="100%"
                 justify="center"
@@ -148,7 +152,7 @@ function MyEventsPage() {
           </Tabs.Content>
 
           <Tabs.Content value="create" p={4}>
-            <Box justifyItems="center"  width="100%" >
+            <Box maxWidth="19vw" mx="auto" p={4} backgroundColor="#fff" borderRadius="md" boxShadow="md">
               <EventForm onEventCreated={handleEventCreated} />
             </Box>
           </Tabs.Content>

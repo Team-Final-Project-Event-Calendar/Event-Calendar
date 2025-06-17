@@ -5,19 +5,10 @@ import "./CardsListComponent.css";
 function CardsListComponent({
   events = [],
   onDelete,
-  // onAction,
-  // actionLabel = "Delete",
-  // showCreator = false,
   justify = "flex-start",
   maxWidth = "60vw",
 }) {
-  // const handleAction = (event) => {
-  //   if (actionLabel === "Delete") {
-  //     onDelete && onDelete(event);
-  //   } else {
-  //     onAction && onAction(event);
-  //   }
-  // };
+
   return (
     <div className="cards-list-container123"
       style={{

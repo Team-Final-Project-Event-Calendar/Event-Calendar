@@ -25,9 +25,28 @@ function CardComponent({ event, onDelete }) {
   const [isJoining, setIsJoining] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isParticipant, setIsParticipant] = useState(
-    event.participants?.includes(user?._id)
-  );
+  const [isParticipant, setIsParticipant] = useState(() => {
+    // First check if the event has a special flag from MyEventsPage
+    if (event.isUserParticipant === true) {
+      return true;
+    }
+    // If user isn't logged in, they can't be a participant
+    if (!user || !user._id) {
+      return false;
+    }
+    // Check the participants array - handle both object arrays and ID arrays
+    if (event.participants) {
+      // If participants is an array of objects with _id property
+      if (typeof event.participants[0] === 'object') {
+        return event.participants.some(p => p._id === user._id);
+      }
+      // If participants is an array of string IDs
+      else {
+        return event.participants.includes(user._id);
+      }
+    }
+    return false;
+  });
 
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
@@ -123,6 +142,10 @@ function CardComponent({ event, onDelete }) {
 
       setIsParticipant(false);
       toast.success("Succesfully left the Event");
+      // Custom event to notify MyEventsPage
+      window.dispatchEvent(new CustomEvent('eventLeft', {
+        detail: { eventId: event._id }
+      }));
     } catch (error) {
       console.error("Failed to leave event:", error);
       toast.error(error);
@@ -304,6 +327,9 @@ function CardComponent({ event, onDelete }) {
                 if (
                   window.confirm("Are you sure you want to delete this event?")
                 ) {
+                  window.dispatchEvent(new CustomEvent('eventDeleted', {
+                    detail: { eventId: event._id }
+                  }));
                   onDelete?.(event);
                 }
               }}
