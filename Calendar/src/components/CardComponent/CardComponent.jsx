@@ -11,7 +11,8 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
+import { toast } from 'react-toastify';
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
