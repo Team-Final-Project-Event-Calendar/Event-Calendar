@@ -1,9 +1,9 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import styles from "./Admin.module.css";
 import { io } from "socket.io-client";
+import { Button } from "@chakra-ui/react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -218,32 +218,7 @@ function Admin() {
   return (
     <div className={styles.adminContainer}>
       <h2 className={styles.adminTitle}>Administration Hub</h2>
-  
-      <section className={styles.panel}>
-        <h3 className={styles.panelTitle}>Deletion Requests</h3>
-        {deleteRequests.length === 0 ? (
-          <p className={styles.emptyMessage}>No pending requests</p>
-        ) : (
-          deleteRequests.map((req) => (
-            <div key={req._id} className={styles.requestCard}>
-              <p>
-                {req.userId
-                  ? `${req.userId.username} (${req.userId.email}) requested deletion.`
-                  : "Unknown user requested deletion."}
-              </p>
-              {req.userId && (
-                <button
-                  onClick={() => handleApprove(req.userId._id)}
-                  className={styles.deleteButton}
-                >
-                  Delete User
-                </button>
-              )}
-            </div>
-          ))
-        )}
-      </section>
-  
+
       <div className={styles.sectionsContainer}>
         <section className={styles.panel}>
           <h3 className={styles.panelTitle}>Users</h3>
@@ -263,7 +238,9 @@ function Admin() {
                 </div>
                 <div className={styles.userAction}>
                   <button
-                    className={u.isBlocked ? styles.btnUnblock : styles.btnBlock}
+                    className={
+                      u.isBlocked ? styles.btnUnblock : styles.btnBlock
+                    }
                     onClick={() => toggleBlock(u._id, !u.isBlocked)}
                   >
                     {u.isBlocked ? "Unblock" : "Block"}
@@ -278,8 +255,7 @@ function Admin() {
               </li>
             ))}
           </ul>
-  
-      
+
           <div className={styles.paginationControls}>
             <button
               onClick={() => setCurrentPageUsers((p) => Math.max(p - 1, 1))}
@@ -302,7 +278,7 @@ function Admin() {
             </button>
           </div>
         </section>
-  
+
         <section className={styles.panel}>
           <h3 className={styles.panelTitle}>Events</h3>
           <input
@@ -312,7 +288,7 @@ function Admin() {
             onChange={(e) => setFindEvents(e.target.value)}
             className={styles.searchInput}
           />
-  
+
           <ul className={styles.eventsList}>
             {filteredEvents.map((event) => (
               <li key={event._id} className={styles.eventItem}>
@@ -374,8 +350,7 @@ function Admin() {
               </li>
             ))}
           </ul>
-  
-      
+
           <div className={styles.paginationControls}>
             <button
               onClick={() => setCurrentPageEvents((p) => Math.max(p - 1, 1))}
@@ -398,13 +373,65 @@ function Admin() {
             </button>
           </div>
         </section>
+        <section className={styles.panel}>
+          <h3 className={styles.panelTitle}>Deletion Requests</h3>
+          {deleteRequests.length === 0 ? (
+            <p className={styles.emptyMessage}>No pending requests</p>
+          ) : (
+            deleteRequests.map((req) => (
+              <div
+                key={req._id}
+                style={{
+                  padding: "16px",
+                  marginBottom: "12px",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  backgroundColor: "#f9f9f9",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                }}
+              >
+                <p
+                  style={{
+                    margin: "0 0 12px 0",
+                    fontSize: "16px",
+                    color: "#333",
+                  }}
+                >
+                  {req.userId
+                    ? `${req.userId.username} (${req.userId.email}) requested deletion.`
+                    : "Unknown user requested deletion."}
+                </p>
+
+                {req.userId && (
+                  <button
+                    onClick={() => handleApprove(req.userId._id)}
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "#e74c3c",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      transition: "background-color 0.3s ease",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#c0392b")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#e74c3c")
+                    }
+                  >
+                    Delete User
+                  </button>
+                )}
+              </div>
+            ))
+          )}
+        </section>
       </div>
     </div>
   );
-  
-  
 }
 
 export default Admin;
-
-
