@@ -1,5 +1,5 @@
 // App.jsx
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Admin from "./components/Authentication/Admin/Admin";
 import NavBar from "./components/NavComponent/NavBar";
@@ -18,8 +18,7 @@ import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
 import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
 import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
 import Footer from "./components/Footer/Footer";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+
 
 function App() {
   return (
@@ -130,7 +129,6 @@ function App() {
         </Routes>
       </div>
       <Footer></Footer>
-      {/* Single ToastContainer for the entire app */}
     </div>
   );
 }
