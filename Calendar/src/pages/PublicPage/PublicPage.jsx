@@ -124,7 +124,7 @@ const PublicPage = () => {
           <Card.Root className="public-welcome-chakra_Card-Root" size="sm">
             <Card.Header>
               <Heading className="public-welcome-chakra_Card-heading" size="lg">
-                Welcome to Imera Calendarium!
+                Welcome to Imera Calendar!
                 <hr />
               </Heading>
             </Card.Header>

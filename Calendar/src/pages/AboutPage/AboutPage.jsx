@@ -9,7 +9,7 @@ import {
 
 function AboutPage() {
   return (
-    <Container className="aboutpage-primary-container" maxW="5xl" py={10} border={"1px solid"}  borderColor="blue.300" p={"20px"} mt={"40px"} borderRadius={"20px"} bg="#fbfefb">
+    <Container className="aboutpage-primary-container" maxW="7xl" py={10} border={"1px solid"}  borderColor="blue.300" p={"20px"} mt={"40px"} borderRadius={"20px"} bg="#fbfefb">
       {/* Header Section */}
       <Box textAlign="center" mb={6}>
         <Heading as="h1" size="2xl" mb={4} color="blue.600">
@@ -43,21 +43,21 @@ function AboutPage() {
 
         <Flex direction={["column", "column", "row"]} gap={6} mb={4}>
           <Box className="aboutpage-techstack-frontend" flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="blue.200">
-            <Heading as="h3" size="md" mb={3}>Frontend</Heading>
+            <Heading ml="20px" as="h3" size="lg" mb={3}>Frontend</Heading>
             <ul style={{ paddingLeft: "20px" }}>
-              <li style={{ marginBottom: "8px" }}>React</li>
-              <li style={{ marginBottom: "8px" }}>JavaScript</li>
-              <li style={{ marginBottom: "8px" }}>Chakra UI</li>
-              <li style={{ marginBottom: "8px" }}>React Icons</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>React</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>JavaScript</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>Chakra UI</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>React Icons</li>
             </ul>
           </Box>
 
           <Box className="aboutpage-techstack-backend" flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="green.200">
-            <Heading as="h3" size="md" mb={3}>Backend</Heading>
+            <Heading ml="20px" as="h3" size="lg" mb={3}>Backend</Heading>
             <ul style={{ paddingLeft: "20px" }}>
-              <li style={{ marginBottom: "8px" }}>MongoDB</li>
-              <li style={{ marginBottom: "8px" }}>Node.js</li>
-              <li style={{ marginBottom: "8px" }}>Express</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>MongoDB</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>Node.js</li>
+              <li style={{ marginBottom: "8px", textAlign:"center" }}>Express</li>
             </ul>
           </Box>
         </Flex>
@@ -143,21 +143,21 @@ function AboutPage() {
         </Heading>
 
         <Flex direction={["column", "column", "row"]} gap={6} justifyContent="center">
-          <Box textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
+          <Box className="aboutpage-techstack-backend" textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
             <Heading as="h3" size="md" mb={2}>Bobi</Heading>
             <a href="https://github.com/B-D-2409" style={{ color: "#3182CE", textDecoration: "underline" }} target="_blank" rel="noopener noreferrer">
               GitHub Profile
             </a>
           </Box>
 
-          <Box textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
+          <Box className="aboutpage-techstack-backend" textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
             <Heading as="h3" size="md" mb={2}>Ceco</Heading>
             <a href="https://github.com/TpMarkov" style={{ color: "#3182CE", textDecoration: "underline" }} target="_blank" rel="noopener noreferrer">
               GitHub Profile
             </a>
           </Box>
 
-          <Box textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
+          <Box className="aboutpage-techstack-backend" textAlign="center" bg="green.200" p={4} shadow="md" borderWidth="1px" borderRadius="md" flex="1" maxW={["100%", "100%", "30%"]}>
             <Heading as="h3" size="md" mb={2}>Simo</Heading>
             <a href="https://github.com/Ph1los0phy" style={{ color: "#3182CE", textDecoration: "underline" }} target="_blank" rel="noopener noreferrer">
               GitHub Profile
