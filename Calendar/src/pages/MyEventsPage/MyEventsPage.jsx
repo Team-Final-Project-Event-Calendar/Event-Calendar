@@ -191,7 +191,7 @@ function MyEventsPage() {
       {showCreateForm && (
         <div className="modal-overlay" onClick={() => setShowCreateForm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <EventForm
+            <EventForm 
               onEventCreated={(newEvent) => {
                 handleEventCreated(newEvent);
                 setShowCreateForm(false);

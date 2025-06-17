@@ -430,13 +430,14 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
 
       {/* Indefinite Checkbox */}
       <div style={{ marginBottom: "1rem" }}>
-        <label>
+        <label style={{ display: "flex", alignItems: "center" }}>
+          <p style={{ fontSize: "17px" }}>Run series indefinitely:</p>
           <input
+            style={{ scale: "1.7", marginLeft: "1rem" }}
             type="checkbox"
             checked={series.isIndefinite}
             onChange={(e) => setSeries({ ...series, isIndefinite: e.target.checked })}
           />
-          Run series indefinitely
         </label>
       </div>
 

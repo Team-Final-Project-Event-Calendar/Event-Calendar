@@ -897,7 +897,9 @@
 }
 
 .dark .myevents-box-container-createevent {
-  background-color: rgba(59, 131, 246, 0.612);
+  background-color: rgb(105, 105, 105) !important;
+  border: 5px solid rgb(105, 105, 105) !important;
+  border-radius: 8px !important;
 }
 
 
@@ -940,19 +942,46 @@
 .dark .contact-container-contactlists {
   background-color: #3f3f41 !important;
   border-color: #4a4a4a !important;
-  color:rgba(0, 0, 0, 0.9)
+  color: rgba(0, 0, 0, 0.9)
 }
-.dark .contact-container-contactlists-button{
+
+.dark .contact-container-contactlists-button {
   color: white !important;
 }
-.dark .contact-container-contactlists-contactcounter{
-   color: #5664dc
+
+.dark .contact-container-contactlists-contactcounter {
+  color: #5664dc
 }
-.dark .contact-container-contactlists-contacts{
+
+.dark .contact-container-contactlists-contacts {
   background-color: #969696 !important;
   border-color: grey !important;
 }
 
 .dark .createcontactlist-primary-container {
   background-color: #292929 !important;
+}
+
+.dark .eventsseriespage-primary-container {
+  background-color: #c0c0c029 !important;
+}
+
+.dark .eventsseriespage-events-box {
+  background-color: #99999988 !important;
+  border: 2px solid darkslategrey !important;
+}
+
+.dark .eventseries-yourevents {
+  border-color: black !important;
+  border: 2px solid darkslategrey !important;
+}
+
+.dark .eventsseriespage-event-card {
+  background-color: #505050 !important;
+  border: 2px solid var(--dark-bg-secondary) !important;
+}
+
+.dark .eventsseries-description {
+
+  background-color: #474747 !important;
 }
