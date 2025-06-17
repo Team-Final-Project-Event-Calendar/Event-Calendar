@@ -1,5 +1,5 @@
 // App.jsx
-import {Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Admin from "./components/Authentication/Admin/Admin";
 import NavBar from "./components/NavComponent/NavBar";
@@ -19,7 +19,6 @@ import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
 import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
 import Footer from "./components/Footer/Footer";
 
-
 function App() {
   return (
     <div
@@ -37,6 +36,7 @@ function App() {
         className="app-body-container"
         style={{
           marginBottom: "100px",
+          marginTop: "auto",
           minWidth: "60vw",
         }}
       >
