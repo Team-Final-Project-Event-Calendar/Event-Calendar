@@ -179,7 +179,6 @@ function Contacts() {
   };
 
   const handleRemoveFromList = async (listId, userId) => {
-    console.log(listId, userId);
     try {
       const res = await axios.delete(
         `${key}/api/contacts/${listId}/contacts/${userId}`,
@@ -188,14 +187,9 @@ function Contacts() {
         }
       );
 
-      console.log(res.data.contacts);
-
-      setContactLists((prev) =>
-        prev.map((list) =>
-          list._id === listId ? { ...list, contacts: res.data.contacts } : list
-        )
-      );
       toast.success("Contact removed.");
+
+      await fetchAllContactsList();
     } catch (err) {
       console.error(err);
       toast.error("Failed to remove contact.");
