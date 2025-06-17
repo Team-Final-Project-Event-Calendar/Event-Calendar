@@ -268,7 +268,7 @@ function Authentication() {
       </div>
       <img
         style={{ width: "80vw" }}
-        src="https://paper-leaf.com/app/uploads/2016/04/may2016wallpaper2880x1800.jpg"
+        src="../../../images/debugets-logo.png"
         alt=""
       />
     </div>
