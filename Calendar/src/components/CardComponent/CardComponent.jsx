@@ -103,12 +103,12 @@ function CardComponent({ event, onDelete }) {
   const handleEventJoin = async () => {
     const token = localStorage.getItem("token");
     if (!user) {
-      alert("Please log in to join this event.");
+      toast.error ("Please log in to join this event.");
       return;
     }
 
     if (isParticipant) {
-      alert("You are already a participant in this event.");
+      toast.error ("You are already a participant in this event.");
       return;
     }
 
