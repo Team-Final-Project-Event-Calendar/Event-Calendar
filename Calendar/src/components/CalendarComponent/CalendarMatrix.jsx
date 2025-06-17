@@ -57,7 +57,6 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         const data = await response.json();
 
-
         const filteredEvents = data.filter((event) =>
           event.participants?.some((p) => p._id === currentUserId)
         );
@@ -90,15 +89,12 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     );
   };
 
-
-
   const getEventsForDay = (date) => {
     return events.filter((event) => {
       const eventDate = new Date(event.startDateTime);
       return eventDate.toDateString() === date.toDateString();
     });
   };
-
 
   const getWeekDays = () => {
     const start = new Date(currentDate);
@@ -111,7 +107,6 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     );
   };
 
-
   const isToday = (date) => {
     const now = new Date();
     return date.toDateString() === now.toDateString();
@@ -119,7 +114,6 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
   if (!userId) {
     return <div>Loading user data...</div>;
   }
-
 
   const getMonthName = (date) =>
     date.toLocaleDateString(undefined, { month: "long" });
@@ -237,7 +231,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         d.getMinutes()
       ).padStart(2, "0")}`;
     };
-  
+
     return (
       <Box>
         <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
@@ -248,11 +242,11 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
             year: "numeric",
           })}
         </Text>
-  
+
         <SimpleGrid columns={7} spacing={3} minChildWidth="120px">
           {days.map((day) => {
             const dayEvents = getEventsForDay(day);
-  
+
             return (
               <Box
                 key={`week-${day.toISOString()}`}
@@ -286,7 +280,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                     day: "numeric",
                   })}
                 </Box>
-  
+
                 <Box position="relative" flex="1" overflow="hidden">
                   {Array.from({ length: 24 }, (_, hour) => (
                     <Box
@@ -308,17 +302,19 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                       </Text>
                     </Box>
                   ))}
-  
+
                   {dayEvents.map((e) => {
                     const start = new Date(e.startDateTime);
                     const end = new Date(e.endDateTime);
-  
-                    const startMinutes = start.getHours() * 60 + start.getMinutes();
+
+                    const startMinutes =
+                      start.getHours() * 60 + start.getMinutes();
                     const endMinutes = end.getHours() * 60 + end.getMinutes();
-  
+
                     const top = (startMinutes / 60) * hourHeight;
-                    const height = ((endMinutes - startMinutes) / 60) * hourHeight;
-  
+                    const height =
+                      ((endMinutes - startMinutes) / 60) * hourHeight;
+
                     return (
                       <Box
                         key={`week-event-${e.id}`}
@@ -339,7 +335,9 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                       >
                         • {e.title}
                         <Text fontSize="xs" mt={1} fontStyle="italic">
-                          {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
+                          {`${formatTime(e.startDateTime)} - ${formatTime(
+                            e.endDateTime
+                          )}`}
                         </Text>
                       </Box>
                     );
@@ -352,7 +350,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
       </Box>
     );
   }
-  
+
   if (view === "workWeek") {
     const days = getWeekDays().slice(1, 6);
     const hourHeight = 25;
@@ -363,7 +361,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         d.getMinutes()
       ).padStart(2, "0")}`;
     };
-  
+
     return (
       <Box>
         <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
@@ -374,11 +372,11 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
             year: "numeric",
           })}
         </Text>
-  
+
         <SimpleGrid columns={5} spacing={3} minChildWidth="120px">
           {days.map((day) => {
             const dayEvents = getEventsForDay(day);
-  
+
             return (
               <Box
                 key={`workweek-${day.toISOString()}`}
@@ -412,7 +410,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                     day: "numeric",
                   })}
                 </Box>
-  
+
                 <Box position="relative" flex="1" overflow="hidden">
                   {Array.from({ length: 24 }, (_, hour) => (
                     <Box
@@ -434,17 +432,19 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                       </Text>
                     </Box>
                   ))}
-  
+
                   {dayEvents.map((e) => {
                     const start = new Date(e.startDateTime);
                     const end = new Date(e.endDateTime);
-  
-                    const startMinutes = start.getHours() * 60 + start.getMinutes();
+
+                    const startMinutes =
+                      start.getHours() * 60 + start.getMinutes();
                     const endMinutes = end.getHours() * 60 + end.getMinutes();
-  
+
                     const top = (startMinutes / 60) * hourHeight;
-                    const height = ((endMinutes - startMinutes) / 60) * hourHeight;
-  
+                    const height =
+                      ((endMinutes - startMinutes) / 60) * hourHeight;
+
                     return (
                       <Box
                         key={`workweek-event-${e.id}`}
@@ -467,7 +467,9 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                           • {e.title}
                         </Box>
                         <Text fontSize="xs" mt={1} fontStyle="italic">
-                          {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
+                          {`${formatTime(e.startDateTime)} - ${formatTime(
+                            e.endDateTime
+                          )}`}
                         </Text>
                       </Box>
                     );
@@ -561,8 +563,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                 right="0"
                 top={`${top}px`}
                 height={`${height}px`}
-                bg="green.500"
-                color="black"
+                bg="#5565dd"
+                color="white"
                 px={4}
                 py={2}
                 borderRadius="md"
@@ -576,7 +578,9 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                   </Text>
                 )}
                 <Text fontSize="xs" mt={1} fontStyle="italic">
-                  {`${formatTime(e.startDateTime)} - ${formatTime(e.endDateTime)}`}
+                  {`${formatTime(e.startDateTime)} - ${formatTime(
+                    e.endDateTime
+                  )}`}
                 </Text>
               </Box>
             );
