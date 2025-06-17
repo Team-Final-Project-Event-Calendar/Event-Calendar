@@ -145,9 +145,9 @@ const EventSeriesPage = () => {
                   </div>
                 )}
                 
-                {series.seriesType === "manual" && series.eventsId && (
+                {/* {series.seriesType === "manual" && series.eventsId && (
                   <p><strong>Additional Events:</strong> {series.eventsId.length}</p>
-                )}
+                )} */}
               </div>
               
               {/* Right column */}

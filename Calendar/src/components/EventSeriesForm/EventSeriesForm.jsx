@@ -1,13 +1,12 @@
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const EventSeriesForm = ({ onSeriesCreated }) => {
   const { user } = useContext(AuthContext);
 
-  const [events, setEvents] = useState([]);
   const [series, setSeries] = useState({
     name: "",
     seriesType: "recurring",
@@ -15,49 +14,55 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       frequency: "weekly",
       endDate: "",
     },
+    eventsId: [],
     isIndefinite: false,
     startingEvent: {
       title: "",
       description: "",
       startDateTime: "",
-      frequency: "weekly",
-      startTime: { hour: 9, minute: 0 },
-      endTime: { hour: 10, minute: 0 },
-      location: { address: "", city: "", country: "" },
+      startTime: {
+        hour: 9,
+        minute: 0
+      },
+      endTime: {
+        hour: 10,
+        minute: 0
+      },
+      location: {
+        address: "",
+        city: "",
+        country: ""
+      }
     },
     endingEvent: {
       title: "",
       description: "",
       startDateTime: "",
-      frequency: "weekly",
-      startTime: { hour: 9, minute: 0 },
-      endTime: { hour: 10, minute: 0 },
-      location: { address: "", city: "", country: "" },
-    },
-    eventsId: [],
+      startTime: {
+        hour: 9,
+        minute: 0
+      },
+      endTime: {
+        hour: 10,
+        minute: 0
+      },
+      location: {
+        address: "",
+        city: "",
+        country: ""
+      }
+    }
   });
 
+  const [events, setEvents] = useState([]);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Fetch user's events for manual series selection
   useEffect(() => {
-    if (series.seriesType === "recurring") {
-      if (series.startingEvent.frequency !== series.recurrenceRule.frequency) {
-        setSeries((prev) => ({
-          ...prev,
-          recurrenceRule: { ...prev.recurrenceRule, frequency: prev.startingEvent.frequency },
-          endingEvent: { ...prev.endingEvent, frequency: prev.startingEvent.frequency },
-        }));
-      }
-    }
-  }, [series.startingEvent.frequency, series.seriesType]);
-
-
-    useEffect(() => {
-    const fetchAllEvents = async () => {
+    const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${key}/api/events/mine`, {
-          method: "GET",
+        const response = await axios.get(`${key}/api/events`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -66,88 +71,121 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       } catch (error) {
         console.error("Failed to fetch events:", error);
       }
-    }
-
-    fetchAllEvents();
+    };
+    fetchEvents();
   }, []);
 
-
-
   const handleStartingEventChange = (field, value) => {
-    setSeries((prev) => ({
-      ...prev,
-      startingEvent: { ...prev.startingEvent, [field]: value },
-    }));
+    setSeries({
+      ...series,
+      startingEvent: {
+        ...series.startingEvent,
+        [field]: value
+      }
+    });
   };
 
-  const handleStartingEventTimeChange = (field, value) => {
-    setSeries((prev) => ({
-      ...prev,
+  const handleStartingEventTimeChange = (timeType, field, value) => {
+    setSeries({
+      ...series,
       startingEvent: {
-        ...prev.startingEvent,
-        [field]: {
-          ...prev.startingEvent[field],
-          ...value,
-        },
-      },
-    }));
+        ...series.startingEvent,
+        [timeType]: {
+          ...series.startingEvent[timeType],
+          [field]: parseInt(value, 10)
+        }
+      }
+    });
+  };
+
+  const handleStartingEventLocationChange = (field, value) => {
+    setSeries({
+      ...series,
+      startingEvent: {
+        ...series.startingEvent,
+        location: {
+          ...series.startingEvent.location,
+          [field]: value
+        }
+      }
+    });
   };
 
   const handleEndingEventChange = (field, value) => {
-    setSeries((prev) => ({
-      ...prev,
-      endingEvent: { ...prev.endingEvent, [field]: value },
-    }));
+    setSeries({
+      ...series,
+      endingEvent: {
+        ...series.endingEvent,
+        [field]: value
+      }
+    });
   };
 
-  const handleEndingEventTimeChange = (field, value) => {
-    setSeries((prev) => ({
-      ...prev,
+  const handleEndingEventTimeChange = (timeType, field, value) => {
+    setSeries({
+      ...series,
       endingEvent: {
-        ...prev.endingEvent,
-        [field]: {
-          ...prev.endingEvent[field],
-          ...value,
-        },
-      },
-    }));
+        ...series.endingEvent,
+        [timeType]: {
+          ...series.endingEvent[timeType],
+          [field]: parseInt(value, 10)
+        }
+      }
+    });
+  };
+
+  const handleEndingEventLocationChange = (field, value) => {
+    setSeries({
+      ...series,
+      endingEvent: {
+        ...series.endingEvent,
+        location: {
+          ...series.endingEvent.location,
+          [field]: value
+        }
+      }
+    });
   };
 
   const validate = () => {
     const errors = {};
 
-    if (!series.name.trim()) errors.name = "Series name is required";
+    if (!series.name) {
+      errors.name = "Series name is required";
+    }
 
-    if (!series.startingEvent.title.trim())
+    // Validate starting event
+    if (!series.startingEvent.title) {
       errors.startingEventTitle = "Starting event title is required";
+    }
 
-    if (!series.startingEvent.description.trim())
+    if (!series.startingEvent.description) {
       errors.startingEventDescription = "Starting event description is required";
+    }
 
-    if (!series.startingEvent.startDateTime)
-      errors.startingEventStart = "Starting event date/time is required";
+    if (!series.startingEvent.startDateTime) {
+      errors.startingEventStart = "Starting event date is required";
+    }
 
+    // Validate ending event if not indefinite
     if (!series.isIndefinite) {
-      if (!series.endingEvent.title.trim())
+      if (!series.endingEvent.title) {
         errors.endingEventTitle = "Ending event title is required";
+      }
 
-      if (!series.endingEvent.description.trim())
+      if (!series.endingEvent.description) {
         errors.endingEventDescription = "Ending event description is required";
+      }
 
-      if (!series.endingEvent.startDateTime)
-        errors.endingEventStart = "Ending event date/time is required";
-
-      if (
-        series.startingEvent.startDateTime &&
-        series.endingEvent.startDateTime &&
-        new Date(series.endingEvent.startDateTime) <= new Date(series.startingEvent.startDateTime)
-      ) {
-        errors.endingEventStart = "Ending event must be after starting event date/time";
+      if (!series.endingEvent.startDateTime) {
+        errors.endingEventStart = "Ending event date is required";
       }
     }
 
-    if (series.seriesType === "manual" && series.eventsId.length === 0)
-      errors.eventsId = "Please select at least one event for manual series";
+    // For manual series, ensure at least one event is selected
+    // if (series.seriesType === "manual" && series.eventsId.length === 0) {
+    //   errors.eventsId = "Please select at least one event for a manual series";
+    // }
 
     setErrors(errors);
     return Object.keys(errors).length === 0;
@@ -156,495 +194,414 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validate()) return;
-
-    const seriesData = {
-      name: series.name.trim(),
-      creatorId: user._id,
-      seriesType: series.seriesType,
-      isIndefinite: series.isIndefinite,
-      startingEvent: {
-        ...series.startingEvent,
-        startDateTime: series.startingEvent.startDateTime,
-        frequency: series.startingEvent.frequency,
-        startTime: series.startingEvent.startTime,
-        endTime: series.startingEvent.endTime,
-      },
-      endingEvent: series.isIndefinite
-        ? undefined
-        : {
-            ...series.endingEvent,
-            startDateTime: series.endingEvent.startDateTime,
-            frequency: series.endingEvent.frequency,
-            startTime: series.endingEvent.startTime,
-            endTime: series.endingEvent.endTime,
-          },
-      recurrenceRule:
-        series.seriesType === "recurring"
-          ? {
-              frequency: series.recurrenceRule.frequency,
-              endDate: series.isIndefinite ? null : series.endingEvent.startDateTime,
-            }
-          : undefined,
-      eventsId: series.seriesType === "manual" ? series.eventsId : [],
-    };
+    if (!validate()) {
+      return;
+    }
 
     try {
-      await axios.post(`${key}/api/event-series`, seriesData, {
+      // Create series with embedded event data
+      const seriesData = {
+        name: series.name,
+        creatorId: user._id,
+        seriesType: 'recurring',//series.seriesType,
+        isIndefinite: series.isIndefinite,
+        startingEvent: series.startingEvent,
+        endingEvent: series.isIndefinite ? undefined : series.endingEvent,
+        recurrenceRule: series.seriesType === "recurring" ? series.recurrenceRule : undefined,
+        // eventsId: series.seriesType === "manual" ? series.eventsId : []
+      };
+
+      const response = await axios.post(`${key}/api/event-series`, seriesData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
       setSuccessMessage("Event series created successfully!");
-      if (onSeriesCreated) onSeriesCreated(seriesData);
+      if (onSeriesCreated) onSeriesCreated(response.data);
 
+      // Reset form
       setSeries({
         name: "",
         seriesType: "recurring",
-        recurrenceRule: { frequency: "weekly", endDate: "" },
-        eventsId: [],
+        recurrenceRule: {
+          frequency: "weekly",
+          endDate: ""
+        },
+        // eventsId: [],
         isIndefinite: false,
         startingEvent: {
           title: "",
           description: "",
           startDateTime: "",
-          frequency: "weekly",
           startTime: { hour: 9, minute: 0 },
           endTime: { hour: 10, minute: 0 },
-          location: { address: "", city: "", country: "" },
+          location: { address: "", city: "", country: "" }
         },
         endingEvent: {
           title: "",
           description: "",
           startDateTime: "",
-          frequency: "weekly",
           startTime: { hour: 9, minute: 0 },
           endTime: { hour: 10, minute: 0 },
-          location: { address: "", city: "", country: "" },
-        },
+          location: { address: "", city: "", country: "" }
+        }
       });
-      setErrors({});
     } catch (error) {
       setErrors({ general: "Failed to create event series" });
       console.error("Failed to create event series:", error);
     }
   };
 
-  const frequencyOptions = ["daily", "weekly", "monthly", "yearly"];
-  const formatWithLeadingZero = (num) => (num < 10 ? `0${num}` : `${num}`);
+  // Helper to generate time options (0-23 for hours, 0-55 for minutes in 5-min increments)
+  const generateTimeOptions = (type) => {
+    if (type === 'hour') {
+      return Array.from({ length: 24 }, (_, i) => (
+        <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+      ));
+    } else {
+      return Array.from({ length: 12 }, (_, i) => (
+        <option key={i * 5} value={i * 5}>{(i * 5).toString().padStart(2, '0')}</option>
+      ));
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 500, margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} style={{ maxWidth: "500px", margin: "0 auto" }}>
       <h2>Create Event Series</h2>
 
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       {errors.general && <p style={{ color: "red" }}>{errors.general}</p>}
 
-      <div style={{ marginBottom: 16 }}>
+      {/* Series Name */}
+      <div style={{ marginBottom: "1rem" }}>
         <label>Series Name:</label>
         <input
           type="text"
           value={series.name}
-          onChange={(e) => setSeries((prev) => ({ ...prev, name: e.target.value }))}
+          onChange={(e) => setSeries({ ...series, name: e.target.value })}
           required
-          style={{ width: "100%", padding: 8 }}
+          style={{ width: "100%", padding: "0.5rem" }}
         />
         {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
+      {/* Series Type */}
+      <div style={{ marginBottom: "1rem" }}>
         <label>Series Type:</label>
         <select
           value={series.seriesType}
-          onChange={(e) => setSeries((prev) => ({ ...prev, seriesType: e.target.value }))}
-          style={{ width: "100%", padding: 8 }}
+          onChange={(e) => setSeries({ ...series, seriesType: e.target.value })}
+          style={{ width: "100%", padding: "0.5rem" }}
         >
           <option value="recurring">Recurring (Automatic)</option>
-          <option value="manual">Manual</option>
+          {/* <option value="manual">Manual</option> */}
         </select>
       </div>
 
-      {series.seriesType === "recurring" && (
-        <>
-          <div style={{ marginBottom: 16 }}>
-            <label>Frequency:</label>
-            <select
-              value={series.startingEvent.frequency}
-              onChange={(e) =>
-                setSeries((prev) => ({
-                  ...prev,
-                  startingEvent: { ...prev.startingEvent, frequency: e.target.value },
-                }))
-              }
-              style={{ width: "100%", padding: 8 }}
-            >
-              {frequencyOptions.map((freq) => (
-                <option key={freq} value={freq}>
-                  {freq.charAt(0).toUpperCase() + freq.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* STARTING EVENT SECTION */}
+      <fieldset style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1.5rem", borderRadius: "4px" }}>
+        <legend style={{ padding: "0 10px", fontWeight: "bold" }}>Starting Event</legend>
 
-          <div style={{ marginBottom: 16 }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={series.isIndefinite}
-                onChange={(e) => setSeries((prev) => ({ ...prev, isIndefinite: e.target.checked }))}
-              />
-              Indefinite Series (no end date)
-            </label>
-          </div>
-        </>
-      )}
-
-
-      <fieldset style={{ marginBottom: 20, padding: 10, border: "1px solid #ccc" }}>
-        <legend>Starting Event</legend>
-
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: "1rem" }}>
           <label>Title:</label>
           <input
             type="text"
             value={series.startingEvent.title}
             onChange={(e) => handleStartingEventChange("title", e.target.value)}
-            style={{ width: "100%", padding: 6 }}
+            required
+            style={{ width: "100%", padding: "0.5rem" }}
           />
           {errors.startingEventTitle && <p style={{ color: "red" }}>{errors.startingEventTitle}</p>}
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: "1rem" }}>
           <label>Description:</label>
           <textarea
             value={series.startingEvent.description}
             onChange={(e) => handleStartingEventChange("description", e.target.value)}
-            style={{ width: "100%", padding: 6 }}
+            required
+            style={{ width: "100%", padding: "0.5rem", minHeight: "100px" }}
           />
-          {errors.startingEventDescription && (
-            <p style={{ color: "red" }}>{errors.startingEventDescription}</p>
-          )}
+          {errors.startingEventDescription && <p style={{ color: "red" }}>{errors.startingEventDescription}</p>}
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label>Date:</label>
+        <div style={{ marginBottom: "1rem" }}>
+          <label>Start Date:</label>
           <input
             type="date"
-            value={series.startingEvent.startDateTime.slice(0, 10)}
-            onChange={(e) => {
-              const date = e.target.value;
-          
-              const timePart = series.startingEvent.startDateTime.slice(11) || "09:00";
-              handleStartingEventChange("startDateTime", date + "T" + timePart);
-            }}
-            style={{ width: "100%", padding: 6 }}
+            value={series.startingEvent.startDateTime}
+            onChange={(e) => handleStartingEventChange("startDateTime", e.target.value)}
+            required
+            style={{ width: "100%", padding: "0.5rem" }}
           />
           {errors.startingEventStart && <p style={{ color: "red" }}>{errors.startingEventStart}</p>}
         </div>
 
-        <div style={{ display: "flex", gap: "12px", marginBottom: 12 }}>
-  <div>
-    <label>Start Time:</label>
-    <div style={{ display: "flex", gap: 6 }}>
-      <input
-        type="number"
-        min="0"
-        max="23"
-        value={formatWithLeadingZero(series.startingEvent.startTime.hour)}
-        onChange={(e) =>
-          handleStartingEventTimeChange("startTime", {
-            hour: Math.min(23, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-      <span>:</span>
-      <input
-        type="number"
-        min="0"
-        max="59"
-        value={formatWithLeadingZero(series.startingEvent.startTime.minute)}
-        onChange={(e) =>
-          handleStartingEventTimeChange("startTime", {
-            minute: Math.min(59, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-    </div>
-  </div>
+        <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem" }}>
+          <div style={{ flex: 1 }}>
+            <label>Start Time:</label>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <select
+                value={series.startingEvent.startTime.hour}
+                onChange={(e) => handleStartingEventTimeChange("startTime", "hour", e.target.value)}
+                style={{ flex: 1, padding: "0.5rem" }}
+              >
+                {generateTimeOptions('hour')}
+              </select>
+              <span style={{ alignSelf: "center" }}>:</span>
+              <select
+                value={series.startingEvent.startTime.minute}
+                onChange={(e) => handleStartingEventTimeChange("startTime", "minute", e.target.value)}
+                style={{ flex: 1, padding: "0.5rem" }}
+              >
+                {generateTimeOptions('minute')}
+              </select>
+            </div>
+          </div>
 
-  <div>
-    <label>End Time:</label>
-    <div style={{ display: "flex", gap: 6 }}>
-      <input
-        type="number"
-        min="0"
-        max="23"
-        value={formatWithLeadingZero(series.startingEvent.endTime.hour)}
-        onChange={(e) =>
-          handleStartingEventTimeChange("endTime", {
-            hour: Math.min(23, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-      <span>:</span>
-      <input
-        type="number"
-        min="0"
-        max="59"
-        value={formatWithLeadingZero(series.startingEvent.endTime.minute)}
-        onChange={(e) =>
-          handleStartingEventTimeChange("endTime", {
-            minute: Math.min(59, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-    </div>
-  </div>
-</div>
+          <div style={{ flex: 1 }}>
+            <label>End Time:</label>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <select
+                value={series.startingEvent.endTime.hour}
+                onChange={(e) => handleStartingEventTimeChange("endTime", "hour", e.target.value)}
+                style={{ flex: 1, padding: "0.5rem" }}
+              >
+                {generateTimeOptions('hour')}
+              </select>
+              <span style={{ alignSelf: "center" }}>:</span>
+              <select
+                value={series.startingEvent.endTime.minute}
+                onChange={(e) => handleStartingEventTimeChange("endTime", "minute", e.target.value)}
+                style={{ flex: 1, padding: "0.5rem" }}
+              >
+                {generateTimeOptions('minute')}
+              </select>
+            </div>
+          </div>
+        </div>
 
-
-        <div style={{ marginBottom: 12 }}>
-          <label>Address:</label>
+        <div style={{ marginBottom: "1rem" }}>
+          <label>Location (Optional):</label>
           <input
             type="text"
+            placeholder="Address"
             value={series.startingEvent.location.address}
-            onChange={(e) =>
-              setSeries((prev) => ({
-                ...prev,
-                startingEvent: {
-                  ...prev.startingEvent,
-                  location: { ...prev.startingEvent.location, address: e.target.value },
-                },
-              }))
-            }
-            style={{ width: "100%", padding: 6 }}
+            onChange={(e) => handleStartingEventLocationChange("address", e.target.value)}
+            style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
           />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>City:</label>
           <input
             type="text"
+            placeholder="City"
             value={series.startingEvent.location.city}
-            onChange={(e) =>
-              setSeries((prev) => ({
-                ...prev,
-                startingEvent: {
-                  ...prev.startingEvent,
-                  location: { ...prev.startingEvent.location, city: e.target.value },
-                },
-              }))
-            }
-            style={{ width: "100%", padding: 6 }}
+            onChange={(e) => handleStartingEventLocationChange("city", e.target.value)}
+            style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
           />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Country:</label>
           <input
             type="text"
+            placeholder="Country"
             value={series.startingEvent.location.country}
-            onChange={(e) =>
-              setSeries((prev) => ({
-                ...prev,
-                startingEvent: {
-                  ...prev.startingEvent,
-                  location: { ...prev.startingEvent.location, country: e.target.value },
-                },
-              }))
-            }
-            style={{ width: "100%", padding: 6 }}
+            onChange={(e) => handleStartingEventLocationChange("country", e.target.value)}
+            style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
       </fieldset>
 
-      {!series.isIndefinite && (
-        <fieldset style={{ marginBottom: 20, padding: 10, border: "1px solid #ccc" }}>
-          <legend>Ending Event</legend>
+      {/* Recurring Options */}
+      {series.seriesType === "recurring" && (
+        <div style={{ marginBottom: "1rem" }}>
+          <label>Frequency:</label>
+          <select
+            value={series.recurrenceRule.frequency}
+            onChange={(e) => setSeries({
+              ...series,
+              recurrenceRule: { ...series.recurrenceRule, frequency: e.target.value }
+            })}
+            style={{ width: "100%", padding: "0.5rem" }}
+          >
+            {/* <option value="daily">Daily</option> */}
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+      )}
 
-          <div style={{ marginBottom: 12 }}>
+      {/* Indefinite Checkbox */}
+      <div style={{ marginBottom: "1rem" }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={series.isIndefinite}
+            onChange={(e) => setSeries({ ...series, isIndefinite: e.target.checked })}
+          />
+          Run series indefinitely
+        </label>
+      </div>
+
+      {/* ENDING EVENT SECTION - Only if not indefinite */}
+      {!series.isIndefinite && (
+        <fieldset style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1.5rem", borderRadius: "4px" }}>
+          <legend style={{ padding: "0 10px", fontWeight: "bold" }}>Ending Event</legend>
+
+          <div style={{ marginBottom: "1rem" }}>
             <label>Title:</label>
             <input
               type="text"
               value={series.endingEvent.title}
               onChange={(e) => handleEndingEventChange("title", e.target.value)}
-              style={{ width: "100%", padding: 6 }}
+              required
+              style={{ width: "100%", padding: "0.5rem" }}
             />
             {errors.endingEventTitle && <p style={{ color: "red" }}>{errors.endingEventTitle}</p>}
           </div>
 
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: "1rem" }}>
             <label>Description:</label>
             <textarea
               value={series.endingEvent.description}
               onChange={(e) => handleEndingEventChange("description", e.target.value)}
-              style={{ width: "100%", padding: 6 }}
+              required
+              style={{ width: "100%", padding: "0.5rem", minHeight: "100px" }}
             />
-            {errors.endingEventDescription && (
-              <p style={{ color: "red" }}>{errors.endingEventDescription}</p>
-            )}
+            {errors.endingEventDescription && <p style={{ color: "red" }}>{errors.endingEventDescription}</p>}
           </div>
 
-          <div style={{ marginBottom: 12 }}>
-            <label>Date:</label>
+          <div style={{ marginBottom: "1rem" }}>
+            <label>End Date:</label>
             <input
               type="date"
-              value={series.endingEvent.startDateTime.slice(0, 10)}
-              onChange={(e) => {
-                const date = e.target.value;
-                const timePart = series.endingEvent.startDateTime.slice(11) || "10:00";
-                handleEndingEventChange("startDateTime", date + "T" + timePart);
-              }}
-              style={{ width: "100%", padding: 6 }}
+              value={series.endingEvent.startDateTime}
+              onChange={(e) => handleEndingEventChange("startDateTime", e.target.value)}
+              required
+              style={{ width: "100%", padding: "0.5rem" }}
             />
             {errors.endingEventStart && <p style={{ color: "red" }}>{errors.endingEventStart}</p>}
           </div>
 
-    
-          <div style={{ display: "flex", gap: "12px", marginBottom: 12 }}>
-  <div>
-    <label>Start Time:</label>
-    <div style={{ display: "flex", gap: 6 }}>
-      <input
-        type="number"
-        min="0"
-        max="23"
-        value={formatWithLeadingZero(series.endingEvent.startTime.hour)}
-        onChange={(e) =>
-          handleEndingEventTimeChange("startTime", {
-            hour: Math.min(23, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-      <span>:</span>
-      <input
-        type="number"
-        min="0"
-        max="59"
-        value={formatWithLeadingZero(series.endingEvent.startTime.minute)}
-        onChange={(e) =>
-          handleEndingEventTimeChange("startTime", {
-            minute: Math.min(59, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-    </div>
-  </div>
-
-  <div>
-    <label>End Time:</label>
-    <div style={{ display: "flex", gap: 6 }}>
-      <input
-        type="number"
-        min="0"
-        max="23"
-        value={formatWithLeadingZero(series.endingEvent.endTime.hour)}
-        onChange={(e) =>
-          handleEndingEventTimeChange("endTime", {
-            hour: Math.min(23, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-      <span>:</span>
-      <input
-        type="number"
-        min="0"
-        max="59"
-        value={formatWithLeadingZero(series.endingEvent.endTime.minute)}
-        onChange={(e) =>
-          handleEndingEventTimeChange("endTime", {
-            minute: Math.min(59, Math.max(0, Number(e.target.value))),
-          })
-        }
-        style={{ width: 50, padding: 4 }}
-      />
-    </div>
-  </div>
-</div>
-
-
-
-          <div style={{ marginBottom: 12 }}>
-            <label>Address:</label>
-            <input
-              type="text"
-              value={series.endingEvent.location.address}
-              onChange={(e) =>
-                setSeries((prev) => ({
-                  ...prev,
-                  endingEvent: {
-                    ...prev.endingEvent,
-                    location: { ...prev.endingEvent.location, address: e.target.value },
-                  },
-                }))
-              }
-              style={{ width: "100%", padding: 6 }}
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label>City:</label>
-            <input
-              type="text"
-              value={series.endingEvent.location.city}
-              onChange={(e) =>
-                setSeries((prev) => ({
-                  ...prev,
-                  endingEvent: {
-                    ...prev.endingEvent,
-                    location: { ...prev.endingEvent.location, city: e.target.value },
-                  },
-                }))
-              }
-              style={{ width: "100%", padding: 6 }}
-            />
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label>Country:</label>
-            <input
-              type="text"
-              value={series.endingEvent.location.country}
-              onChange={(e) =>
-                setSeries((prev) => ({
-                  ...prev,
-                  endingEvent: {
-                    ...prev.endingEvent,
-                    location: { ...prev.endingEvent.location, country: e.target.value },
-                  },
-                }))
-              }
-              style={{ width: "100%", padding: 6 }}
-            />
-          </div>
-        </fieldset>
-      )}
-
-{series.seriesType === "manual" && (
-        <fieldset style={{ marginBottom: 16 }}>
-          <legend>Manual Events Selection</legend>
-          {events.map((event) => (
-            <div key={event._id || event.id}>
-              <input
-                type="checkbox"
-                id={`event-${event._id || event.id}`}
-                checked={series.eventsId.includes(event._id || event.id)}
-                onChange={() => handleManualEventsChange(event._id || event.id)}
-              />
-              <label htmlFor={`event-${event._id || event.id}`}>{event.title}</label>
+          <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem" }}>
+            <div style={{ flex: 1 }}>
+              <label>Start Time:</label>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <select
+                  value={series.endingEvent.startTime.hour}
+                  onChange={(e) => handleEndingEventTimeChange("startTime", "hour", e.target.value)}
+                  style={{ flex: 1, padding: "0.5rem" }}
+                >
+                  {generateTimeOptions('hour')}
+                </select>
+                <span style={{ alignSelf: "center" }}>:</span>
+                <select
+                  value={series.endingEvent.startTime.minute}
+                  onChange={(e) => handleEndingEventTimeChange("startTime", "minute", e.target.value)}
+                  style={{ flex: 1, padding: "0.5rem" }}
+                >
+                  {generateTimeOptions('minute')}
+                </select>
+              </div>
             </div>
-          ))}
-          {errors.eventsId && <p style={{ color: "red" }}>{errors.eventsId}</p>}
+
+            <div style={{ flex: 1 }}>
+              <label>End Time:</label>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <select
+                  value={series.endingEvent.endTime.hour}
+                  onChange={(e) => handleEndingEventTimeChange("endTime", "hour", e.target.value)}
+                  style={{ flex: 1, padding: "0.5rem" }}
+                >
+                  {generateTimeOptions('hour')}
+                </select>
+                <span style={{ alignSelf: "center" }}>:</span>
+                <select
+                  value={series.endingEvent.endTime.minute}
+                  onChange={(e) => handleEndingEventTimeChange("endTime", "minute", e.target.value)}
+                  style={{ flex: 1, padding: "0.5rem" }}
+                >
+                  {generateTimeOptions('minute')}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: "1rem" }}>
+            <label>Location (Optional):</label>
+            <input
+              type="text"
+              placeholder="Address"
+              value={series.endingEvent.location.address}
+              onChange={(e) => handleEndingEventLocationChange("address", e.target.value)}
+              style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
+            />
+            <input
+              type="text"
+              placeholder="City"
+              value={series.endingEvent.location.city}
+              onChange={(e) => handleEndingEventLocationChange("city", e.target.value)}
+              style={{ width: "100%", padding: "0.5rem", marginBottom: "0.5rem" }}
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              value={series.endingEvent.location.country}
+              onChange={(e) => handleEndingEventLocationChange("country", e.target.value)}
+              style={{ width: "100%", padding: "0.5rem" }}
+            />
+          </div>
         </fieldset>
       )}
 
+      {/* Manual Event Selection (only for manual series) */}
+      {/* {series.seriesType === "manual" && (
+          <div style={{ marginBottom: "1rem" }}>
+            <label>Select Additional Events for Manual Series:</label>
+            <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "4px", maxHeight: "200px", overflowY: "auto" }}>
+              {events.length === 0 ? (
+                <p>No events available. Create some events first.</p>
+              ) : (
+                events.map((event) => (
+                  <div key={event._id} style={{ marginBottom: "0.5rem" }}>
+                    <label style={{ display: "flex", alignItems: "center" }}>
+                      <input
+                        type="checkbox"
+                        checked={series.eventsId.includes(event._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            // Add event to series
+                            setSeries({
+                              ...series,
+                              eventsId: [...series.eventsId, event._id]
+                            });
+                          } else {
+                            // Remove event from series
+                            setSeries({
+                              ...series,
+                              eventsId: series.eventsId.filter(id => id !== event._id)
+                            });
+                          }
+                        }}
+                        style={{ marginRight: "0.5rem" }}
+                      />
+                      <span>
+                        {event.title} - {new Date(event.startDateTime).toLocaleDateString()}
+                        {event.location?.city && ` (${event.location.city})`}
+                      </span>
+                    </label>
+                  </div>
+                ))
+              )}
+            </div>
+            {series.eventsId.length > 0 && (
+              <p style={{ marginTop: "0.5rem", color: "#666" }}>
+                {series.eventsId.length} additional event(s) selected
+              </p>
+            )}
+            {errors.eventsId && <p style={{ color: "red" }}>{errors.eventsId}</p>}
+          </div>
+        )} */}
 
-      <button type="submit" style={{ padding: "10px 20px", cursor: "pointer" }}>
-        Create Series
+      <button type="submit" style={{ width: "100%", padding: "0.75rem", background: "#1976d2", color: "white", border: "none", borderRadius: "4px" }}>
+        Create Event Series
       </button>
     </form>
   );
