@@ -78,14 +78,7 @@ function NavBar() {
           }}
         >
           <Searchbar />
-          <Button
-            as={NavLink}
-            to="/"
-            variant="ghost"
-            style={{ marginLeft: "10px" }}
-          >
-            Calendar
-          </Button>
+          
         </div>
 
         {/* Right Side Navbar */}
@@ -97,7 +90,15 @@ function NavBar() {
             justifyContent: "flex-end",
             gap: "5px",
           }}
-        >
+        >  <Button
+            as={NavLink}
+            to="/"
+            variant="ghost"
+            fontSize="18px"
+            marginRight = "6vw"
+          >
+            My Calendar
+          </Button>
           {user?.role === "admin" && (
             <Button as={NavLink} to="/authentication/admin" variant="ghost">
               Admin Panels

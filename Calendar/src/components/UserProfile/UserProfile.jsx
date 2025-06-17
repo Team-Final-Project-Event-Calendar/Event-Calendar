@@ -93,8 +93,11 @@ function UserProfile() {
           <button
             onClick={() => navigate(-1)}
             style={{
-              background: "transparent",
-              border: "none",
+               background: "transparent",
+              borderColor: "lightgrey",
+              border: "solid 1px",
+              borderRadius: "8px",
+              padding: "2px 6px",
               color: subTextColor,
               fontSize: "0.9rem",
               cursor: "pointer",

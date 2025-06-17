@@ -140,7 +140,7 @@ const Searchbar = () => {
         onFocus={() => setExpanded(true)}
         onBlur={() => setTimeout(() => setExpanded(false), 150)}
         style={{
-          width: expanded ? "100%" : 255,
+          width: expanded ? "75%" : 255,
           transition: "width 0.3s",
           padding: "0.5rem 1rem",
           fontSize: "1rem",
