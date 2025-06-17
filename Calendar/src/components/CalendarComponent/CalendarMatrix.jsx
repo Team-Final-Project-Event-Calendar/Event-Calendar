@@ -7,6 +7,9 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
   const [events, setEvents] = useState([]);
   const [userId, setUserId] = useState(null);
 
+  const [seriesEvents, setSeriesEvents] = useState([]);
+  const [seriesEventsExpanded, setSeriesEventsExpanded] = useState([]);
+
   const generateRepeatedEvents = (event) => {
     const repeatDays = event.recurrenceRule?.interval || 1;
     const repeatType = event.repeatType || "daily";
@@ -79,6 +82,98 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
     fetchEvents();
   }, []);
 
+  const generateSeriesInstances = (series, fromDate, toDate) => {
+    const instances = [];
+    const startDate = new Date(series.startingEvent.startDateTime);
+    const recurrenceRule = series.recurrenceRule || {};
+    const frequency = recurrenceRule.frequency || "daily";
+    const endDate = recurrenceRule.endDate ? new Date(recurrenceRule.endDate) : toDate;
+
+    let currentDate = new Date(Math.max(startDate, fromDate));
+
+    while (currentDate <= endDate && currentDate <= toDate) {
+      instances.push({
+        ...series.startingEvent,
+        startDateTime: currentDate.toISOString(),
+        seriesName: series.name,
+        seriesId: series._id,
+        isSeriesInstance: true,
+      });
+
+      if (frequency === "daily") {
+        currentDate.setDate(currentDate.getDate() + 1);
+      } else if (frequency === "weekly") {
+        currentDate.setDate(currentDate.getDate() + 7);
+      } else if (frequency === "monthly") {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+      } else {
+        break;
+      }
+    }
+
+    return instances;
+  };
+
+  useEffect(() => {
+    const handleSeriesEvents = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const currentUserId = user?._id;
+  
+      try {
+        const response = await fetch(`${key}/api/event-series`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+  
+        if (!response.ok) throw new Error("Failed to fetch event series");
+  
+        const data = await response.json();
+        console.log("Fetched event series:", data);
+        
+  
+        const filteredSeries = data.filter(series => series.creatorId === currentUserId);
+        setSeriesEvents(filteredSeries);
+  
+        let fromDate, toDate;
+  
+        if (view === "month") {
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth();
+          fromDate = new Date(year, month, 1);
+          toDate = new Date(year, month + 1, 0);
+        } else if (view === "week" || view === "workWeek") {
+      
+          const dayOfWeek = currentDate.getDay();
+          const diffToMonday = (dayOfWeek + 6) % 7;
+          fromDate = new Date(currentDate);
+          fromDate.setDate(currentDate.getDate() - diffToMonday);
+          toDate = new Date(fromDate);
+          toDate.setDate(fromDate.getDate() + 6);
+        } else if (view === "day") {
+          fromDate = new Date(currentDate);
+          fromDate.setHours(0, 0, 0, 0);
+          toDate = new Date(currentDate);
+          toDate.setHours(23, 59, 59, 999);
+        }
+  
+        let expandedInstances = [];
+        filteredSeries.forEach(series => {
+          expandedInstances = expandedInstances.concat(generateSeriesInstances(series, fromDate, toDate));
+        });
+  
+        setSeriesEventsExpanded(expandedInstances);
+  
+      } catch (error) {
+        console.error("Error fetching event series:", error);
+      }
+    };
+  
+    handleSeriesEvents();
+  }, [currentDate, view]);
+  
+
   const getMonthDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -91,6 +186,13 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
   const getEventsForDay = (date) => {
     return events.filter((event) => {
+      const eventDate = new Date(event.startDateTime);
+      return eventDate.toDateString() === date.toDateString();
+    });
+  };
+
+  const getSeriesEventsForDay = (date) => {
+    return seriesEventsExpanded.filter((event) => {
       const eventDate = new Date(event.startDateTime);
       return eventDate.toDateString() === date.toDateString();
     });
@@ -169,188 +271,193 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         mt={1}
         isTruncated
       >
-        • {e.title}
+        {e.title}
       </Box>
     ));
 
-  if (view === "month") {
-    const days = getMonthDays();
-    const firstDayIndex = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    ).getDay();
-    const blanks = Array.from({ length: firstDayIndex });
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          {getMonthName(currentDate)} {currentDate.getFullYear()}
-        </Text>
-
-        <SimpleGrid columns={7} spacing={3}>
-          {weekdayShortNames.map((day) => (
-            <Box
-              key={day}
-              textAlign="center"
-              fontWeight="semibold"
-              color="gray.600"
-            >
-              {day}
-            </Box>
-          ))}
-          {blanks.map((_, i) => (
-            <Box key={`blank-${i}`} />
-          ))}
-          {days.map((day, i) => {
-            const dayEvents = getEventsForDay(day, userId);
-            return (
+    if (view === "month") {
+      const days = getMonthDays();
+      const firstDayIndex = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      ).getDay();
+      const blanks = Array.from({ length: firstDayIndex });
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            {getMonthName(currentDate)} {currentDate.getFullYear()}
+          </Text>
+    
+          <SimpleGrid columns={7} spacing={3}>
+            {weekdayShortNames.map((day) => (
               <Box
-                key={i}
-                {...(isToday(day) ? todayStyle : dayCellStyle)}
-                onClick={() => onDayClick(day)}
+                key={day}
+                textAlign="center"
+                fontWeight="semibold"
+                color="gray.600"
               >
-                <Text fontWeight="bold" mb={2}>
-                  {day.getDate()}
-                </Text>
-                {renderEventTitles(dayEvents)}
+                {day}
               </Box>
-            );
-          })}
-        </SimpleGrid>
-      </Box>
-    );
-  }
-  if (view === "week") {
-    const days = getWeekDays();
-    const hourHeight = 25;
-    const timelineHeight = 24 * hourHeight;
-    const formatTime = (dateStr) => {
-      const d = new Date(dateStr);
-      return `${String(d.getHours()).padStart(2, "0")}:${String(
-        d.getMinutes()
-      ).padStart(2, "0")}`;
-    };
-
-    return (
-      <Box>
-        <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
-          Week of{" "}
-          {days[0].toLocaleDateString(undefined, {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Text>
-
-        <SimpleGrid columns={7} spacing={3} minChildWidth="120px">
-          {days.map((day) => {
-            const dayEvents = getEventsForDay(day);
-
-            return (
-              <Box
-                key={`week-${day.toISOString()}`}
-                borderWidth="1px"
-                borderColor="blue.300"
-                borderRadius="md"
-                boxShadow="md"
-                height={`${timelineHeight + 30}px`}
-                position="relative"
-                {...(isToday(day) ? todayStyle : dayCellStyle)}
-                onClick={() => onDayClick(day)}
-                overflow="hidden"
-                display="flex"
-                flexDirection="column"
-              >
+            ))}
+            {blanks.map((_, i) => (
+              <Box key={`blank-${i}`} />
+            ))}
+            {days.map((day, i) => {
+              const dayEvents = getEventsForDay(day, userId);
+              const seriesDayEvents = getSeriesEventsForDay(day);
+              return (
                 <Box
-                  textAlign="center"
-                  fontWeight="semibold"
-                  color="gray.500"
-                  borderBottom="2px solid"
-                  borderColor="blue.300"
-                  py={1}
-                  position="sticky"
-                  top={0}
-                  bg="white"
-                  zIndex={10}
-                  flexShrink={0}
+                  key={i}
+                  {...(isToday(day) ? todayStyle : dayCellStyle)}
+                  onClick={() => onDayClick(day)}
                 >
-                  {day.toLocaleDateString(undefined, {
-                    weekday: "short",
-                    day: "numeric",
-                  })}
+                  <Text fontWeight="bold" mb={2}>
+                    {day.getDate()}
+                  </Text>
+                  {renderEventTitles(dayEvents)}
+                  {renderEventTitles(seriesDayEvents)}
                 </Box>
-
-                <Box position="relative" flex="1" overflow="auto">
-                  {Array.from({ length: 24 }, (_, hour) => (
-                    <Box
-                      key={`week-hour-${hour}`}
-                      position="absolute"
-                      top={`${hour * hourHeight}px`}
-                      width="100%"
-                      height={`${hourHeight}px`}
-                      borderTop="1px solid #CBD5E0"
-                      px={1}
-                      fontSize="xs"
-                      color="gray.500"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="flex-start"
-                    >
-                      <Text ml={1} minW="28px">
-                        {String(hour).padStart(2, "0")}:00
-                      </Text>
-                    </Box>
-                  ))}
-
-                  {dayEvents.map((e) => {
-                    const start = new Date(e.startDateTime);
-                    const end = new Date(e.endDateTime);
-
-                    const startMinutes =
-                      start.getHours() * 60 + start.getMinutes();
-                    const endMinutes = end.getHours() * 60 + end.getMinutes();
-
-                    const top = (startMinutes / 60) * hourHeight;
-                    const height =
-                      ((endMinutes - startMinutes) / 60) * hourHeight;
-
-                    return (
+              );
+            })}
+          </SimpleGrid>
+        </Box>
+      );
+    }
+    if (view === "week") {
+      const days = getWeekDays();
+      const hourHeight = 25;
+      const timelineHeight = 24 * hourHeight;
+    
+      const formatTime = (dateStr) => {
+        const d = new Date(dateStr);
+        return `${String(d.getHours()).padStart(2, "0")}:${String(
+          d.getMinutes()
+        ).padStart(2, "0")}`;
+      };
+    
+      return (
+        <Box>
+          <Text fontSize="3xl" fontWeight="bold" mb={6} textAlign="right">
+            Week of{" "}
+            {days[0].toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Text>
+    
+          <SimpleGrid columns={7} spacing={3} minChildWidth="120px">
+            {days.map((day, dayIndex) => {
+              const dayEvents = [
+                ...getEventsForDay(day),
+                ...getSeriesEventsForDay(day),
+              ];
+    
+              return (
+                <Box
+                  key={`week-day-${day.toISOString()}`}
+                  borderWidth="1px"
+                  borderColor="blue.300"
+                  borderRadius="md"
+                  boxShadow="md"
+                  height={`${timelineHeight + 30}px`}
+                  position="relative"
+                  {...(isToday(day) ? todayStyle : dayCellStyle)}
+                  onClick={() => onDayClick(day)}
+                  overflow="hidden"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box
+                    textAlign="center"
+                    fontWeight="semibold"
+                    color="gray.500"
+                    borderBottom="2px solid"
+                    borderColor="blue.300"
+                    py={1}
+                    position="sticky"
+                    top={0}
+                    bg="white"
+                    zIndex={10}
+                    flexShrink={0}
+                  >
+                    {day.toLocaleDateString(undefined, {
+                      weekday: "short",
+                      day: "numeric",
+                    })}
+                  </Box>
+    
+                  <Box position="relative" flex="1" overflow="auto">
+                    {Array.from({ length: 24 }, (_, hour) => (
                       <Box
-                        key={`week-event-${e.id}`}
+                        key={`week-hour-${dayIndex}-${hour}`}
                         position="absolute"
-                        top={`${top}px`}
-                        left="0px"
-                        right="0px"
-                        height={`${height}px`}
-                        bg="#5565dd"
-                        color="white"
+                        top={`${hour * hourHeight}px`}
+                        width="100%"
+                        height={`${hourHeight}px`}
+                        borderTop="1px solid #CBD5E0"
                         px={1}
-                        py={0.5}
-                        borderRadius="md"
                         fontSize="xs"
-                        overflow="hidden"
-                        whiteSpace="nowrap"
-                        textOverflow="ellipsis"
+                        color="gray.500"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="flex-start"
                       >
-                        • {e.title}
-                        <Text fontSize="xs" mt={1} fontStyle="italic">
-                          {`${formatTime(e.startDateTime)} - ${formatTime(
-                            e.endDateTime
-                          )}`}
+                        <Text ml={1} minW="28px">
+                          {String(hour).padStart(2, "0")}:00
                         </Text>
                       </Box>
-                    );
-                  })}
+                    ))}
+    
+                    {dayEvents.map((e, i) => {
+                      const start = new Date(e.startDateTime);
+                      const end = new Date(e.endDateTime);
+    
+                      const startMinutes =
+                        start.getHours() * 60 + start.getMinutes();
+                      const endMinutes = end.getHours() * 60 + end.getMinutes();
+    
+                      const top = (startMinutes / 60) * hourHeight;
+                      const height = ((endMinutes - startMinutes) / 60) * hourHeight;
+    
+                      return (
+                        <Box
+                          key={`week-event-${e.id ?? `${dayIndex}-${i}`}`}
+                          position="absolute"
+                          top={`${top}px`}
+                          left="0px"
+                          right="0px"
+                          height={`${height}px`}
+                          bg="#5565dd"
+                          color="white"
+                          px={1}
+                          py={0.5}
+                          borderRadius="md"
+                          fontSize="xs"
+                          overflow="hidden"
+                          whiteSpace="nowrap"
+                          textOverflow="ellipsis"
+                        >
+                          • {e.title}
+                          <Text fontSize="xs" mt={1} fontStyle="italic">
+                            {`${formatTime(e.startDateTime)} - ${formatTime(
+                              e.endDateTime
+                            )}`}
+                          </Text>
+                        </Box>
+                      );
+                    })}
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })}
-        </SimpleGrid>
-      </Box>
-    );
-  }
-
+              );
+            })}
+          </SimpleGrid>
+        </Box>
+      );
+    }
+    
   if (view === "workWeek") {
     const days = getWeekDays().slice(1, 6);
     const hourHeight = 25;
@@ -375,11 +482,12 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
         <SimpleGrid columns={5} spacing={3} minChildWidth="120px">
           {days.map((day) => {
-            const dayEvents = getEventsForDay(day);
+           const dayEvents = [...getEventsForDay(day), ...getSeriesEventsForDay(day)];
+
 
             return (
               <Box
-                key={`workweek-${day.toISOString()}`}
+              key={`workweek-${day.toDateString()}`}
                 borderWidth="1px"
                 borderColor="blue.300"
                 borderRadius="md"
@@ -447,7 +555,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
                     return (
                       <Box
-                        key={`workweek-event-${e.id}`}
+                      key={`workweek-event-${e.id}-${start.getTime()}`}
+
                         position="absolute"
                         top={`${top}px`}
                         left="0px"
@@ -485,7 +594,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
   if (view === "day") {
     const day = new Date(currentDate);
-    const dayEvents = getEventsForDay(day);
+    const dayEvents = [...getEventsForDay(day), ...getSeriesEventsForDay(day)];
+
 
     const formatTime = (dateStr) => {
       const d = new Date(dateStr);
@@ -557,7 +667,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
 
             return (
               <Box
-                key={e.id}
+              key={`day-event-${e.id}-${start.getTime()}`}
                 position="absolute"
                 left="80px"
                 right="0"
