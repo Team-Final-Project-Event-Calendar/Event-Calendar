@@ -268,8 +268,8 @@ function Authentication() {
       </div>
       <img
         style={{ width: "80vw" }}
-        src="../../assets/debugets-logo.png"
-        alt=""
+        src="/debugets-logo.png"
+        alt="Debugets Logo"
       />
     </div>
   );
