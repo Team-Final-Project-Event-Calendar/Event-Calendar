@@ -99,7 +99,7 @@ const CreateContactsListForm = ({ onListCreated }) => {
   };
 
   return (
-    <div
+    <div className="createcontactlist-primary-container"
       style={{
         maxWidth: "300px",
         margin: "0 auto",

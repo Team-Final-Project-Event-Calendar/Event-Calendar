@@ -27,51 +27,53 @@ function PreferencesPage() {
         localStorage.setItem('globalInvitesDisabled', checked.toString());
     };
 
-   return (
-        <Container 
-            maxW="800px" 
-            py={8} 
+    return (
+        <Container
+            maxW="800px"
+            py={8}
             px={6}
             margin="30px auto"
         >
-            <Box 
-                bg="white" 
-                borderRadius="lg" 
+            <Box
+                className="preferences-primary-container"
+                bg="white"
+                borderRadius="lg"
                 boxShadow="0 4px 12px rgba(0,0,0,0.08)"
                 overflow="hidden"
                 border="1px solid"
-                borderColor="gray.200"
+                borderColor="#5565DD"
             >
-                <Box 
-                    bg="blue.500" 
-                    color="white" 
+                <Box
+                    bg="#5565DD"
+                    color="white"
                     p={4}
                 >
                     <Heading size="lg">Preferences</Heading>
                 </Box>
 
                 <Box p={6}>
-                    <Box 
-                        className="option-globalInvites"
+                    <Box
+                        className="preferences-option-globalInvites"
                         bg="blue.50"
                         p={5}
                         borderRadius="md"
                         mb={4}
                         border="1px solid"
-                        borderColor="blue.100"
+                        borderColor="#5565DD"
                     >
-                        <Heading size="md" mb={2} color="blue.700">Event Invitations</Heading>
-                        <Text mb={4} color="gray.600">
+                        <Heading className="preferences-option-globalInvites-text"size="md" mb={2} color="blue.700">Event Invitations</Heading>
+                        <Text className="preferences-option-globalInvites-text" mb={4} color="gray.600">
                             Control globally whether you want to receive invitations to events from other users.
                         </Text>
 
-                        <Flex 
-                            alignItems="center" 
-                            bg="white" 
-                            p={3} 
+                        <Flex
+                            className="preferences-option-globalInvites-toggle"
+                            alignItems="center"
+                            bg="white"
+                            p={3}
                             borderRadius="md"
                             border="1px solid"
-                            borderColor="blue.200"
+                            borderColor="#5565DD"
                         >
                             <Switch.Root
                                 checked={globalInvitesDisabled}
@@ -87,28 +89,28 @@ function PreferencesPage() {
                                     Decline all events invitations
                                 </Switch.Label>
                             </Switch.Root>
-                            <Text fontSize="sm" color="gray.500" ml="auto">
+                            <Text className="preferences-option-globalInvites-text" fontSize="sm" color="gray.500" ml="auto">
                                 {globalInvitesDisabled ? "On" : "Off"}
                             </Text>
                         </Flex>
                     </Box>
 
-                    {/* <ore preference options for the future */}
-                    <Box 
-                        p={3} 
-                        borderRadius="md" 
+                    {/* More preference options for the future */}
+                    <Box className="preferences-option-globalInvites-toggle"
+                        p={3}
+                        borderRadius="md"
                         bg="gray.50"
                         border="1px dashed"
                         borderColor="gray.300"
                     >
-                        <Text color="gray.500" fontStyle="italic" textAlign="center">
+                        <Text className="preferences-option-globalInvites-text" color="gray.500" fontStyle="italic" textAlign="center">
                             More preference options will be available soon.
                         </Text>
                     </Box>
                 </Box>
             </Box>
         </Container>
-   )
+    )
 }
 
 export default PreferencesPage;

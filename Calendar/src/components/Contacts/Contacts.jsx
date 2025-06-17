@@ -403,7 +403,7 @@ function Contacts() {
         </div>
 
         {/* Center: Toggle View */}
-        <div
+        <div className="contact-primary-box-yourcontactlists"
           style={{
             flexGrow: 1,
             maxWidth: "100%",
@@ -541,7 +541,7 @@ function Contacts() {
               </Text>
             )
           ) : (
-            <Box>
+            <Box >
               <Text fontWeight="bold" fontSize="lg" mb={3}>
                 Your Contact Lists:
               </Text>
@@ -550,7 +550,7 @@ function Contacts() {
                 <div>
                   {contactLists.map((list) => (
                     <div
-                      className="contact-container"
+                      className="contact-container-contactlists"
                       key={list._id}
                       style={{
                         border: "1px solid #e2e8f0",
@@ -566,7 +566,7 @@ function Contacts() {
                           justifyContent: "space-between",
                         }}
                       >
-                        <h3
+                        <h3 className="contact-container-contactlists-button"
                           style={{
                             fontSize: "1.1rem",
                             fontWeight: "600",
@@ -576,7 +576,7 @@ function Contacts() {
                         >
                           {list.title}
                         </h3>
-                        <Button
+                        <Button className="contact-container-contactlists-button"
                           padding="0px 10px"
                           backgroundColor={"red"}
                           onClick={(e) => {
@@ -594,9 +594,9 @@ function Contacts() {
                         </Button>
                       </div>
                       <div style={{ fontSize: "0.9rem", color: "#4a5568" }}>
-                        <p>{list.contacts.length} contacts</p>
+                        <p className="contact-container-contactlists-contactcounter">{list.contacts.length} contacts</p>
                       </div>
-                      <div
+                      <div className="contact-container-contactlists-contacts"
                         style={{
                           marginTop: "8px",
                           maxHeight: "200px",
@@ -608,7 +608,7 @@ function Contacts() {
                         }}
                       >
                         {list.contacts.map((contact) => (
-                          <div
+                          <div className="contact-container-contactlists-contacts"
                             onClick={() => console.log(contact)}
                             key={contact._id}
                             style={{
