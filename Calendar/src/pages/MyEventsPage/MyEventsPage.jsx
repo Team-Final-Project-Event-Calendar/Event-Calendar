@@ -117,7 +117,7 @@ function MyEventsPage() {
 
           <Tabs.Content value="myEvents" p={4}>
             {isLoading ? (
-              <p><CustomSpinner/></p>
+              <CustomSpinner/>
             ) : myEvents.length > 0 ? (
               <CardsListComponent
                 events={myEvents}
@@ -132,7 +132,7 @@ function MyEventsPage() {
 
           <Tabs.Content value="participating" p={4}>
             {isLoading ? (
-              <p><CustomSpinner/></p>
+              <CustomSpinner/>
             ) : participatingEvents.length > 0 ? (
               <CardsListComponent
                 events={participatingEvents}

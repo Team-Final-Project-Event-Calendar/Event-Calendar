@@ -18,6 +18,8 @@ import EventSeriesPage from "./components/EventSeriesForm/EventSeriesPage";
 import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
 import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
 import Footer from "./components/Footer/Footer";
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -127,6 +129,7 @@ function App() {
         </Routes>
       </div>
       <Footer></Footer>
+      {/* Single ToastContainer for the entire app */}
     </div>
   );
 }
