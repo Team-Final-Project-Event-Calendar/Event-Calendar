@@ -189,7 +189,7 @@ function HomePage() {
   return (
     <div className="home-page-container">
       <Heading className="homepage-heading-welcome" as="h1" size="xl" textAlign="center" fontSize={30} fontWeight={"bold"} mb={5} mt={8} color="#1976d2">
-        Imera Calendar
+        Imera Calendarium
       </Heading>
       <Text className="homepage-heading-welcome-second" textAlign="center" fontSize="lg" mb={12} color="#555">
         Discover and manage events effortlessly
