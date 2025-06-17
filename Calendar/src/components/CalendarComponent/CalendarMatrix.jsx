@@ -281,7 +281,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                   })}
                 </Box>
 
-                <Box position="relative" flex="1" overflow="hidden">
+                <Box position="relative" flex="1" overflow="auto">
                   {Array.from({ length: 24 }, (_, hour) => (
                     <Box
                       key={`week-hour-${hour}`}
@@ -323,8 +323,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         left="0px"
                         right="0px"
                         height={`${height}px`}
-                        bg="green.500"
-                        color="black"
+                        bg="#5565dd"
+                        color="white"
                         px={1}
                         py={0.5}
                         borderRadius="md"
@@ -411,7 +411,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                   })}
                 </Box>
 
-                <Box position="relative" flex="1" overflow="hidden">
+                <Box position="relative" flex="1" overflow="auto">
                   {Array.from({ length: 24 }, (_, hour) => (
                     <Box
                       key={`workweek-hour-${hour}`}
@@ -453,8 +453,8 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
                         left="0px"
                         right="0px"
                         height={`${height}px`}
-                        bg="green.600"
-                        color="black"
+                        bg="#5565dd"
+                        color="white"
                         px={2}
                         py={1}
                         borderRadius="md"
