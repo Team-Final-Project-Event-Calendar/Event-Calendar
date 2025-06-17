@@ -5,6 +5,8 @@ import { MdEvent } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoIosContacts } from "react-icons/io";
 import { GrMultiple } from "react-icons/gr";
+import { MdOutlineInfo } from "react-icons/md";
+
 
 function DrawerComponent({ onLogout }) {
   const navigate = useNavigate();
@@ -89,6 +91,14 @@ function DrawerComponent({ onLogout }) {
               >
                 <FaGear /> Preferences
               </Button>
+               <Button
+                variant="ghost"
+                fontSize={18}
+                onClick={() => navigate("/about")}
+              >
+                <MdOutlineInfo /> About
+              </Button>
+
             </Drawer.Body>
 
             <Drawer.Footer>

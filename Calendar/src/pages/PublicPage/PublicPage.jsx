@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import "./PublicPage.css";
 import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
-import { Card, Heading, Stack, Box } from "@chakra-ui/react";
+import { Card, Heading, Stack, Box, Button } from "@chakra-ui/react";
 import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
 import { IconContext } from "react-icons";
 import { Spinner } from "@chakra-ui/react";
+import { MdInfo } from "react-icons/md";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -17,10 +18,10 @@ export const CustomSpinner = () => (
       animationDuration="0.8"
       borderWidth="20px"
       padding="2vw"
-      margin= "0px 565px 123px"
-      />
+      margin="0px 565px 123px"
+    />
 
-    <p style={{ color: "#666", fontSize:"30px" }}>Loading...</p>
+    <p style={{ color: "#666", fontSize: "30px" }}>Loading...</p>
   </div>
 );
 //#5565DD - HERO color
@@ -75,7 +76,7 @@ const PublicPage = () => {
           <Card.Root className="public-welcome-chakra_Card-Root" size="sm">
             <Card.Header>
               <Heading className="public-welcome-chakra_Card-heading" size="lg">
-                Welcome to Event Calendar!
+                Welcome to Imera Calendarium!
                 <hr />
               </Heading>
             </Card.Header>
@@ -85,7 +86,7 @@ const PublicPage = () => {
                 <br />
                 Non-registered users can only view or search for Public Events
                 <br />
-                If you want to fully experience our Event Calendar,
+                If you want to fully experience our Imera Calendar,
                 <br />
                 <Link to="/authentication" className="public-link">
                   Log in or Register here!
@@ -157,6 +158,29 @@ const PublicPage = () => {
             </div>
           </IconContext.Provider>
         </Box>
+      </div>
+      {/* About Page Button */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        margin: "40px 0 60px 0"
+      }}>
+        <Button
+          as={Link}
+          to="/about"
+          size="lg"
+          colorScheme="blue"
+          rightIcon={<MdInfo />}
+          borderRadius="full"
+          bgColor="#5565DD"
+          color="white"
+          _hover={{ bgColor: "#4455CC" }}
+          boxShadow="0 4px 6px rgba(85, 101, 221, 0.3)"
+          padding="25px 40px"
+          fontSize="18px"
+        >
+          Learn More About Imera Calendarium
+        </Button>
       </div>
     </>
   );

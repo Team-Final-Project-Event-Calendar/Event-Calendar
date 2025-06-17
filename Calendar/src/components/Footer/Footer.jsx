@@ -117,7 +117,7 @@ const Footer = () => {
       </div>
 
       <p style={copyrightStyle}>
-        © {new Date().getFullYear()} Your Project Name. All rights reserved.
+        © {new Date().getFullYear()} Imera Calendarium. All rights reserved.
       </p>
     </footer>
   );
