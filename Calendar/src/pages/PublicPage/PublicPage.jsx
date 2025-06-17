@@ -1,12 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./PublicPage.css";
 import { useState, useEffect } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import { Card, Heading, Stack, Box, Button } from "@chakra-ui/react";
-import { MdArrowForwardIos, MdArrowBackIosNew } from "react-icons/md";
+import { MdArrowForwardIos, MdArrowBackIosNew, MdInfoOutline } from "react-icons/md";
 import { IconContext } from "react-icons";
 import { Spinner } from "@chakra-ui/react";
-import { MdInfo } from "react-icons/md";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
@@ -30,8 +29,45 @@ const PublicPage = () => {
   const [publicEvents, setPublicEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const eventsPerPage = 6;
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const eventsPerPage = 6;
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.searchResults && location.state?.searchTerm) {
+      setSearchResults(location.state.searchResults);
+      setSearchTerm(location.state.searchTerm);
+      setCurrentPage(1);
+
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  // Listen for search events from NavComponent
+  useEffect(() => {
+    const handleGlobalSearch = (event) => {
+      const { results, term } = event.detail;
+      setSearchResults(results);
+      setSearchTerm(term);
+      setCurrentPage(1);
+    };
+
+    const handleGlobalClearSearch = () => {
+      setSearchResults(null);
+      setSearchTerm("");
+      setCurrentPage(1);
+    };
+
+    window.addEventListener('homepageSearch', handleGlobalSearch);
+    window.addEventListener('homepageClearSearch', handleGlobalClearSearch);
+
+    return () => {
+      window.removeEventListener('homepageSearch', handleGlobalSearch);
+      window.removeEventListener('homepageClearSearch', handleGlobalClearSearch);
+    };
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -47,13 +83,16 @@ const PublicPage = () => {
       });
   }, []);
 
+  // Determine which events to display (search results or all public events)
+  const eventsToProcess = searchResults !== null ? searchResults : publicEvents;
+
   // Calculate total pages
-  const totalPages = Math.ceil(publicEvents.length / eventsPerPage);
+  const totalPages = Math.ceil(eventsToProcess.length / eventsPerPage);
 
   // Get current events for display
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
-  const currentEvents = publicEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+  const currentEvents = eventsToProcess.slice(indexOfFirstEvent, indexOfLastEvent);
 
   // Handle navigation
   const handlePrevPage = () => {
@@ -66,6 +105,15 @@ const PublicPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  // Function to clear search results
+  const clearSearch = () => {
+    setSearchResults(null);
+    setSearchTerm("");
+    setCurrentPage(1);
+    // Also clear the search in NavComponent
+    window.dispatchEvent(new CustomEvent('clearNavSearch'));
   };
 
   return (
@@ -100,7 +148,28 @@ const PublicPage = () => {
       {/* Public Events Section */}
       <div className="public-Events-container">
         <Box className="public-events-chakra_Box" borderRadius="xl">
-          <h2 className="public-events-chakra_Box-title">Public Events</h2>
+          {/* Display title based on whether showing search results or all public events */}
+          <h2 className="public-events-chakra_Box-title">
+            {searchResults !== null ? `Search Results for "${searchTerm}"` : "Public Events"}
+            {searchResults !== null && (
+              <button
+                onClick={clearSearch}
+                style={{
+                  marginLeft: "3rem",
+                  marginBottom: "4px",
+                  background: "#DC2626",
+                  color: "white",
+                  border: "none",
+                  padding: "0.25rem 0.5rem",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "1rem"
+                }}
+              >
+                Clear Search
+              </button>
+            )}
+          </h2>
 
           <IconContext.Provider value={{ size: "5em" }}>
             <div
@@ -125,7 +194,7 @@ const PublicPage = () => {
                   <div style={{ textAlign: "center", padding: "50px 0" }}>
                     <CustomSpinner />
                   </div>
-                ) : (
+                ) : currentEvents.length > 0 ? (
                   <>
                     <CardsListComponent
                       className="public-events-chakra_Box-list"
@@ -143,6 +212,12 @@ const PublicPage = () => {
                       Page {currentPage} of {totalPages || 1}
                     </div>
                   </>
+                ) : (
+                  <div style={{ textAlign: "center", padding: "50px 0", color: "#666" }}>
+                    {searchResults !== null
+                      ? `No events found matching "${searchTerm}"`
+                      : "No public events available"}
+                  </div>
                 )}
               </div>
 
@@ -170,7 +245,6 @@ const PublicPage = () => {
           to="/about"
           size="lg"
           colorScheme="blue"
-          rightIcon={<MdInfo />}
           borderRadius="full"
           bgColor="#5565DD"
           color="white"
@@ -179,7 +253,7 @@ const PublicPage = () => {
           padding="25px 40px"
           fontSize="18px"
         >
-          Learn More About Imera Calendarium
+          <MdInfoOutline /> Learn More About Imera Calendarium
         </Button>
       </div>
     </>

@@ -215,16 +215,17 @@ function HomePage() {
                 onClick={clearSearch}
                 style={{
                   marginLeft: "3rem",
+                  marginBottom: "3px",
                   background: "#DC2626",
                   color: "white",
                   border: "none",
-                  padding: "0.25rem 0.75rem",
+                  padding: "0.25rem 0.5rem",
                   borderRadius: "4px",
                   cursor: "pointer",
                   fontSize: "1rem"
                 }}
               >
-                Clear
+                Clear Search
               </button>
             )}
           </Heading>

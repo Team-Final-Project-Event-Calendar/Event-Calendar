@@ -5,35 +5,42 @@ import axios from "axios";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const Searchbar = () => {
-
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isOnHomepage = location.pathname === '/homepage';
+  const isOnPublicPage = location.pathname === '/public';
 
-  // Listen for clear search from homepage
+  // Listen for clear search from homepage or public page
   useEffect(() => {
-    const handleClearFromHomepage = () => {
+    const handleClearFromPage = () => {
       setQuery("");
     };
 
-    window.addEventListener('clearNavSearch', handleClearFromHomepage);
+    window.addEventListener('clearNavSearch', handleClearFromPage);
 
     return () => {
-      window.removeEventListener('clearNavSearch', handleClearFromHomepage);
+      window.removeEventListener('clearNavSearch', handleClearFromPage);
     };
   }, []);
 
-  const filterEventsByTitle = (events, searchQuery, myEventsArray, participatingEventsArray) => {
+  const filterEventsByTitle = (events, searchQuery, myEventsArray = [], participatingEventsArray = []) => {
     return events.filter((eventItem) => {
-      const title = eventItem.title.toLowerCase();
+      const title = eventItem.title?.toLowerCase() || '';
       const titleMatches = searchQuery
         .toLowerCase()
         .split(" ")
         .some((word) => word && title.includes(word));
 
       if (!titleMatches) return false;
+
+      // On public page, only return public events
+      if (isOnPublicPage) {
+        return eventItem.type === "public";
+      }
+
+      // On homepage or other pages, follow the original logic
       if (eventItem.type === "public") return true;
 
       if (eventItem.type === "private") {
@@ -54,7 +61,22 @@ const Searchbar = () => {
       const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
       try {
-        // Fetch all public events
+        // For public page, only fetch and filter public events
+        if (isOnPublicPage) {
+          const publicRes = await axios.get(`${key}/api/events/public`);
+          const freshPublicEvents = Array.isArray(publicRes.data) ? publicRes.data : [];
+          const filteredResults = filterEventsByTitle(freshPublicEvents, query);
+
+          // If on public page, send results via event
+          window.dispatchEvent(new CustomEvent('homepageSearch', {
+            detail: { results: filteredResults, term: query }
+          }));
+          setExpanded(false);
+          setQuery("");
+          return;
+        }
+
+        // For homepage or other pages, fetch all relevant events
         const publicRes = await axios.get(`${key}/api/events/public`);
         const freshPublicEvents = Array.isArray(publicRes.data) ? publicRes.data : [];
 
@@ -95,8 +117,10 @@ const Searchbar = () => {
             detail: { results: filteredResults, term: query }
           }));
           setExpanded(false);
+          setQuery("");
         } else {
           // If on other pages, navigate to homepage with search results
+           setQuery("");
           navigate('/homepage', {
             state: {
               searchResults: filteredResults,
@@ -115,11 +139,19 @@ const Searchbar = () => {
     setQuery(e.target.value);
     if (e.target.value.trim() === "") {
 
-      // Clear homepage search if on homepage
-      if (isOnHomepage) {
+      // Clear search if on homepage or public page
+      if (isOnHomepage || isOnPublicPage) {
         window.dispatchEvent(new CustomEvent('homepageClearSearch'));
       }
     }
+  };
+
+   const handleBlur = () => {
+    setTimeout(() => {
+      setExpanded(false);
+      // clear the input when clicking away
+      setQuery("");
+    }, 150);
   };
 
   return (
@@ -138,7 +170,7 @@ const Searchbar = () => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onFocus={() => setExpanded(true)}
-        onBlur={() => setTimeout(() => setExpanded(false), 150)}
+        onBlur={handleBlur}
         style={{
           width: expanded ? "75%" : 255,
           transition: "width 0.3s",

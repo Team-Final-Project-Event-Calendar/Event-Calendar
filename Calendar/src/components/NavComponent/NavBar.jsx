@@ -23,6 +23,15 @@ function NavBar() {
     navigate("/authentication");
   };
 
+    const handleHomeClick = () => {
+    // Clear any search results when clicking home
+    window.dispatchEvent(new CustomEvent('homepageClearSearch'));
+    window.dispatchEvent(new CustomEvent('clearNavSearch'));
+    
+    // Then navigate to homepage
+    navigate("/homepage");
+  };
+
   return (
     <div
       style={{
@@ -60,7 +69,7 @@ function NavBar() {
             <Button
               variant="ghost"
               fontSize="19px"
-              onClick={() => navigate("/homepage")}
+              onClick={handleHomeClick}
             >
               Home
             </Button>
