@@ -116,7 +116,7 @@ function MyEventsPage() {
           mx="auto"
           mt={3}
           backgroundColor={"#f9f9f9"}
-          borderRadius="md"
+          borderRadius="xl"
           boxShadow="md"
           minH={"850px"}
         >
@@ -124,6 +124,7 @@ function MyEventsPage() {
             <Tabs.List
               className="myevents-box-container-tablist"
               bg="#f8f3f3"
+              borderRadius="xl"
               justifyContent="center"
               p={"2"}
             >
