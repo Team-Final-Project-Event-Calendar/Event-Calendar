@@ -140,7 +140,7 @@ function CalendarMatrix({ currentDate, view, onDayClick }) {
         if (!response.ok) throw new Error("Failed to fetch event series");
   
         const data = await response.json();
-        console.log("Fetched event series:", data);
+        
         
   
         const filteredSeries = data.filter(series => series.creatorId === currentUserId);
