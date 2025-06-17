@@ -446,11 +446,11 @@ function Contacts() {
                   }}
                   placeholder="Search"
                   style={{
-                    background: "#5565dd",
+                    background: "transparent",
                     borderRadius: "5px",
                     padding: "8px",
-                    color: "white",
-                    border: "none",
+                    color: "black",
+                    border: "1px solid #5565dd",
                   }}
                 />
                 <Button
