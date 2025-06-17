@@ -887,3 +887,29 @@ color: #b7fee0
   background-color: rgba(59, 131, 246, 0.242);
   border: 1px solid var(--dark-brand-primary);
 }
+
+.dark .myevents-box-container-tabs{
+  background-color:#373737
+}
+.dark .myevents-box-container-tablist{
+  background-color:#2b2b2b
+}
+
+.dark .myevents-box-container-createevent{
+  background-color:rgba(59, 131, 246, 0.612);
+}
+
+
+.dark .aboutpage-primary-container{
+  background-color:#373737a9
+}
+.dark .aboutpage-techstack-frontend {
+background-color:rgba(38, 119, 249, 0.788)
+}
+.dark .aboutpage-techstack-backend {
+background-color:rgba(38, 249, 168, 0.67)
+}
+
+.dark .aboutpage-boxes-keyfeutures {
+  background-color:rgba(59, 131, 246, 0.479);
+}

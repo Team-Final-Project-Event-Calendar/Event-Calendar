@@ -106,9 +106,9 @@ function MyEventsPage() {
     <div className="myevents-container-with-tabs">
       <h1 className="myevents-title-h1">Manage & Create Your Events</h1>
 
-      <Box width="60vw" mx="auto" mt={3} backgroundColor={"#f9f9f9"} borderRadius="md" boxShadow="md">
+      <Box className="myevents-box-container-tabs" width="60vw" mx="auto" mt={3} backgroundColor={"#f9f9f9"} borderRadius="md" boxShadow="md">
         <Tabs.Root defaultValue="myEvents">
-          <Tabs.List bg="#f8f3f3" justifyContent="center" p={"2"}>
+          <Tabs.List className="myevents-box-container-tablist" bg="#f8f3f3" justifyContent="center" p={"2"}>
             <Tabs.Trigger value="myEvents" fontSize={"18px"} fw={"bold"}>
               My Events
             </Tabs.Trigger>
@@ -152,7 +152,7 @@ function MyEventsPage() {
           </Tabs.Content>
 
           <Tabs.Content value="create" p={4}>
-            <Box maxWidth="19vw" mx="auto" p={4} backgroundColor="#fff" borderRadius="md" boxShadow="md">
+            <Box className="myevents-box-container-createevent" maxWidth="19vw" mx="auto" p={4} backgroundColor="#fff" borderRadius="md" boxShadow="md">
               <EventForm onEventCreated={handleEventCreated} />
             </Box>
           </Tabs.Content>

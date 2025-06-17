@@ -9,7 +9,7 @@ import {
 
 function AboutPage() {
   return (
-    <Container maxW="5xl" py={10} border={"1px solid"}  borderColor="blue.300" p={"20px"} mt={"40px"} borderRadius={"20px"} bg="#fbfefb">
+    <Container className="aboutpage-primary-container" maxW="5xl" py={10} border={"1px solid"}  borderColor="blue.300" p={"20px"} mt={"40px"} borderRadius={"20px"} bg="#fbfefb">
       {/* Header Section */}
       <Box textAlign="center" mb={6}>
         <Heading as="h1" size="2xl" mb={4} color="blue.600">
@@ -42,7 +42,7 @@ function AboutPage() {
         </Heading>
 
         <Flex direction={["column", "column", "row"]} gap={6} mb={4}>
-          <Box flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="blue.200">
+          <Box className="aboutpage-techstack-frontend" flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="blue.200">
             <Heading as="h3" size="md" mb={3}>Frontend</Heading>
             <ul style={{ paddingLeft: "20px" }}>
               <li style={{ marginBottom: "8px" }}>React</li>
@@ -52,7 +52,7 @@ function AboutPage() {
             </ul>
           </Box>
 
-          <Box flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="green.200">
+          <Box className="aboutpage-techstack-backend" flex="1" p={5} shadow="md" borderWidth="1px" borderRadius="md" bg="green.200">
             <Heading as="h3" size="md" mb={3}>Backend</Heading>
             <ul style={{ paddingLeft: "20px" }}>
               <li style={{ marginBottom: "8px" }}>MongoDB</li>
@@ -70,14 +70,14 @@ function AboutPage() {
         </Heading>
 
         <Flex direction="column" gap={4}>
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Public & Private Sections</Heading>
             <Text>
               Browse public events without an account, or register/login to access full platform functionality.
             </Text>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Comprehensive Calendar</Heading>
             <Text mb={2}>
               View your events in multiple formats: Monthly, Weekly, Work Week, and Daily views with hourly scheduling.
@@ -90,41 +90,41 @@ function AboutPage() {
             </Flex>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Event & Series Management</Heading>
             <Text>
               Create one-time events or recurring series. Invite others to participate, edit details, and manage participants.
             </Text>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Contact Management</Heading>
             <Text>
               Add contacts to your list, create specialized contact groups, and easily invite them to your events.
             </Text>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>User Preferences</Heading>
             <Text>
               Customize your experience including invitation preferences and notification settings.
             </Text>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Search Functionality</Heading>
             <Text>
               Quickly find events, contacts, and other information with our comprehensive search feature.
             </Text>
           </Box>
 
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Weather Widget</Heading>
             <Text>
               Stay informed about weather day conditions right from our navigation bar to better plan your events.
             </Text>
           </Box>
-          <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
+          <Box className="aboutpage-boxes-keyfeutures" p={4} shadow="md" borderWidth="1px" borderRadius="md" bg="purple.50">
             <Heading as="h3" size="md" mb={2}>Admin Panel</Heading>
             <Text>
               Administrators can manage users and events from a centralized dashboard with powerful search and filtering capabilities.
