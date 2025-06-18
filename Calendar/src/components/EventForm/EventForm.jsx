@@ -264,7 +264,7 @@ const EventForm = ({ onEventCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ minWidth: "350px" }}>
+    <form onSubmit={handleSubmit} className="myevents-box-container-createevent" style={{ minWidth: "350px" }}>
       <Fieldset.Root size="lg" maxW="md">
         <Stack>
           <Fieldset.Legend style={{ color: "black" }}>

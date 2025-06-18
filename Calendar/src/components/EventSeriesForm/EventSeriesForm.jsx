@@ -6,13 +6,13 @@ const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
 const EventSeriesForm = ({ onSeriesCreated }) => {
   const { user } = useContext(AuthContext);
-  
+
   const [series, setSeries] = useState({
     name: "",
     seriesType: "recurring",
     recurrenceRule: {
       frequency: "weekly",
-      endDate: ""
+      endDate: "",
     },
     eventsId: [],
     isIndefinite: false,
@@ -149,68 +149,68 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
 
   const validate = () => {
     const errors = {};
-    
+
     if (!series.name) {
       errors.name = "Series name is required";
     }
-    
+
     // Validate starting event
     if (!series.startingEvent.title) {
       errors.startingEventTitle = "Starting event title is required";
     }
-    
+
     if (!series.startingEvent.description) {
       errors.startingEventDescription = "Starting event description is required";
     }
-    
+
     if (!series.startingEvent.startDateTime) {
       errors.startingEventStart = "Starting event date is required";
     }
-    
+
     // Validate ending event if not indefinite
     if (!series.isIndefinite) {
       if (!series.endingEvent.title) {
         errors.endingEventTitle = "Ending event title is required";
       }
-      
+
       if (!series.endingEvent.description) {
         errors.endingEventDescription = "Ending event description is required";
       }
-      
+
       if (!series.endingEvent.startDateTime) {
         errors.endingEventStart = "Ending event date is required";
       }
     }
-    
+
     // For manual series, ensure at least one event is selected
-    if (series.seriesType === "manual" && series.eventsId.length === 0) {
-      errors.eventsId = "Please select at least one event for a manual series";
-    }
-    
+    // if (series.seriesType === "manual" && series.eventsId.length === 0) {
+    //   errors.eventsId = "Please select at least one event for a manual series";
+    // }
+
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validate()) {
       return;
     }
-    
+
     try {
       // Create series with embedded event data
       const seriesData = {
         name: series.name,
         creatorId: user._id,
-        seriesType: series.seriesType,
+        seriesType: 'recurring',//series.seriesType,
         isIndefinite: series.isIndefinite,
         startingEvent: series.startingEvent,
         endingEvent: series.isIndefinite ? undefined : series.endingEvent,
         recurrenceRule: series.seriesType === "recurring" ? series.recurrenceRule : undefined,
-        eventsId: series.seriesType === "manual" ? series.eventsId : []
+        // eventsId: series.seriesType === "manual" ? series.eventsId : []
       };
-      
+
       const response = await axios.post(`${key}/api/event-series`, seriesData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -219,7 +219,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
 
       setSuccessMessage("Event series created successfully!");
       if (onSeriesCreated) onSeriesCreated(response.data);
-      
+
       // Reset form
       setSeries({
         name: "",
@@ -228,7 +228,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           frequency: "weekly",
           endDate: ""
         },
-        eventsId: [],
+        // eventsId: [],
         isIndefinite: false,
         startingEvent: {
           title: "",
@@ -261,7 +261,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       ));
     } else {
       return Array.from({ length: 12 }, (_, i) => (
-        <option key={i*5} value={i*5}>{(i*5).toString().padStart(2, '0')}</option>
+        <option key={i * 5} value={i * 5}>{(i * 5).toString().padStart(2, '0')}</option>
       ));
     }
   };
@@ -295,14 +295,14 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           style={{ width: "100%", padding: "0.5rem" }}
         >
           <option value="recurring">Recurring (Automatic)</option>
-          <option value="manual">Manual</option>
+          {/* <option value="manual">Manual</option> */}
         </select>
       </div>
 
       {/* STARTING EVENT SECTION */}
       <fieldset style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1.5rem", borderRadius: "4px" }}>
         <legend style={{ padding: "0 10px", fontWeight: "bold" }}>Starting Event</legend>
-        
+
         <div style={{ marginBottom: "1rem" }}>
           <label>Title:</label>
           <input
@@ -314,7 +314,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           />
           {errors.startingEventTitle && <p style={{ color: "red" }}>{errors.startingEventTitle}</p>}
         </div>
-        
+
         <div style={{ marginBottom: "1rem" }}>
           <label>Description:</label>
           <textarea
@@ -325,7 +325,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           />
           {errors.startingEventDescription && <p style={{ color: "red" }}>{errors.startingEventDescription}</p>}
         </div>
-        
+
         <div style={{ marginBottom: "1rem" }}>
           <label>Start Date:</label>
           <input
@@ -337,12 +337,12 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           />
           {errors.startingEventStart && <p style={{ color: "red" }}>{errors.startingEventStart}</p>}
         </div>
-        
+
         <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem" }}>
           <div style={{ flex: 1 }}>
             <label>Start Time:</label>
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <select 
+              <select
                 value={series.startingEvent.startTime.hour}
                 onChange={(e) => handleStartingEventTimeChange("startTime", "hour", e.target.value)}
                 style={{ flex: 1, padding: "0.5rem" }}
@@ -350,7 +350,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
                 {generateTimeOptions('hour')}
               </select>
               <span style={{ alignSelf: "center" }}>:</span>
-              <select 
+              <select
                 value={series.startingEvent.startTime.minute}
                 onChange={(e) => handleStartingEventTimeChange("startTime", "minute", e.target.value)}
                 style={{ flex: 1, padding: "0.5rem" }}
@@ -359,11 +359,11 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
               </select>
             </div>
           </div>
-          
+
           <div style={{ flex: 1 }}>
             <label>End Time:</label>
             <div style={{ display: "flex", gap: "0.5rem" }}>
-              <select 
+              <select
                 value={series.startingEvent.endTime.hour}
                 onChange={(e) => handleStartingEventTimeChange("endTime", "hour", e.target.value)}
                 style={{ flex: 1, padding: "0.5rem" }}
@@ -371,7 +371,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
                 {generateTimeOptions('hour')}
               </select>
               <span style={{ alignSelf: "center" }}>:</span>
-              <select 
+              <select
                 value={series.startingEvent.endTime.minute}
                 onChange={(e) => handleStartingEventTimeChange("endTime", "minute", e.target.value)}
                 style={{ flex: 1, padding: "0.5rem" }}
@@ -381,7 +381,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
             </div>
           </div>
         </div>
-        
+
         <div style={{ marginBottom: "1rem" }}>
           <label>Location (Optional):</label>
           <input
@@ -420,7 +420,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
             })}
             style={{ width: "100%", padding: "0.5rem" }}
           >
-            <option value="daily">Daily</option>
+            {/* <option value="daily">Daily</option> */}
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
             <option value="yearly">Yearly</option>
@@ -430,13 +430,14 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
 
       {/* Indefinite Checkbox */}
       <div style={{ marginBottom: "1rem" }}>
-        <label>
+        <label style={{ display: "flex", alignItems: "center" }}>
+          <p style={{ fontSize: "17px" }}>Run series indefinitely:</p>
           <input
+            style={{ scale: "1.7", marginLeft: "1rem" }}
             type="checkbox"
             checked={series.isIndefinite}
             onChange={(e) => setSeries({ ...series, isIndefinite: e.target.checked })}
           />
-          Run indefinitely
         </label>
       </div>
 
@@ -444,7 +445,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       {!series.isIndefinite && (
         <fieldset style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1.5rem", borderRadius: "4px" }}>
           <legend style={{ padding: "0 10px", fontWeight: "bold" }}>Ending Event</legend>
-          
+
           <div style={{ marginBottom: "1rem" }}>
             <label>Title:</label>
             <input
@@ -456,7 +457,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
             />
             {errors.endingEventTitle && <p style={{ color: "red" }}>{errors.endingEventTitle}</p>}
           </div>
-          
+
           <div style={{ marginBottom: "1rem" }}>
             <label>Description:</label>
             <textarea
@@ -467,7 +468,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
             />
             {errors.endingEventDescription && <p style={{ color: "red" }}>{errors.endingEventDescription}</p>}
           </div>
-          
+
           <div style={{ marginBottom: "1rem" }}>
             <label>End Date:</label>
             <input
@@ -479,12 +480,12 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
             />
             {errors.endingEventStart && <p style={{ color: "red" }}>{errors.endingEventStart}</p>}
           </div>
-          
+
           <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem" }}>
             <div style={{ flex: 1 }}>
               <label>Start Time:</label>
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <select 
+                <select
                   value={series.endingEvent.startTime.hour}
                   onChange={(e) => handleEndingEventTimeChange("startTime", "hour", e.target.value)}
                   style={{ flex: 1, padding: "0.5rem" }}
@@ -492,7 +493,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
                   {generateTimeOptions('hour')}
                 </select>
                 <span style={{ alignSelf: "center" }}>:</span>
-                <select 
+                <select
                   value={series.endingEvent.startTime.minute}
                   onChange={(e) => handleEndingEventTimeChange("startTime", "minute", e.target.value)}
                   style={{ flex: 1, padding: "0.5rem" }}
@@ -501,11 +502,11 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
                 </select>
               </div>
             </div>
-            
+
             <div style={{ flex: 1 }}>
               <label>End Time:</label>
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                <select 
+                <select
                   value={series.endingEvent.endTime.hour}
                   onChange={(e) => handleEndingEventTimeChange("endTime", "hour", e.target.value)}
                   style={{ flex: 1, padding: "0.5rem" }}
@@ -513,7 +514,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
                   {generateTimeOptions('hour')}
                 </select>
                 <span style={{ alignSelf: "center" }}>:</span>
-                <select 
+                <select
                   value={series.endingEvent.endTime.minute}
                   onChange={(e) => handleEndingEventTimeChange("endTime", "minute", e.target.value)}
                   style={{ flex: 1, padding: "0.5rem" }}
@@ -523,7 +524,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
               </div>
             </div>
           </div>
-          
+
           <div style={{ marginBottom: "1rem" }}>
             <label>Location (Optional):</label>
             <input
@@ -552,53 +553,53 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       )}
 
       {/* Manual Event Selection (only for manual series) */}
-      {series.seriesType === "manual" && (
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Select Additional Events for Manual Series:</label>
-          <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "4px", maxHeight: "200px", overflowY: "auto" }}>
-            {events.length === 0 ? (
-              <p>No events available. Create some events first.</p>
-            ) : (
-              events.map((event) => (
-                <div key={event._id} style={{ marginBottom: "0.5rem" }}>
-                  <label style={{ display: "flex", alignItems: "center" }}>
-                    <input
-                      type="checkbox"
-                      checked={series.eventsId.includes(event._id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          // Add event to series
-                          setSeries({
-                            ...series,
-                            eventsId: [...series.eventsId, event._id]
-                          });
-                        } else {
-                          // Remove event from series
-                          setSeries({
-                            ...series,
-                            eventsId: series.eventsId.filter(id => id !== event._id)
-                          });
-                        }
-                      }}
-                      style={{ marginRight: "0.5rem" }}
-                    />
-                    <span>
-                      {event.title} - {new Date(event.startDateTime).toLocaleDateString()}
-                      {event.location?.city && ` (${event.location.city})`}
-                    </span>
-                  </label>
-                </div>
-              ))
+      {/* {series.seriesType === "manual" && (
+          <div style={{ marginBottom: "1rem" }}>
+            <label>Select Additional Events for Manual Series:</label>
+            <div style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "4px", maxHeight: "200px", overflowY: "auto" }}>
+              {events.length === 0 ? (
+                <p>No events available. Create some events first.</p>
+              ) : (
+                events.map((event) => (
+                  <div key={event._id} style={{ marginBottom: "0.5rem" }}>
+                    <label style={{ display: "flex", alignItems: "center" }}>
+                      <input
+                        type="checkbox"
+                        checked={series.eventsId.includes(event._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            // Add event to series
+                            setSeries({
+                              ...series,
+                              eventsId: [...series.eventsId, event._id]
+                            });
+                          } else {
+                            // Remove event from series
+                            setSeries({
+                              ...series,
+                              eventsId: series.eventsId.filter(id => id !== event._id)
+                            });
+                          }
+                        }}
+                        style={{ marginRight: "0.5rem" }}
+                      />
+                      <span>
+                        {event.title} - {new Date(event.startDateTime).toLocaleDateString()}
+                        {event.location?.city && ` (${event.location.city})`}
+                      </span>
+                    </label>
+                  </div>
+                ))
+              )}
+            </div>
+            {series.eventsId.length > 0 && (
+              <p style={{ marginTop: "0.5rem", color: "#666" }}>
+                {series.eventsId.length} additional event(s) selected
+              </p>
             )}
+            {errors.eventsId && <p style={{ color: "red" }}>{errors.eventsId}</p>}
           </div>
-          {series.eventsId.length > 0 && (
-            <p style={{ marginTop: "0.5rem", color: "#666" }}>
-              {series.eventsId.length} additional event(s) selected
-            </p>
-          )}
-          {errors.eventsId && <p style={{ color: "red" }}>{errors.eventsId}</p>}
-        </div>
-      )}
+        )} */}
 
       <button type="submit" style={{ width: "100%", padding: "0.75rem", background: "#1976d2", color: "white", border: "none", borderRadius: "4px" }}>
         Create Event Series
