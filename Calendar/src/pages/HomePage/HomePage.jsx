@@ -132,7 +132,6 @@ function HomePage() {
           return res.ok ? res.json() : [];
         })
         .then((data) => {
-          console.log("Participating events data:", data);
           Array.isArray(data)
             ? setParticipatingEvents(data)
             : setParticipatingEvents([]);
