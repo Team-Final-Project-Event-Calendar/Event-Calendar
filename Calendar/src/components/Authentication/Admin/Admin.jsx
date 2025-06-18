@@ -137,10 +137,9 @@ function Admin() {
       alert("Failed to delete user: " + error.message);
     }
   };
-
   const deleteEvent = async (id) => {
     try {
-      const res = await fetch(`${key}/api/events/${id}`, {
+      const res = await fetch(`${key}/api/events/admin/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -169,7 +168,7 @@ function Admin() {
 
   const saveEdit = async () => {
     try {
-      const res = await fetch(`${key}/api/events/${editingEventId}`, {
+      const res = await fetch(`${key}/api/events/admin/${editingEventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -189,19 +188,6 @@ function Admin() {
       }
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const handleApprove = async (userId) => {
-    const res = await fetch(`${key}/api/auth/delete/${userId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    if (res.ok) {
-      setDeleteRequests((prev) =>
-        prev.filter((r) => r.userId && r.userId._id !== userId)
-      );
-      setAllUsers((prev) => prev.filter((u) => u._id !== userId));
     }
   };
 
