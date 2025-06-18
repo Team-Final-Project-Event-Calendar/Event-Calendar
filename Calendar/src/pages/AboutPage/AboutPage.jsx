@@ -26,7 +26,7 @@ function AboutPage() {
       {/* Header Section */}
       <Box textAlign="center" mb={6}>
         <Heading as="h1" size="2xl" mb={4} color="blue.600">
-          Imera Calendarium
+          Imera Calendar
         </Heading>
         <Text fontSize="lg" color="gray.600" fontStyle="italic">
           From Greek "Imera" (day) and Latin "Calendarium" (calendar)
