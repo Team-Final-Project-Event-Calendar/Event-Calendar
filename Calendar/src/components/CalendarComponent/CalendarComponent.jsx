@@ -62,7 +62,7 @@ function CalendarComponent() {
           <button onClick={openEventForm}>Create Event</button>
         </div>
       </div>
-a
+
       <div
         className="view-dropdown-container"
         style={{ borderRadius: "20px", padding: "10px" }}
