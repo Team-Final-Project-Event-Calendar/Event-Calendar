@@ -1,3 +1,8 @@
+/**
+ * @file EventDetails.jsx
+ * @description A React component that displays detailed information about an event. It fetches event data from the backend and provides functionality for participants to leave the event or for the owner to manage participants.
+ */
+
 import {
     Box,
     Heading,
@@ -16,24 +21,65 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../components/Authentication/AuthContext';
 import { CustomSpinner } from '../PublicPage/PublicPage';
 
+/**
+ * @function EventDetails
+ * @description Displays detailed information about an event, including participants, event details, and options for managing participation.
+ * @returns {JSX.Element} The rendered EventDetails component.
+ */
 function EventDetails() {
+    /**
+     * @constant {string} id
+     * @description The event ID extracted from the URL parameters.
+     */
     const { id } = useParams();
+
+    /**
+     * @constant {Object} user
+     * @description The currently logged-in user, retrieved from the AuthContext.
+     */
     const { user } = useContext(AuthContext);
 
+    /**
+     * @constant {Object|null} event
+     * @description The event data fetched from the backend. Initially set to `null`.
+     */
     const [event, setEvent] = useState(null);
+
+    /**
+     * @constant {boolean} loading
+     * @description Indicates whether the event data is being loaded.
+     */
     const [loading, setLoading] = useState(true);
+
+    /**
+     * @constant {boolean} isLeaving
+     * @description Indicates whether the user is in the process of leaving the event.
+     */
     const [isLeaving, setIsLeaving] = useState(false);
+
+    /**
+     * @constant {boolean} isParticipant
+     * @description Indicates whether the logged-in user is a participant in the event.
+     */
     const [isParticipant, setIsParticipant] = useState(false);
 
+    /**
+     * @constant {string} backendUrl
+     * @description The base URL for the backend API.
+     */
     const backendUrl = import.meta.env.VITE_BACK_END_URL || 'http://localhost:5000';
 
+    /**
+     * @function useEffect
+     * @description Fetches event data from the backend when the component mounts or when the `id` or `backendUrl` changes.
+     * @async
+     */
     useEffect(() => {
         async function fetchEvent() {
             try {
                 setLoading(true);
 
-                //Checks for token (logged in user)
-                const token = localStorage.getItem("token")
+                const token = localStorage.getItem("token");
 
                 if (token) {
                     const response = await fetch(`${backendUrl}/api/events`, {
@@ -56,7 +102,6 @@ function EventDetails() {
                     });
 
                 } else {
-                    // IF NOT (anon user) - fetch public event
                     const response = await fetch(`${backendUrl}/api/events/public`);
 
                     if (!response.ok) throw new Error('Failed to fetch public events');
@@ -84,6 +129,10 @@ function EventDetails() {
         if (id) fetchEvent();
     }, [id, backendUrl]);
 
+    /**
+     * @function useEffect
+     * @description Updates the `isParticipant` state based on the event's participants and the logged-in user's ID.
+     */
     useEffect(() => {
         if (event?.participants && user?._id) {
             setIsParticipant(event.participants.some((p) => p._id === user._id));
@@ -92,6 +141,12 @@ function EventDetails() {
         }
     }, [event, user?._id]);
 
+    /**
+     * @function handleRemoveParticipant
+     * @description Removes a participant from the event.
+     * @param {string} participantId - The ID of the participant to remove.
+     * @async
+     */
     const handleRemoveParticipant = async (participantId) => {
         try {
             const response = await fetch(`${backendUrl}/api/events/${id}/participants/${participantId}`, {
@@ -112,6 +167,11 @@ function EventDetails() {
         }
     };
 
+    /**
+     * @function handleLeaveEvent
+     * @description Allows the logged-in user to leave the event.
+     * @async
+     */
     const handleLeaveEvent = async () => {
         try {
             setIsLeaving(true);
@@ -151,6 +211,10 @@ function EventDetails() {
         );
     }
 
+    /**
+     * @constant {boolean} isOwner
+     * @description Indicates whether the logged-in user is the owner of the event.
+     */
     const isOwner = user ? event.userId && event.userId.toString() === user._id : false;
 
     return (

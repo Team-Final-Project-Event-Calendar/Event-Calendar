@@ -1,4 +1,8 @@
-// App.jsx
+/**
+ * @file App.jsx
+ * @description The main application component that defines the structure and routing for the application. It includes navigation, footer, and route protection for various pages.
+ */
+
 import { Route, Routes } from "react-router-dom";
 import Authentication from "./components/Authentication/Authentication";
 import Admin from "./components/Authentication/Admin/Admin";
@@ -19,6 +23,11 @@ import PreferencesPage from "./pages/PreferencesPage/PreferencesPage";
 import SharedRoute from "./components/Authentication/RoutesProtection/SharedRoute";
 import Footer from "./components/Footer/Footer";
 
+/**
+ * @function App
+ * @description The root component of the application. It sets up the navigation bar, footer, and routes for different pages with route protection.
+ * @returns {JSX.Element} The rendered App component.
+ */
 function App() {
   return (
     <div
@@ -30,6 +39,7 @@ function App() {
         minHeight: "100vh",
       }}
     >
+      {/* Navigation bar */}
       <NavBar />
 
       <div
@@ -41,7 +51,10 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/contacts" element={<Contacts></Contacts>}></Route>
+          {/* Contacts page */}
+          <Route path="/contacts" element={<Contacts />} />
+
+          {/* Authentication page (public only) */}
           <Route
             path="/authentication"
             element={
@@ -51,12 +64,16 @@ function App() {
             }
           />
 
+          {/* Preferences page */}
           <Route path="/preferences" element={<PreferencesPage />} />
 
+          {/* Public events page */}
           <Route path="/public" element={<PublicPage />} />
 
+          {/* User profile page */}
           <Route path="/users/:id" element={<UserProfile />} />
 
+          {/* Calendar page (protected) */}
           <Route
             path="/"
             element={
@@ -65,6 +82,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Home page (protected) */}
           <Route
             path="/homepage"
             element={
@@ -73,6 +92,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Admin authentication page (protected) */}
           <Route
             path="/authentication/admin"
             element={
@@ -81,6 +102,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Profile page (protected) */}
           <Route
             path="/profile"
             element={
@@ -89,6 +112,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* My Events page (protected) */}
           <Route
             path="/myevents"
             element={
@@ -98,6 +123,7 @@ function App() {
             }
           />
 
+          {/* Event details page (shared route) */}
           <Route
             path="/eventdetails/:id"
             element={
@@ -107,6 +133,7 @@ function App() {
             }
           />
 
+          {/* Event series page (protected) */}
           <Route
             path="/event-series"
             element={
@@ -116,8 +143,10 @@ function App() {
             }
           />
 
+          {/* About page */}
           <Route path="/about" element={<AboutPage />} />
 
+          {/* Fallback route (protected) */}
           <Route
             path="*"
             element={
@@ -128,7 +157,9 @@ function App() {
           />
         </Routes>
       </div>
-      <Footer></Footer>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

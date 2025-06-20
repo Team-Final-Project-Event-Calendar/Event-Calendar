@@ -1,3 +1,8 @@
+/**
+ * @file AboutPage.jsx
+ * @description A React component that provides information about the application, including the technologies used.
+ */
+
 import React from "react";
 import { Box, Container, Heading, Text, Flex } from "@chakra-ui/react";
 

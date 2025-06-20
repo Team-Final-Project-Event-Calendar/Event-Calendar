@@ -1,5 +1,17 @@
+/**
+ * @file Drawer.jsx
+ * @description A React component that renders a side menu using Chakra UI's Drawer component. The menu includes a header, body, and footer with options for navigation and logout.
+ */
+
 import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
 
+/**
+ * @function DrawerComponent
+ * @description Renders a side menu with navigation options and a logout button.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onSignIn - Callback function triggered when the logout button is clicked.
+ * @returns {JSX.Element} The rendered DrawerComponent.
+ */
 function DrawerComponent({ onSignIn }) {
   return (
     <Drawer.Root>
@@ -31,4 +43,5 @@ function DrawerComponent({ onSignIn }) {
     </Drawer.Root>
   );
 }
+
 export default DrawerComponent;

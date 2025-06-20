@@ -1,3 +1,8 @@
+/**
+ * @file MyEventsPage.jsx
+ * @description A React component that displays the user's created events and events they are participating in. It provides functionality for creating, deleting, and managing events.
+ */
+
 import React, { useEffect, useState } from "react";
 import CardsListComponent from "../../components/CardsListComponent/CardsListComponent";
 import EventForm from "../../components/EventForm/EventForm";
@@ -9,12 +14,41 @@ import { CustomSpinner } from "../PublicPage/PublicPage";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function MyEventsPage
+ * @description Displays the user's created events and events they are participating in. Allows users to create, delete, and manage events.
+ * @returns {JSX.Element} The rendered MyEventsPage component.
+ */
 function MyEventsPage() {
+  /**
+   * @constant {Array<Object>} myEvents
+   * @description The list of events created by the logged-in user.
+   */
   const [myEvents, setMyEvents] = useState([]);
+
+  /**
+   * @constant {Array<Object>} participatingEvents
+   * @description The list of events the logged-in user is participating in.
+   */
   const [participatingEvents, setParticipatingEvents] = useState([]);
+
+  /**
+   * @constant {boolean} isLoading
+   * @description Indicates whether the events are being loaded.
+   */
   const [isLoading, setIsLoading] = useState(true);
+
+  /**
+   * @constant {boolean} showCreateForm
+   * @description Indicates whether the event creation form is visible.
+   */
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  /**
+   * @function useEffect
+   * @description Fetches the user's created events and participating events from the backend when the component mounts.
+   * @async
+   */
   useEffect(() => {
     const fetchEvents = async () => {
       setIsLoading(true);
@@ -66,6 +100,10 @@ function MyEventsPage() {
     fetchEvents();
   }, []);
 
+  /**
+   * @function useEffect
+   * @description Listens for the "eventLeft" custom event and removes the event from the participating events list.
+   */
   useEffect(() => {
     const handleEventLeft = (e) => {
       const { eventId } = e.detail;
@@ -80,11 +118,22 @@ function MyEventsPage() {
     };
   }, []);
 
+  /**
+   * @function handleEventCreated
+   * @description Adds a newly created event to the user's events list.
+   * @param {Object} newEvent - The newly created event.
+   */
   const handleEventCreated = (newEvent) => {
     setMyEvents((prev) => [newEvent, ...prev]);
     toast.success("Event created successfully!");
   };
 
+  /**
+   * @function handleDeleteEvent
+   * @description Deletes an event created by the user and updates the events list.
+   * @param {Object} event - The event to delete.
+   * @async
+   */
   const handleDeleteEvent = async (event) => {
     if (!event._id) return;
     try {
@@ -100,7 +149,6 @@ function MyEventsPage() {
       toast.error(err);
     }
   };
-
   return (
     <>
       <div

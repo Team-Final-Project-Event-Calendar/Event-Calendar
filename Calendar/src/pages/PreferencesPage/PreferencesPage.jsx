@@ -1,32 +1,42 @@
+/**
+ * @file PreferencesPage.jsx
+ * @description A React component that allows users to manage their preferences, such as disabling global invites. Preferences are saved to and loaded from localStorage.
+ */
+
 import { useState, useEffect } from "react";
 import { Box, Container, Heading, Text, Switch, Flex } from "@chakra-ui/react";
 
-
-
+/**
+ * @function PreferencesPage
+ * @description Displays a preferences page where users can toggle settings like disabling global invites.
+ * @returns {JSX.Element} The rendered PreferencesPage component.
+ */
 function PreferencesPage() {
-    // const [editCity, setEditCity] = useState("");
-    // const [weatherEnabled, setWeatherEnabled] = useState(false);
-    const [globalInvitesDisabled, setGlobalInvitesDisabled] = useState(false);
-    // const [citySuggestions, setCitySuggestions] = useState([]);
-    // const [showSuggestions, setShowSuggestions] = useState(false);
+  /**
+   * @constant {boolean} globalInvitesDisabled
+   * @description Indicates whether global invites are disabled. The state is loaded from localStorage on component mount.
+   */
+  const [globalInvitesDisabled, setGlobalInvitesDisabled] = useState(false);
 
-    // Load preferences from localStorage on component mount
-    useEffect(() => {
-        // const savedWeatherEnabled = localStorage.getItem('weatherEnabled') === 'true';
-        // const savedCity = localStorage.getItem('weatherCity') || '';
-        const savedGlobalInvites = localStorage.getItem('globalInvitesDisabled') === 'true';
+  /**
+   * @function useEffect
+   * @description Loads the user's preferences from localStorage when the component mounts.
+   */
+  useEffect(() => {
+    const savedGlobalInvites =
+      localStorage.getItem("globalInvitesDisabled") === "true";
+    setGlobalInvitesDisabled(savedGlobalInvites);
+  }, []);
 
-        // setWeatherEnabled(savedWeatherEnabled);
-        // setEditCity(savedCity);
-        setGlobalInvitesDisabled(savedGlobalInvites);
-    }, []);
-
-    //OPTION 1 : Global Invites Toggle 
-    const handleGlobalInvitesToggle = (checked) => {
-        setGlobalInvitesDisabled(checked);
-        localStorage.setItem('globalInvitesDisabled', checked.toString());
-    };
-
+  /**
+   * @function handleGlobalInvitesToggle
+   * @description Toggles the global invites setting and saves the updated preference to localStorage.
+   * @param {boolean} checked - The new state of the global invites toggle.
+   */
+  const handleGlobalInvitesToggle = (checked) => {
+    setGlobalInvitesDisabled(checked);
+    localStorage.setItem("globalInvitesDisabled", checked.toString());
+  };
     return (
         <Container
             maxW="800px"

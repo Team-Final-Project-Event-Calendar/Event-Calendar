@@ -1,5 +1,20 @@
+/**
+ * @file CardComponent.jsx
+ * @description A React component that displays an event card with details such as title, description, and start date. It includes actions like joining the event or adding it to upcoming events.
+ */
+
 import { Button, Card, Image, Text } from "@chakra-ui/react";
 
+/**
+ * @function CardComponent
+ * @description Renders a card displaying event details and action buttons.
+ * @param {Object} props - The component props.
+ * @param {Object} props.event - The event object containing details to display.
+ * @param {string} props.event.title - The title of the event.
+ * @param {string} props.event.description - The description of the event.
+ * @param {string} props.event.startDate - The start date of the event.
+ * @returns {JSX.Element} The rendered CardComponent.
+ */
 function CardComponent({ event }) {
   return (
     <Card.Root maxW="sm" overflow="hidden">

@@ -1,3 +1,8 @@
+/**
+ * @file PublicPage.jsx
+ * @description A React component that displays a paginated list of public events. It supports search functionality and integrates with global search events.
+ */
+
 import { Link, useLocation } from "react-router-dom";
 import "./PublicPage.css";
 import { useState, useEffect } from "react";
@@ -9,6 +14,11 @@ import { Spinner } from "@chakra-ui/react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function CustomSpinner
+ * @description A custom spinner component for loading states.
+ * @returns {JSX.Element} The rendered spinner component.
+ */
 export const CustomSpinner = () => (
   <div style={{ textAlign: "center", padding: "50px 0" }}>
     <Spinner
@@ -19,33 +29,75 @@ export const CustomSpinner = () => (
       padding="2vw"
       margin="0px 565px 123px"
     />
-
     <p style={{ color: "#666", fontSize: "30px" }}>Loading...</p>
   </div>
 );
-//#5565DD - HERO color
 
+/**
+ * @function PublicPage
+ * @description Displays a list of public events with pagination and search functionality.
+ * @returns {JSX.Element} The rendered PublicPage component.
+ */
 const PublicPage = () => {
+  /**
+   * @constant {Array<Object>} publicEvents
+   * @description The list of public events fetched from the backend.
+   */
   const [publicEvents, setPublicEvents] = useState([]);
+
+  /**
+   * @constant {number} currentPage
+   * @description The current page number for pagination.
+   */
   const [currentPage, setCurrentPage] = useState(1);
+
+  /**
+   * @constant {boolean} loading
+   * @description Indicates whether the public events are being loaded.
+   */
   const [loading, setLoading] = useState(true);
+
+  /**
+   * @constant {Array<Object>|null} searchResults
+   * @description The list of events matching the search query. If `null`, all public events are displayed.
+   */
   const [searchResults, setSearchResults] = useState(null);
+
+  /**
+   * @constant {string} searchTerm
+   * @description The current search term entered by the user.
+   */
   const [searchTerm, setSearchTerm] = useState("");
 
+  /**
+   * @constant {number} eventsPerPage
+   * @description The number of events displayed per page.
+   */
   const eventsPerPage = 6;
+
+  /**
+   * @constant {Object} location
+   * @description The current location object from React Router.
+   */
   const location = useLocation();
 
+  /**
+   * @function useEffect
+   * @description Handles search results passed via navigation state and clears the state after processing.
+   */
   useEffect(() => {
     if (location.state?.searchResults && location.state?.searchTerm) {
       setSearchResults(location.state.searchResults);
       setSearchTerm(location.state.searchTerm);
       setCurrentPage(1);
-
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
-  // Listen for search events from NavComponent
+  /**
+   * @function useEffect
+   * @description Listens for global search and clear search events from the navigation component.
+   */
   useEffect(() => {
     const handleGlobalSearch = (event) => {
       const { results, term } = event.detail;
@@ -60,15 +112,19 @@ const PublicPage = () => {
       setCurrentPage(1);
     };
 
-    window.addEventListener('homepageSearch', handleGlobalSearch);
-    window.addEventListener('homepageClearSearch', handleGlobalClearSearch);
+    window.addEventListener("homepageSearch", handleGlobalSearch);
+    window.addEventListener("homepageClearSearch", handleGlobalClearSearch);
 
     return () => {
-      window.removeEventListener('homepageSearch', handleGlobalSearch);
-      window.removeEventListener('homepageClearSearch', handleGlobalClearSearch);
+      window.removeEventListener("homepageSearch", handleGlobalSearch);
+      window.removeEventListener("homepageClearSearch", handleGlobalClearSearch);
     };
   }, []);
 
+  /**
+   * @function useEffect
+   * @description Fetches the list of public events from the backend when the component mounts.
+   */
   useEffect(() => {
     setLoading(true);
     fetch(`${key}/api/events/public`)
@@ -83,37 +139,55 @@ const PublicPage = () => {
       });
   }, []);
 
-  // Determine which events to display (search results or all public events)
+  /**
+   * @constant {Array<Object>} eventsToProcess
+   * @description The list of events to display, either search results or all public events.
+   */
   const eventsToProcess = searchResults !== null ? searchResults : publicEvents;
 
-  // Calculate total pages
+  /**
+   * @constant {number} totalPages
+   * @description The total number of pages for pagination.
+   */
   const totalPages = Math.ceil(eventsToProcess.length / eventsPerPage);
 
-  // Get current events for display
+  /**
+   * @constant {Array<Object>} currentEvents
+   * @description The list of events to display on the current page.
+   */
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
   const currentEvents = eventsToProcess.slice(indexOfFirstEvent, indexOfLastEvent);
 
-  // Handle navigation
+  /**
+   * @function handlePrevPage
+   * @description Navigates to the previous page in the pagination.
+   */
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  /**
+   * @function handleNextPage
+   * @description Navigates to the next page in the pagination.
+   */
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // Function to clear search results
+  /**
+   * @function clearSearch
+   * @description Clears the search results and resets the pagination to the first page.
+   */
   const clearSearch = () => {
     setSearchResults(null);
     setSearchTerm("");
     setCurrentPage(1);
-    // Also clear the search in NavComponent
-    window.dispatchEvent(new CustomEvent('clearNavSearch'));
+    window.dispatchEvent(new CustomEvent("clearNavSearch"));
   };
 
   return (
