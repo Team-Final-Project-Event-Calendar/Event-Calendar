@@ -1,3 +1,8 @@
+/**
+ * @file NavBar.jsx
+ * @description A React component that renders the navigation bar for the application. It includes navigation links, a search bar, a weather widget, and user-related actions like logout.
+ */
+
 import React, { useContext } from "react";
 import DrawerComponent from "./Drawer";
 import AvatarComponent from "./AvatarCompont";
@@ -12,26 +17,46 @@ import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
 import "./NavLink.css";
 
+/**
+ * @function NavBar
+ * @description Renders the navigation bar with links, user actions, and additional widgets.
+ * @returns {JSX.Element} The rendered NavBar component.
+ */
 function NavBar() {
+  /**
+   * @constant {string} colorMode
+   * @description The current color mode of the application (e.g., "light" or "dark").
+   */
+  /**
+   * @function toggleColorMode
+   * @description Toggles the application's color mode between light and dark.
+   */
   const { colorMode, toggleColorMode } = useColorMode("light");
 
   const navigate = useNavigate();
   const { isLoggedIn, logout, user } = useContext(AuthContext);
 
+  /**
+   * @function handleLogout
+   * @description Logs the user out and navigates to the authentication page.
+   */
   const handleLogout = () => {
     logout();
     navigate("/authentication");
   };
 
-    const handleHomeClick = () => {
+  /**
+   * @function handleHomeClick
+   * @description Clears search results and navigates to the homepage.
+   */
+  const handleHomeClick = () => {
     // Clear any search results when clicking home
-    window.dispatchEvent(new CustomEvent('homepageClearSearch'));
-    window.dispatchEvent(new CustomEvent('clearNavSearch'));
-    
+    window.dispatchEvent(new CustomEvent("homepageClearSearch"));
+    window.dispatchEvent(new CustomEvent("clearNavSearch"));
+
     // Then navigate to homepage
     navigate("/homepage");
   };
-
   return (
     <div
       style={{

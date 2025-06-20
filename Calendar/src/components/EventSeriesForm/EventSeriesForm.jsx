@@ -1,9 +1,21 @@
+/**
+ * @file EventSeriesForm.jsx
+ * @description A React component for creating and managing event series. It supports recurring and indefinite series, as well as manual event selection.
+ */
+
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
 import { useState, useEffect, useContext } from "react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function EventSeriesForm
+ * @description A form component for creating event series. It allows users to define starting and ending events, recurrence rules, and more.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onSeriesCreated - Callback function triggered when a new event series is successfully created.
+ * @returns {JSX.Element} The rendered EventSeriesForm component.
+ */
 const EventSeriesForm = ({ onSeriesCreated }) => {
   const { user } = useContext(AuthContext);
 
@@ -22,17 +34,17 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       startDateTime: "",
       startTime: {
         hour: 9,
-        minute: 0
+        minute: 0,
       },
       endTime: {
         hour: 10,
-        minute: 0
+        minute: 0,
       },
       location: {
         address: "",
         city: "",
-        country: ""
-      }
+        country: "",
+      },
     },
     endingEvent: {
       title: "",
@@ -40,25 +52,29 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       startDateTime: "",
       startTime: {
         hour: 9,
-        minute: 0
+        minute: 0,
       },
       endTime: {
         hour: 10,
-        minute: 0
+        minute: 0,
       },
       location: {
         address: "",
         city: "",
-        country: ""
-      }
-    }
+        country: "",
+      },
+    },
   });
 
   const [events, setEvents] = useState([]);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Fetch user's events for manual series selection
+  /**
+   * @function fetchEvents
+   * @description Fetches the user's events for manual series selection.
+   * @async
+   */
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -75,16 +91,29 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
     fetchEvents();
   }, []);
 
+  /**
+   * @function handleStartingEventChange
+   * @description Updates a field in the starting event.
+   * @param {string} field - The field to update (e.g., "title", "description").
+   * @param {string} value - The new value for the field.
+   */
   const handleStartingEventChange = (field, value) => {
     setSeries({
       ...series,
       startingEvent: {
         ...series.startingEvent,
-        [field]: value
-      }
+        [field]: value,
+      },
     });
   };
 
+  /**
+   * @function handleStartingEventTimeChange
+   * @description Updates the time fields (hour or minute) for the starting event.
+   * @param {string} timeType - The type of time field to update ("startTime" or "endTime").
+   * @param {string} field - The field to update ("hour" or "minute").
+   * @param {number} value - The new value for the field.
+   */
   const handleStartingEventTimeChange = (timeType, field, value) => {
     setSeries({
       ...series,
@@ -92,12 +121,18 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
         ...series.startingEvent,
         [timeType]: {
           ...series.startingEvent[timeType],
-          [field]: parseInt(value, 10)
-        }
-      }
+          [field]: parseInt(value, 10),
+        },
+      },
     });
   };
 
+  /**
+   * @function handleStartingEventLocationChange
+   * @description Updates a location field for the starting event.
+   * @param {string} field - The location field to update (e.g., "address", "city").
+   * @param {string} value - The new value for the field.
+   */
   const handleStartingEventLocationChange = (field, value) => {
     setSeries({
       ...series,
@@ -105,22 +140,35 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
         ...series.startingEvent,
         location: {
           ...series.startingEvent.location,
-          [field]: value
-        }
-      }
+          [field]: value,
+        },
+      },
     });
   };
 
+  /**
+   * @function handleEndingEventChange
+   * @description Updates a field in the ending event.
+   * @param {string} field - The field to update (e.g., "title", "description").
+   * @param {string} value - The new value for the field.
+   */
   const handleEndingEventChange = (field, value) => {
     setSeries({
       ...series,
       endingEvent: {
         ...series.endingEvent,
-        [field]: value
-      }
+        [field]: value,
+      },
     });
   };
 
+  /**
+   * @function handleEndingEventTimeChange
+   * @description Updates the time fields (hour or minute) for the ending event.
+   * @param {string} timeType - The type of time field to update ("startTime" or "endTime").
+   * @param {string} field - The field to update ("hour" or "minute").
+   * @param {number} value - The new value for the field.
+   */
   const handleEndingEventTimeChange = (timeType, field, value) => {
     setSeries({
       ...series,
@@ -128,12 +176,18 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
         ...series.endingEvent,
         [timeType]: {
           ...series.endingEvent[timeType],
-          [field]: parseInt(value, 10)
-        }
-      }
+          [field]: parseInt(value, 10),
+        },
+      },
     });
   };
 
+  /**
+   * @function handleEndingEventLocationChange
+   * @description Updates a location field for the ending event.
+   * @param {string} field - The location field to update (e.g., "address", "city").
+   * @param {string} value - The new value for the field.
+   */
   const handleEndingEventLocationChange = (field, value) => {
     setSeries({
       ...series,
@@ -141,12 +195,17 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
         ...series.endingEvent,
         location: {
           ...series.endingEvent.location,
-          [field]: value
-        }
-      }
+          [field]: value,
+        },
+      },
     });
   };
 
+  /**
+   * @function validate
+   * @description Validates the event series form fields and sets error messages if validation fails.
+   * @returns {boolean} True if the form is valid, false otherwise.
+   */
   const validate = () => {
     const errors = {};
 
@@ -154,7 +213,6 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       errors.name = "Series name is required";
     }
 
-    // Validate starting event
     if (!series.startingEvent.title) {
       errors.startingEventTitle = "Starting event title is required";
     }
@@ -167,7 +225,6 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       errors.startingEventStart = "Starting event date is required";
     }
 
-    // Validate ending event if not indefinite
     if (!series.isIndefinite) {
       if (!series.endingEvent.title) {
         errors.endingEventTitle = "Ending event title is required";
@@ -182,15 +239,16 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       }
     }
 
-    // For manual series, ensure at least one event is selected
-    // if (series.seriesType === "manual" && series.eventsId.length === 0) {
-    //   errors.eventsId = "Please select at least one event for a manual series";
-    // }
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
+  /**
+   * @function handleSubmit
+   * @description Handles the form submission to create a new event series.
+   * @param {Object} e - The form submission event.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -199,16 +257,15 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
     }
 
     try {
-      // Create series with embedded event data
       const seriesData = {
         name: series.name,
         creatorId: user._id,
-        seriesType: 'recurring',//series.seriesType,
+        seriesType: "recurring",
         isIndefinite: series.isIndefinite,
         startingEvent: series.startingEvent,
         endingEvent: series.isIndefinite ? undefined : series.endingEvent,
-        recurrenceRule: series.seriesType === "recurring" ? series.recurrenceRule : undefined,
-        // eventsId: series.seriesType === "manual" ? series.eventsId : []
+        recurrenceRule:
+          series.seriesType === "recurring" ? series.recurrenceRule : undefined,
       };
 
       const response = await axios.post(`${key}/api/event-series`, seriesData, {
@@ -220,15 +277,13 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
       setSuccessMessage("Event series created successfully!");
       if (onSeriesCreated) onSeriesCreated(response.data);
 
-      // Reset form
       setSeries({
         name: "",
         seriesType: "recurring",
         recurrenceRule: {
           frequency: "weekly",
-          endDate: ""
+          endDate: "",
         },
-        // eventsId: [],
         isIndefinite: false,
         startingEvent: {
           title: "",
@@ -236,7 +291,7 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           startDateTime: "",
           startTime: { hour: 9, minute: 0 },
           endTime: { hour: 10, minute: 0 },
-          location: { address: "", city: "", country: "" }
+          location: { address: "", city: "", country: "" },
         },
         endingEvent: {
           title: "",
@@ -244,8 +299,8 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
           startDateTime: "",
           startTime: { hour: 9, minute: 0 },
           endTime: { hour: 10, minute: 0 },
-          location: { address: "", city: "", country: "" }
-        }
+          location: { address: "", city: "", country: "" },
+        },
       });
     } catch (error) {
       setErrors({ general: "Failed to create event series" });
@@ -253,15 +308,24 @@ const EventSeriesForm = ({ onSeriesCreated }) => {
     }
   };
 
-  // Helper to generate time options (0-23 for hours, 0-55 for minutes in 5-min increments)
+  /**
+   * @function generateTimeOptions
+   * @description Generates time options for hours (0-23) or minutes (0-55 in 5-minute increments).
+   * @param {string} type - The type of time options to generate ("hour" or "minute").
+   * @returns {Array<JSX.Element>} An array of `<option>` elements for the time options.
+   */
   const generateTimeOptions = (type) => {
-    if (type === 'hour') {
+    if (type === "hour") {
       return Array.from({ length: 24 }, (_, i) => (
-        <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
+        <option key={i} value={i}>
+          {i.toString().padStart(2, "0")}
+        </option>
       ));
     } else {
       return Array.from({ length: 12 }, (_, i) => (
-        <option key={i * 5} value={i * 5}>{(i * 5).toString().padStart(2, '0')}</option>
+        <option key={i * 5} value={i * 5}>
+          {(i * 5).toString().padStart(2, "0")}
+        </option>
       ));
     }
   };

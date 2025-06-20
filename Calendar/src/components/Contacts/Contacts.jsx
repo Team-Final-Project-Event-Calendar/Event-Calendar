@@ -1,3 +1,9 @@
+/**
+ * @file Contacts.jsx
+ * @description A React component for managing and displaying user contacts, contact lists, and events. 
+ * It provides functionality for searching users, sending invites, and managing contact lists.
+ */
+
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
@@ -7,13 +13,17 @@ import { ButtonGroup, Box, Stack, Text } from "@chakra-ui/react";
 import CreateContactsListForm from "../CreateContactsListForm/CreateContactsListForm";
 import { useRef } from "react";
 import "./Contacts.css";
-
 import { ToastContainer, toast } from "react-toastify";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 const DEFAULT_AVATAR =
   "https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg";
 
+/**
+ * @function Contacts
+ * @description A React component for managing and displaying user contacts, contact lists, and events.
+ * @returns {JSX.Element} The rendered Contacts component.
+ */
 function Contacts() {
   const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
@@ -30,6 +40,11 @@ function Contacts() {
   const [feedback, setFeedback] = useState("");
   const [selectedUsername, setSelectedUsername] = useState("");
 
+  /**
+   * @function fetchEvents
+   * @description Fetches the events created by the authenticated user.
+   * @async
+   */
   const fetchEvents = async () => {
     try {
       const response = await fetch(`${key}/api/events/mine`, {
@@ -49,6 +64,12 @@ function Contacts() {
     }
   };
 
+  /**
+   * @function handleSendInvite
+   * @description Sends an invite to a user for a specific event.
+   * @param {Object} event - The event object.
+   * @async
+   */
   const handleSendInvite = async (event) => {
     if (!selectedUsername) {
       setFeedback("Please select a username");
@@ -73,7 +94,7 @@ function Contacts() {
       setFeedback(
         response.data.message || `Invite sent to ${selectedUsername}!`
       );
-      toast.success(`Invite send to ${selectedUsername} `);
+      toast.success(`Invite sent to ${selectedUsername}`);
       setSelectedUsername("");
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
@@ -82,6 +103,11 @@ function Contacts() {
     }
   };
 
+  /**
+   * @function fetchAllUsers
+   * @description Fetches all users from the backend.
+   * @async
+   */
   const fetchAllUsers = async () => {
     try {
       const response = await axios.get(`${key}/api/auth/users`, {
@@ -95,6 +121,11 @@ function Contacts() {
     }
   };
 
+  /**
+   * @function fetchAllContactsList
+   * @description Fetches all contact lists for the authenticated user.
+   * @async
+   */
   const fetchAllContactsList = async () => {
     try {
       setLoading(true);
@@ -103,7 +134,7 @@ function Contacts() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Contact list repspone:", response.data);
+      console.log("Contact list response:", response.data);
       setContactLists(response.data);
     } catch (error) {
       console.error(
@@ -116,6 +147,12 @@ function Contacts() {
     }
   };
 
+  /**
+   * @function handleDeleteList
+   * @description Deletes a contact list by its ID.
+   * @param {string} id - The ID of the contact list to delete.
+   * @async
+   */
   const handleDeleteLIst = async (id) => {
     try {
       const res = await fetch(`${key}/api/contacts/delete/${id}`, {
@@ -138,46 +175,33 @@ function Contacts() {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        invitePopupRef.current &&
-        !invitePopupRef.current.contains(event.target)
-      ) {
-        setIsInviting(false);
-        setBlured(false);
-      }
-    };
-
-    if (isInviting) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isInviting]);
-
-  useEffect(() => {
-    if (token) {
-      fetchAllUsers();
-      fetchAllContactsList();
-      fetchEvents();
-    }
-  }, [token]);
-
+  /**
+   * @function handleContactListCreated
+   * @description Refreshes the contact lists after a new list is created.
+   */
   const handleContactListCreated = () => {
     fetchAllContactsList();
   };
 
+  /**
+   * @function setInvite
+   * @description Sets the selected username for inviting and displays the invite popup.
+   * @param {Object} contact - The contact object.
+   * @async
+   */
   const setInvite = async (contact) => {
     setSelectedUsername(contact.username);
     setBlured(true);
     setIsInviting(true);
   };
 
+  /**
+   * @function handleRemoveFromList
+   * @description Removes a user from a specific contact list.
+   * @param {string} listId - The ID of the contact list.
+   * @param {string} userId - The ID of the user to remove.
+   * @async
+   */
   const handleRemoveFromList = async (listId, userId) => {
     try {
       const res = await axios.delete(
@@ -208,6 +232,11 @@ function Contacts() {
     }
   };
 
+  /**
+   * @function handleSearch
+   * @description Searches for users based on the search query.
+   * @async
+   */
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       setSearchedUsers([]); // Reset result view
@@ -229,15 +258,12 @@ function Contacts() {
     }
   };
 
-  if (loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <p>Loading contacts...</p>
-      </div>
-    );
-  }
-
-  // Helper function to format date as DD/MM/YYYY
+  /**
+   * @function formatDate
+   * @description Formats a date string as DD/MM/YYYY.
+   * @param {string} dateString - The date string to format.
+   * @returns {string} The formatted date.
+   */
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -247,6 +273,14 @@ function Contacts() {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <p>Loading contacts...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ marginTop: "20px" }}>

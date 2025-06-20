@@ -1,23 +1,60 @@
-import React, { useContext } from "react";
-import { useState } from "react";
+/**
+ * @file ProfileDetailsComponent.jsx
+ * @description A React component that displays and allows editing of the user's profile details. 
+ * It includes functionality for updating the profile and sending account deletion requests.
+ */
+
+import React, { useContext, useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { AuthContext } from "../../components/Authentication/AuthContext";
 import { Avatar, Code, Stack, useAvatar } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
+
 const API_BASE_URL =
   import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function ProfileDetailsComponent
+ * @description Displays the user's profile details and provides functionality to update the profile or request account deletion.
+ * @returns {JSX.Element} The rendered ProfileDetailsComponent.
+ */
 function ProfileDetailsComponent() {
   const { user, setUser } = useContext(AuthContext);
 
+  /**
+   * @constant {string} message
+   * @description A message displayed to the user for feedback.
+   */
   const [message, setMessage] = useState("");
+
+  /**
+   * @constant {string} error
+   * @description An error message displayed to the user if an operation fails.
+   */
   const [error, setError] = useState("");
+
+  /**
+   * @constant {Object} formData
+   * @description The form data for the user's profile, initialized with the current user's data.
+   */
   const [formData, setFormData] = useState(user || {});
 
+  /**
+   * @function handleChange
+   * @description Updates the form data when a field value changes.
+   * @param {string} key - The key of the field to update.
+   * @param {any} value - The new value for the field.
+   */
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });
   };
 
+  /**
+   * @function onSubmit
+   * @description Handles the form submission to update the user's profile.
+   * @param {Object} e - The form submission event.
+   * @async
+   */
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,12 +78,6 @@ function ProfileDetailsComponent() {
       return;
     }
 
-    console.log("Form Data:", formData);
-
-    console.log(
-      "Sending PUT request to:",
-      `${API_BASE_URL}/api/auth/users/${formData._id}`
-    );
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/auth/users/${formData._id}`,
@@ -72,8 +103,6 @@ function ProfileDetailsComponent() {
       setUser(updatedUser.user);
       localStorage.setItem("user", JSON.stringify(updatedUser.user));
 
-      // Update the user context and local state
-      setFormData(updatedUser.user);
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -81,6 +110,11 @@ function ProfileDetailsComponent() {
     }
   };
 
+  /**
+   * @function handleDeleteRequest
+   * @description Sends a request to delete the user's account.
+   * @async
+   */
   const handleDeleteRequest = async () => {
     const confirm = window.confirm(
       setMessage(
@@ -118,6 +152,10 @@ function ProfileDetailsComponent() {
     }
   };
 
+  /**
+   * @constant {Array<Object>} fieldsToShow
+   * @description An array of fields to display in the profile form.
+   */
   const fieldsToShow = [
     { key: "avatar", label: "Avatar" },
     { key: "firstName", label: "First Name" },

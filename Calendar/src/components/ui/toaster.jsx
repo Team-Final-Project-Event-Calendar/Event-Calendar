@@ -1,3 +1,8 @@
+/**
+ * @file toaster.jsx
+ * @description A React component and utility for displaying toast notifications using Chakra UI's toaster system.
+ */
+
 'use client'
 
 import {
@@ -9,11 +14,22 @@ import {
   createToaster,
 } from '@chakra-ui/react'
 
+/**
+ * @constant {Object} toaster
+ * @description A toaster instance created using Chakra UI's `createToaster` function.
+ * @property {string} placement - The position of the toaster on the screen (e.g., 'bottom-end').
+ * @property {boolean} pauseOnPageIdle - Whether to pause the toaster when the page is idle.
+ */
 export const toaster = createToaster({
   placement: 'bottom-end',
   pauseOnPageIdle: true,
 })
 
+/**
+ * @function Toaster
+ * @description A React component that renders a portal-based toaster for displaying toast notifications.
+ * @returns {JSX.Element} The rendered Toaster component.
+ */
 export const Toaster = () => {
   return (
     <Portal>
@@ -34,7 +50,6 @@ export const Toaster = () => {
             {toast.action && (
               <Toast.ActionTrigger>{toast.action.label}</Toast.ActionTrigger>
             )}
-            {toast.closable && <Toast.CloseTrigger />}
           </Toast.Root>
         )}
       </ChakraToaster>

@@ -3,7 +3,28 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import "./Authentication.css";
 
+/**
+ * Authentication component handles user login, registration, and logout functionality.
+ * It provides forms for logging in and registering new users with validation,
+ * displays error and success messages, and conditionally shows user info when logged in.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <Authentication />
+ * )
+ */
 function Authentication() {
+  /**
+   * Authentication context containing login, register, logout methods,
+   * and user authentication state.
+   * @type {object}
+   * @property {Function} login - Function to log in the user with email and password.
+   * @property {Function} register - Function to register a new user with user data.
+   * @property {Function} logout - Function to log out the current user.
+   * @property {boolean} isLoggedIn - Indicates if a user is currently logged in.
+   * @property {object} user - Currently logged in user's data.
+   */
   const {
     login,
     register,
@@ -11,7 +32,24 @@ function Authentication() {
     isLoggedIn,
     user: loggedUser,
   } = useContext(AuthContext);
+
+  /** 
+   * Local state for switching between "login" and "register" modes.
+   * @type {[string, Function]}
+   */
   const [mode, setMode] = useState("login");
+
+  /**
+   * Local state for form inputs representing user data.
+   * @type {[Object, Function]}
+   * @property {string} username - Username input value.
+   * @property {string} phoneNumber - Phone number input value.
+   * @property {string} email - Email input value.
+   * @property {string} password - Password input value.
+   * @property {string} firstName - First name input value.
+   * @property {string} lastName - Last name input value.
+   * @property {boolean} isBlocked - Flag indicating if the user is blocked.
+   */
   const [user, setUser] = useState({
     username: "",
     phoneNumber: "",
@@ -21,14 +59,38 @@ function Authentication() {
     lastName: "",
     isBlocked: false,
   });
+
+  /**
+   * Local state to store form validation and submission errors.
+   * @type {[Object, Function]}
+   */
   const [error, setError] = useState({});
+
+  /**
+   * Local state to store success messages (e.g., successful login or registration).
+   * @type {[string, Function]}
+   */
   const [successMessage, setSuccessMessage] = useState("");
+
+  /** React Router's navigate function to redirect users */
   const navigate = useNavigate();
+
+  /** React Router's location object to track current path and state */
   const location = useLocation();
 
+  /**
+   * Updates a property of the user object in state when input changes.
+   * @param {string} prop - The property of the user object to update.
+   * @returns {Function} Event handler to update user property value.
+   */
   const updateUser = (prop) => (e) =>
     setUser({ ...user, [prop]: e.target.value });
 
+  /**
+   * Handles user login form submission.
+   * Validates email and password fields before calling login from context.
+   * Shows error or success messages accordingly.
+   */
   const handleLogin = async () => {
     if (!user.email || !user.password) {
       setSuccessMessage("");
@@ -51,6 +113,11 @@ function Authentication() {
     }
   };
 
+  /**
+   * Validates user input fields during registration.
+   * Updates error state with validation messages.
+   * @returns {boolean} True if validation passes, false otherwise.
+   */
   const validate = () => {
     const newErrors = {};
 
@@ -95,6 +162,11 @@ function Authentication() {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Handles user registration form submission.
+   * Calls register from context if validation passes.
+   * Displays success or error messages accordingly.
+   */
   const handleRegister = async () => {
     if (!validate()) return;
     const { username, phoneNumber, email, password, firstName, lastName } =
@@ -133,11 +205,18 @@ function Authentication() {
     }
   };
 
+  /**
+   * Handles form submit event.
+   * Prevents default form submission and triggers login or register handlers
+   * depending on the current mode.
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (mode === "register" && !validate()) return;
     mode === "login" ? handleLogin() : handleRegister();
   };
+
 
   return (
     <div

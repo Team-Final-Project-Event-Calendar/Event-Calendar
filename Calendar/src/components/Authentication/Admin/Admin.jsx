@@ -3,25 +3,59 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import styles from "./Admin.module.css";
 import { io } from "socket.io-client";
-import { Button } from "@chakra-ui/react";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * Admin component provides an administration hub interface
+ * for managing users, events, and deletion requests.
+ * It supports searching, pagination, editing, blocking/unblocking users,
+ * and real-time updates via Socket.IO.
+ *
+ * @component
+ * @returns {JSX.Element} The admin dashboard UI or redirects if unauthorized.
+ */
 function Admin() {
   const { isLoggedIn, user } = useContext(AuthContext);
+
+  /** @type {[string, function]} Search term for filtering users */
   const [search, setSearch] = useState("");
+
+  /** @type {[Array<Object>, function]} List of all users */
   const [allUsers, setAllUsers] = useState([]);
+
+  /** @type {[Array<Object>, function]} List of events for admin search */
   const [searchEvents, setSearchEvents] = useState([]);
+
+  /** @type {[string, function]} Search term for filtering events */
   const [findEvents, setFindEvents] = useState("");
+
+  /** @type {[string|null, function]} ID of the event currently being edited */
   const [editingEventId, setEditingEventId] = useState(null);
+
+  /** @type {[Array<Object>, function]} List of deletion requests */
   const [deleteRequests, setDeleteRequests] = useState([]);
+
+  /** 
+   * @type {[Object, function]} Event data object for editing with fields:
+   *  - title {string}
+   *  - description {string}
+   */
   const [eventData, setEventData] = useState({ title: "", description: "" });
 
+  /** @type {[number, function]} Current page number for users pagination */
   const [currentPageUsers, setCurrentPageUsers] = useState(1);
+
+  /** @type {[number, function]} Total pages for users pagination */
   const [totalPagesUsers, setTotalPagesUsers] = useState(1);
+
+  /** @type {[number, function]} Current page number for events pagination */
   const [currentPageEvents, setCurrentPageEvents] = useState(1);
+
+  /** @type {[number, function]} Total pages for events pagination */
   const [totalPagesEvents, setTotalPagesEvents] = useState(1);
 
+  // Initialize Socket.IO connection on mount
   useEffect(() => {
     const socket = io(key, {
       withCredentials: true,
@@ -43,6 +77,7 @@ function Admin() {
     };
   }, []);
 
+  // Fetch deletion requests on mount
   useEffect(() => {
     fetch(`${key}/api/auth/delete-requests`, {
       headers: {
@@ -54,6 +89,7 @@ function Admin() {
       .catch((err) => console.error(err));
   }, []);
 
+  // Fetch admin events when currentPageEvents or findEvents changes
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -77,6 +113,7 @@ function Admin() {
     fetchEvents();
   }, [currentPageEvents, findEvents]);
 
+  // Fetch users for admin when currentPageUsers changes
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -102,12 +139,22 @@ function Admin() {
       .catch((err) => console.error("Failed to fetch users", err));
   }, [currentPageUsers]);
 
+  /**
+   * Filter users by search term matching
+   * firstName, email, username, or lastName fields.
+   */
   const filteredUsers = allUsers.filter((user) =>
     [user.firstName, user.email, user.username, user.lastName].some((field) =>
       field?.toLowerCase().includes(search.toLowerCase())
     )
   );
 
+  /**
+   * Block or unblock a user by ID.
+   *
+   * @param {string} id - User ID
+   * @param {boolean} block - Whether to block (true) or unblock (false)
+   */
   const toggleBlock = async (id, block) => {
     const endpoint = `${key}/api/auth/${block ? "block" : "unblock"}/${id}`;
     const res = await fetch(endpoint, {
@@ -123,6 +170,11 @@ function Admin() {
     }
   };
 
+  /**
+   * Delete a user by ID.
+   *
+   * @param {string} id - User ID
+   */
   const deleteUser = async (id) => {
     const res = await fetch(`${key}/api/auth/delete/${id}`, {
       method: "DELETE",
@@ -137,6 +189,12 @@ function Admin() {
       alert("Failed to delete user: " + error.message);
     }
   };
+
+  /**
+   * Delete an event by ID.
+   *
+   * @param {string} id - Event ID
+   */
   const deleteEvent = async (id) => {
     try {
       const res = await fetch(`${key}/api/events/admin/${id}`, {
@@ -156,16 +214,27 @@ function Admin() {
     }
   };
 
+  /**
+   * Start editing an event by setting its ID and data to state.
+   *
+   * @param {Object} event - Event object to edit
+   */
   const startEditingEvent = (event) => {
     setEditingEventId(event._id);
     setEventData({ title: event.title, description: event.description });
   };
 
+  /**
+   * Cancel editing an event and reset editing state.
+   */
   const cancelEditing = () => {
     setEditingEventId(null);
     setEventData({ title: "", description: "" });
   };
 
+  /**
+   * Save edited event data via PUT request.
+   */
   const saveEdit = async () => {
     try {
       const res = await fetch(`${key}/api/events/admin/${editingEventId}`, {
@@ -191,12 +260,16 @@ function Admin() {
     }
   };
 
+  /**
+   * Filter events by search term matching title or description.
+   */
   const filteredEvents = searchEvents.filter((event) =>
     [event.title, event.description].some((field) =>
       field.toLowerCase().includes(findEvents.toLowerCase())
     )
   );
 
+  // Redirect if user is not logged in or not admin
   if (!isLoggedIn || user?.role !== "admin") {
     return <Navigate to="/" replace />;
   }

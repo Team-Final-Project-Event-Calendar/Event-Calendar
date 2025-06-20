@@ -1,3 +1,8 @@
+/**
+ * @file EventForm.jsx
+ * @description A React component for creating and managing events. It includes form validation, participant management, and event recurrence handling.
+ */
+
 import {
   Button,
   Field,
@@ -13,6 +18,13 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../Authentication/AuthContext";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function EventForm
+ * @description A form component for creating and managing events. It supports event recurrence, location, and participant management.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onEventCreated - Callback function triggered when a new event is successfully created.
+ * @returns {JSX.Element} The rendered EventForm component.
+ */
 const EventForm = ({ onEventCreated }) => {
   const [event, setEvent] = useState({
     title: "",
@@ -37,12 +49,15 @@ const EventForm = ({ onEventCreated }) => {
 
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
-
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
-
   const [participantName, setParticipantName] = useState("");
 
+  /**
+   * @function fetchUsers
+   * @description Fetches the list of users from the backend.
+   * @async
+   */
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -60,6 +75,10 @@ const EventForm = ({ onEventCreated }) => {
     fetchUsers();
   }, []);
 
+  /**
+   * @function addParticipant
+   * @description Adds a participant to the event.
+   */
   const addParticipant = () => {
     const trimmedName = participantName.trim();
     if (trimmedName) {
@@ -71,6 +90,11 @@ const EventForm = ({ onEventCreated }) => {
     }
   };
 
+  /**
+   * @function removeParticipant
+   * @description Removes a participant from the event by index.
+   * @param {number} index - The index of the participant to remove.
+   */
   const removeParticipant = (index) => {
     setEvent((prev) => ({
       ...prev,
@@ -78,6 +102,12 @@ const EventForm = ({ onEventCreated }) => {
     }));
   };
 
+  /**
+   * @function handleParticipantChange
+   * @description Updates the participant's name at a specific index.
+   * @param {number} index - The index of the participant to update.
+   * @param {string} value - The new value for the participant's name.
+   */
   const handleParticipantChange = (index, value) => {
     const newParticipants = [...event.participants];
     newParticipants[index] = value;
@@ -94,11 +124,23 @@ const EventForm = ({ onEventCreated }) => {
     }
   };
 
+  /**
+   * @function handleChange
+   * @description Updates a property of the event object.
+   * @param {string} prop - The property to update.
+   * @param {any} value - The new value for the property.
+   */
   const handleChange = (prop, value) => {
     setEvent({ ...event, [prop]: value });
     setErrors({ ...errors, [prop]: "" });
   };
 
+  /**
+   * @function handleLocationChange
+   * @description Updates a field in the event's location object.
+   * @param {string} field - The location field to update (e.g., "address", "city").
+   * @param {string} value - The new value for the location field.
+   */
   const handleLocationChange = (field, value) => {
     setEvent({
       ...event,
@@ -119,6 +161,12 @@ const EventForm = ({ onEventCreated }) => {
     }
   };
 
+  /**
+   * @function handleRecurrenceChange
+   * @description Updates a field in the event's recurrence rule.
+   * @param {string} key - The recurrence rule field to update (e.g., "frequency", "interval").
+   * @param {any} value - The new value for the recurrence rule field.
+   */
   const handleRecurrenceChange = (key, value) => {
     setEvent({
       ...event,
@@ -133,6 +181,11 @@ const EventForm = ({ onEventCreated }) => {
     });
   };
 
+  /**
+   * @function validate
+   * @description Validates the event form fields and sets error messages if validation fails.
+   * @returns {boolean} True if the form is valid, false otherwise.
+   */
   const validate = () => {
     const newErrors = {};
 
@@ -200,6 +253,12 @@ const EventForm = ({ onEventCreated }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * @function handleSubmit
+   * @description Handles the form submission to create a new event.
+   * @param {Object} e - The form submission event.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccessMessage("");

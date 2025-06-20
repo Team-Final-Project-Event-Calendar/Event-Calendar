@@ -3,6 +3,58 @@ import CalendarMatrix from "./CalendarMatrix";
 import "./Calendar.css";
 import EventForm from "../EventForm/EventForm";
 
+/**
+ * CalendarComponent is a React component that displays a calendar with
+ * month/week/day/workWeek views, allows navigation between dates, and supports
+ * creating and viewing events.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered calendar component.
+ * 
+ * @example
+ * return <CalendarComponent />;
+ * 
+ * @typedef {Object} Event
+ * @property {string} id - Unique identifier for the event.
+ * @property {Date|string} date - The date of the event (for all-day events).
+ * @property {Date|string} startDateTime - The start date and time of the event.
+ * @property {string} title - Title or description of the event.
+ * // add other properties as needed
+ * 
+ * @state {Date} currentDate - The currently focused date in the calendar.
+ * @state {string} view - The current calendar view mode: "month", "week", "workWeek", or "day".
+ * @state {Event[]} events - List of events to display on the calendar.
+ * @state {boolean} showEventForm - Flag to control visibility of the event creation form.
+ * 
+ * @function goToPrevious
+ * @description Navigates to the previous month or previous week depending on the current view.
+ * 
+ * @function goToNext
+ * @description Navigates to the next month or next week depending on the current view.
+ * 
+ * @function goToToday
+ * @description Resets the calendar view to today's date.
+ * 
+ * @function openEventForm
+ * @description Opens the form to create a new event.
+ * 
+ * @function handleEventCreated
+ * @description Callback triggered when a new event is created. Adds the event to the list,
+ *              updates the current date to the event's date, switches to "day" view,
+ *              and closes the event form.
+ * @param {Event} createdEvent - The event object created from the form.
+ * 
+ * @function handleDayClick
+ * @description Sets the current date to the clicked day and switches the view to "day".
+ * @param {Date} day - The date that was clicked on the calendar.
+ * 
+ * @renders
+ * - Navigation buttons: Previous, Today, Next, Create Event
+ * - View selection dropdown: Month, Week, Work Week, Day
+ * - CalendarMatrix component showing the calendar grid for currentDate, view, and events
+ * - EventForm component to create a new event (shown conditionally)
+ * - Cancel button to close the event creation form
+ */
 function CalendarComponent() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState("month");

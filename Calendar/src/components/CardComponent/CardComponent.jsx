@@ -1,3 +1,9 @@
+/**
+ * @file CardComponent.jsx
+ * @description A React component that displays event details and provides functionality for inviting users, joining, and leaving events.
+ * It also handles user interactions such as searching for users and sending invites.
+ */
+
 import {
   Button,
   Image,
@@ -11,11 +17,19 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Authentication/AuthContext";
 import axios from "axios";
-import { ToastContainer} from "react-toastify";
-import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 
+/**
+ * @function CardComponent
+ * @description Displays event details and provides functionality for inviting users, joining, and leaving events.
+ * @param {Object} props - The component props.
+ * @param {Object} props.event - The event object containing event details.
+ * @param {Function} props.onDelete - Callback function triggered when the event is deleted.
+ * @returns {JSX.Element} The rendered CardComponent.
+ */
 function CardComponent({ event, onDelete }) {
   const { user } = useContext(AuthContext);
   const { onOpen } = useDisclosure();
@@ -26,31 +40,39 @@ function CardComponent({ event, onDelete }) {
   const [isJoining, setIsJoining] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  /**
+   * @constant {boolean} isParticipant
+   * @description Determines if the current user is a participant in the event.
+   */
   const [isParticipant, setIsParticipant] = useState(() => {
-    // First check if the event has a special flag from MyEventsPage
     if (event.isUserParticipant === true) {
       return true;
     }
-    // If user isn't logged in, they can't be a participant
     if (!user || !user._id) {
       return false;
     }
-    // Check the participants array - handle both object arrays and ID arrays
     if (event.participants) {
-      // If participants is an array of objects with _id property
-      if (typeof event.participants[0] === 'object') {
-        return event.participants.some(p => p._id === user._id);
-      }
-      // If participants is an array of string IDs
-      else {
+      if (typeof event.participants[0] === "object") {
+        return event.participants.some((p) => p._id === user._id);
+      } else {
         return event.participants.includes(user._id);
       }
     }
     return false;
   });
 
+  /**
+   * @constant {string} typeColor
+   * @description Determines the color of the event type (public or private).
+   */
   const typeColor = event.type === "public" ? "green.500" : "red.500";
 
+  /**
+   * @function handleInvite
+   * @description Toggles the invite visibility and fetches the list of users if not already loaded.
+   * @async
+   */
   const handleInvite = async () => {
     try {
       if (users.length === 0) {
@@ -70,6 +92,11 @@ function CardComponent({ event, onDelete }) {
     }
   };
 
+  /**
+   * @function handleSendInvite
+   * @description Sends an invite to the selected user for the event.
+   * @async
+   */
   const handleSendInvite = async () => {
     if (!selectedUsername) {
       setFeedback("Please select a username");
@@ -92,7 +119,7 @@ function CardComponent({ event, onDelete }) {
       );
       setSelectedUsername("");
       setIsInviteVisible(false);
-      toast.success(`Invite Send`);
+      toast.success(`Invite Sent`);
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to send invite";
       setFeedback(msg);
@@ -100,15 +127,20 @@ function CardComponent({ event, onDelete }) {
     }
   };
 
+  /**
+   * @function handleEventJoin
+   * @description Allows the user to join the event.
+   * @async
+   */
   const handleEventJoin = async () => {
     const token = localStorage.getItem("token");
     if (!user) {
-      toast.error ("Please log in to join this event.");
+      toast.error("Please log in to join this event.");
       return;
     }
 
     if (isParticipant) {
-      toast.error ("You are already a participant in this event.");
+      toast.error("You are already a participant in this event.");
       return;
     }
 
@@ -121,7 +153,7 @@ function CardComponent({ event, onDelete }) {
       });
 
       setIsParticipant(true);
-      toast.success(`Succesfully joint Event`);
+      toast.success(`Successfully joined the event`);
     } catch (error) {
       console.error(error);
       const message = error.response?.data?.error || "Failed to join event.";
@@ -131,6 +163,11 @@ function CardComponent({ event, onDelete }) {
     }
   };
 
+  /**
+   * @function handleLeaveEvent
+   * @description Allows the user to leave the event.
+   * @async
+   */
   const handleLeaveEvent = async () => {
     const token = localStorage.getItem("token");
     if (!user) return;
@@ -142,11 +179,12 @@ function CardComponent({ event, onDelete }) {
       });
 
       setIsParticipant(false);
-      toast.success("Succesfully left the Event");
-      // Custom event to notify MyEventsPage
-      window.dispatchEvent(new CustomEvent('eventLeft', {
-        detail: { eventId: event._id }
-      }));
+      toast.success("Successfully left the event");
+      window.dispatchEvent(
+        new CustomEvent("eventLeft", {
+          detail: { eventId: event._id },
+        })
+      );
     } catch (error) {
       console.error("Failed to leave event:", error);
       toast.error(error);
@@ -155,6 +193,10 @@ function CardComponent({ event, onDelete }) {
     }
   };
 
+  /**
+   * @constant {Array<Object>} filteredUsers
+   * @description Filters the list of users based on the search term.
+   */
   const filteredUsers = users.filter((u) =>
     u.username.toLowerCase().includes(searchTerm.toLowerCase())
   );

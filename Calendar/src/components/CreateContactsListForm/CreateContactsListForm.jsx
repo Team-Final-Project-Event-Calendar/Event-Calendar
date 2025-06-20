@@ -1,3 +1,8 @@
+/**
+ * @file CreateContactsListForm.jsx
+ * @description A React component for creating a new contacts list. It allows users to add or remove contacts and submit the list to the backend.
+ */
+
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../Authentication/AuthContext";
@@ -7,6 +12,13 @@ import { Button } from "@chakra-ui/react";
 const key = import.meta.env.VITE_BACK_END_URL || "http://localhost:5000";
 import { ToastContainer, toast } from "react-toastify";
 
+/**
+ * @function CreateContactsListForm
+ * @description A form component for creating a new contacts list. Users can add or remove contacts and submit the list.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onListCreated - Callback function triggered when a new list is successfully created.
+ * @returns {JSX.Element} The rendered CreateContactsListForm component.
+ */
 const CreateContactsListForm = ({ onListCreated }) => {
   const { user, token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
@@ -16,6 +28,12 @@ const CreateContactsListForm = ({ onListCreated }) => {
   const [currentList, setCurrentList] = useState([]);
   const [isVisible, setIsvisible] = useState(false);
 
+  /**
+   * @function addUser
+   * @description Adds a user to the current contacts list.
+   * @param {string} username - The username of the user to add.
+   * @param {string} id - The ID of the user to add.
+   */
   const addUser = (username, id) => {
     if (currentList.find((u) => u.id === id)) {
       toast.error("User already added");
@@ -25,6 +43,11 @@ const CreateContactsListForm = ({ onListCreated }) => {
     setCurrentList((prev) => [...prev, { username, id }]);
   };
 
+  /**
+   * @function removeUser
+   * @description Removes a user from the current contacts list.
+   * @param {string} id - The ID of the user to remove.
+   */
   const removeUser = (id) => {
     const removedUser = currentList.find((u) => u.id === id);
     if (removedUser) {
@@ -32,6 +55,11 @@ const CreateContactsListForm = ({ onListCreated }) => {
     }
   };
 
+  /**
+   * @function fetchAllUsers
+   * @description Fetches all users from the backend and sets them in the state.
+   * @async
+   */
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
@@ -46,6 +74,12 @@ const CreateContactsListForm = ({ onListCreated }) => {
     if (token) fetchAllUsers();
   }, [token]);
 
+  /**
+   * @function handleSubmit
+   * @description Handles the form submission to create a new contacts list.
+   * @param {Object} e - The form submission event.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -97,6 +131,7 @@ const CreateContactsListForm = ({ onListCreated }) => {
       setSuccess(false);
     }
   };
+
 
   return (
     <div

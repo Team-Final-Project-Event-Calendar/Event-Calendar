@@ -1,3 +1,8 @@
+/**
+ * @file DrawerComponent.jsx
+ * @description A React component that renders a user panel inside a drawer. The panel includes navigation buttons for various sections of the application and a logout button.
+ */
+
 import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { FaGear } from "react-icons/fa6";
@@ -7,7 +12,13 @@ import { IoIosContacts } from "react-icons/io";
 import { GrMultiple } from "react-icons/gr";
 import { MdOutlineInfo } from "react-icons/md";
 
-
+/**
+ * @function DrawerComponent
+ * @description Renders a user panel inside a drawer with navigation buttons and a logout option.
+ * @param {Object} props - The component props.
+ * @param {Function} props.onLogout - Callback function triggered when the logout button is clicked.
+ * @returns {JSX.Element} The rendered DrawerComponent.
+ */
 function DrawerComponent({ onLogout }) {
   const navigate = useNavigate();
   return (
