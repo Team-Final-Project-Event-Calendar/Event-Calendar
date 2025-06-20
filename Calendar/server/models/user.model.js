@@ -1,6 +1,21 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+/**
+ * Mongoose schema for the User model.
+ * 
+ * @typedef {Object} User
+ * @property {string} username - Unique username of the user.
+ * @property {string} phoneNumber - Unique phone number.
+ * @property {string} email - Unique email address.
+ * @property {string} password - Hashed password of the user.
+ * @property {string} firstName - First name of the user.
+ * @property {string} lastName - Last name of the user.
+ * @property {"user" | "admin"} role - Role of the user (default: "user").
+ * @property {string} avatar - URL to the user's avatar.
+ * @property {string} [address] - Optional address of the user.
+ * @property {boolean} isBlocked - Whether the user is blocked.
+ */
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   phoneNumber: { type: String, required: true, unique: true },
@@ -17,6 +32,13 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+/**
+ * Pre-save hook to hash the user's password before saving.
+ * 
+ * @function
+ * @name userSchema.pre("save")
+ * @param {Function} next - Callback to proceed to the next middleware.
+ */
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);

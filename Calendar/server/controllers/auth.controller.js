@@ -9,10 +9,20 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
+/**
+ * @route GET /admin
+ * @desc Admin-only access to the admin page
+ * @access Private (admin)
+ */
 router.get("/admin", verifyAdmin, async (req, res) => {
   res.json({ message: "Welcome to the admin page" });
 });
 
+/**
+ * @route GET /users/search/:query
+ * @desc Search for users by username, phone number, or email
+ * @access Private
+ */
 router.get("/users/search/:query", verifyToken, async (req, res) => {
   try {
     const { query } = req.params;
@@ -35,6 +45,12 @@ router.get("/users/search/:query", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+/**
+ * @route GET /users
+ * @desc Get all users (excluding passwords)
+ * @access Private
+ */
 router.get("/users", verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, "-password");
@@ -44,6 +60,11 @@ router.get("/users", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route GET /users/admin
+ * @desc Paginated list of users for admin panel
+ * @access Private
+ */
 router.get("/users/admin", verifyToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -63,6 +84,11 @@ router.get("/users/admin", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route GET /users/:id
+ * @desc Get a user by ID (excluding password)
+ * @access Private
+ */
 router.get("/users/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
@@ -75,9 +101,13 @@ router.get("/users/:id", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route PUT /users/:id
+ * @desc Update user details by ID
+ * @access Private
+ */
 router.put("/users/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
-
   const user = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -87,27 +117,17 @@ router.put("/users/:id", verifyToken, async (req, res) => {
   try {
     const updateFields = { ...user };
 
-    console.log("Updating user with id:", id);
-    console.log("Update data:", updateFields);
+    if (user.adress) updateFields.adress = user.adress;
+    if (user.avatar) updateFields.avatar = user.avatar;
 
-    if (user.adress) {
-      updateFields.adress = user.adress;
-    }
-    if (user.avatar) {
-      updateFields.avatar = user.avatar;
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      { _id: id },
-      updateFields,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const updatedUser = await User.findByIdAndUpdate({ _id: id }, updateFields, {
+      new: true,
+      runValidators: true,
+    });
 
     const io = req.app.get("io");
     io.to(id).emit("user-updated", updatedUser);
+
     return res
       .status(200)
       .json({ message: "User updated successfully", user: updatedUser });
@@ -115,11 +135,18 @@ router.put("/users/:id", verifyToken, async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 });
+
+/**
+ * @route POST /register
+ * @desc Register a new user
+ * @access Public
+ */
 router.post("/register", async (req, res) => {
   try {
     const { username, phoneNumber, email, password, firstName, lastName } =
       req.body;
     const existingUser = await User.findOne({ email });
+
     if (
       password.length < 8 ||
       password.length > 30 ||
@@ -130,12 +157,14 @@ router.post("/register", async (req, res) => {
           "Password must be 8-30 characters long and include at least one letter (A-Z).",
       });
     }
+
     if (!/^0[0-9]{9}$/.test(phoneNumber)) {
       return res.status(400).json({
         message:
           "Phone number must start with 0, contain only digits 0-9, and be exactly 10 digits long.",
       });
     }
+
     if (
       !firstName ||
       !lastName ||
@@ -151,6 +180,7 @@ router.post("/register", async (req, res) => {
           "First and last names must be 1-30 characters long and contain only letters (A-Z or a-z).",
       });
     }
+
     if (existingUser)
       return res.status(409).json({ msg: "User already exists" });
 
@@ -164,6 +194,7 @@ router.post("/register", async (req, res) => {
       role: "user",
       isBlocked: false,
     });
+
     await newUser.save();
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
@@ -176,6 +207,11 @@ router.post("/register", async (req, res) => {
   }
 });
 
+/**
+ * @route POST /login
+ * @desc Authenticate user and return JWT
+ * @access Public
+ */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -186,6 +222,7 @@ router.post("/login", async (req, res) => {
       msg: "Your account has been blocked. Please contact the administrator.",
     });
   }
+
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.status(400).json({ msg: "Invalid password!" });
 
@@ -203,6 +240,11 @@ router.post("/login", async (req, res) => {
   });
 });
 
+/**
+ * @route POST /logout
+ * @desc Logout user by clearing refreshToken cookie
+ * @access Public
+ */
 router.post("/logout", (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -212,6 +254,11 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 });
 
+/**
+ * @route POST /block/:id
+ * @desc Block a user (admin only)
+ * @access Private (admin)
+ */
 router.post("/block/:id", verifyAdmin, async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.params.id, { isBlocked: true });
@@ -221,6 +268,11 @@ router.post("/block/:id", verifyAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @route POST /unblock/:id
+ * @desc Unblock a user (admin only)
+ * @access Private (admin)
+ */
 router.post("/unblock/:id", verifyAdmin, async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.params.id, { isBlocked: false });
@@ -230,6 +282,11 @@ router.post("/unblock/:id", verifyAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @route DELETE /delete/:id
+ * @desc Delete a user (admin only)
+ * @access Private (admin)
+ */
 router.delete("/delete/:id", verifyAdmin, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -242,6 +299,11 @@ router.delete("/delete/:id", verifyAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @route GET /users/exists/:username
+ * @desc Check if a username already exists
+ * @access Private
+ */
 router.get("/users/exists/:username", verifyToken, async (req, res) => {
   try {
     const userExists = await User.findOne({ username: req.params.username });
@@ -254,6 +316,12 @@ router.get("/users/exists/:username", verifyToken, async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
+/**
+ * @route POST /delete-request
+ * @desc Submit a delete account request
+ * @access Private
+ */
 router.post("/delete-request", verifyToken, async (req, res) => {
   try {
     const existingRequest = await DeleteRequest.findOne({
@@ -277,6 +345,11 @@ router.post("/delete-request", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route GET /delete-requests
+ * @desc Get all account deletion requests (admin only)
+ * @access Private (admin)
+ */
 router.get("/delete-requests", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -294,6 +367,11 @@ router.get("/delete-requests", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route PUT /delete-requests/:id
+ * @desc Update the status of a delete request (admin only)
+ * @access Private (admin)
+ */
 router.put("/delete-requests/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

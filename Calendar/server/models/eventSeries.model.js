@@ -1,14 +1,24 @@
 import mongoose from 'mongoose';
 
-
-// Location schema
+/**
+ * Location schema
+ * @typedef {Object} Location
+ * @property {string} address
+ * @property {string} city
+ * @property {string} country
+ */
 const locationSchema = new mongoose.Schema({
     address: String,
     city: String,
     country: String
 }, { _id: false });
 
-// Event time schema for start/end hours
+/**
+ * Event time schema for start/end hours
+ * @typedef {Object} EventTime
+ * @property {number} hour - Hour of the day (0-23)
+ * @property {number} minute - Minute of the hour (0-59)
+ */
 const eventTimeSchema = new mongoose.Schema({
     hour: {
         type: Number,
@@ -24,7 +34,12 @@ const eventTimeSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
-// Recurrence rule schema
+/**
+ * Recurrence rule schema
+ * @typedef {Object} RecurrenceRule
+ * @property {'daily'|'weekly'|'monthly'|'yearly'} frequency - Recurrence frequency
+ * @property {Date} [endDate] - Optional end date of recurrence
+ */
 const recurrenceSchema = new mongoose.Schema({
     frequency: {
         type: String,
@@ -36,7 +51,16 @@ const recurrenceSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
-// Event template schema for starting/ending events
+/**
+ * Event template schema for starting/ending events
+ * @typedef {Object} EventTemplate
+ * @property {string} title - Event title
+ * @property {string} description - Event description
+ * @property {Date} startDateTime - Starting date and time of the event
+ * @property {EventTime} startTime - Start time as hour and minute
+ * @property {EventTime} endTime - End time as hour and minute
+ * @property {Location} [location] - Optional location information
+ */
 const eventTemplateSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -63,8 +87,18 @@ const eventTemplateSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
-
-//MAIN Series of Events schema
+/**
+ * Main Series of Events schema
+ * @typedef {Object} EventSeries
+ * @property {string} name - Name of the event series
+ * @property {mongoose.Types.ObjectId} creatorId - Reference to User who created the series
+ * @property {'recurring'|'manual'} seriesType - Type of series
+ * @property {boolean} [isIndefinite=false] - Whether the series has no defined end
+ * @property {EventTemplate} startingEvent - Embedded starting event document
+ * @property {EventTemplate} [endingEvent] - Embedded ending event document, required if not indefinite
+ * @property {RecurrenceRule} [recurrenceRule] - Recurrence rules for recurring series
+ * @property {mongoose.Types.ObjectId[]} [eventsId] - Array of references to individual events for manual series
+ */
 const eventSeriesSchema = new mongoose.Schema({
     name: { type: String, required: true },
     creatorId: {
@@ -72,7 +106,7 @@ const eventSeriesSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-seriesType: {
+    seriesType: {
         type: String,
         enum: ['recurring', 'manual'],
         required: true,
@@ -82,26 +116,22 @@ seriesType: {
         type: Boolean,
         default: false
     },
-    // Starting event as embedded document instead of reference
     startingEvent: {
         type: eventTemplateSchema,
         required: true
     },
-    // Ending event as embedded document (optional if indefinite)
     endingEvent: {
         type: eventTemplateSchema,
         required: function() {
             return !this.isIndefinite;
         }
     },
-    // Recurrence rules for recurring series
     recurrenceRule: {
         type: recurrenceSchema,
         required: function() {
             return this.seriesType === 'recurring';
         }
     },
-    // For manual series - references to actual events
     eventsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
@@ -110,8 +140,7 @@ seriesType: {
     timestamps: true
 });
 
-
-//mongodb performance, to jump directly to creatorId,wihtout going through whole collec.
-//eventSeriesSchema.index({ creatorId: 1 });
+// mongodb performance, to jump directly to creatorId, without going through whole collection
+// eventSeriesSchema.index({ creatorId: 1 });
 
 export default mongoose.model('EventSeries', eventSeriesSchema);

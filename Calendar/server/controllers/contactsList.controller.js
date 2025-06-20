@@ -1,6 +1,18 @@
 import ContactsList from "../models/contactsList.model.js";
 import verifyToken from "../verify-token.js";
 
+/**
+ * Create a new contacts list.
+ *
+ * @route POST /contacts-lists
+ * @access Private
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - The body containing title and contacts
+ * @param {string} req.body.title - The title of the contacts list
+ * @param {Array<string>} req.body.contacts - Array of contact IDs
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with the created contacts list or error message
+ */
 export const createContactsList = async (req, res) => {
   try {
     const { title, contacts } = req.body;
@@ -16,6 +28,15 @@ export const createContactsList = async (req, res) => {
   }
 };
 
+/**
+ * Retrieve all contact lists created by the authenticated user.
+ *
+ * @route GET /contacts-lists
+ * @access Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with an array of contact lists or error message
+ */
 export const getContactsLists = async (req, res) => {
   try {
     const creator = req.user.id;
@@ -32,29 +53,3 @@ export const getContactsLists = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// const deleteContactsList = async (req, res) => {
-//   try {
-//     const deletedUser = await User.findByIdAndDelete(req.params.id);
-//     if (!deletedUser) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     res.json({ message: "User deleted successfully" });
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to delete user" });
-//   }
-// };
-
-// export const deleteContactsList = async (req, res) => {
-//   try {
-//     const deleteContactsList = await ContactsList.findByIdAndDelete(
-//       req.params.id
-//     );
-//     if (!deleteContactsList) {
-//       return res.status(404).json({ message: "Contact list not found" });
-//     }
-//     res.json({ message: "Contact list deleted successfully" });
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to delete contact list" });
-//   }
-// };

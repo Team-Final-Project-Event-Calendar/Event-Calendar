@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+/**
+ * Mongoose schema for user account deletion requests.
+ * 
+ * @typedef {Object} DeleteRequest
+ * @property {mongoose.Types.ObjectId} userId - The ID of the user requesting account deletion.
+ * @property {string} username - The username of the user.
+ * @property {Date} requestedAt - The date and time when the deletion request was made.
+ * @property {"pending" | "processed" | "rejected"} status - Status of the deletion request.
+ * @property {string} reason - Reason for the deletion request.
+ */
 const deleteRequestSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,

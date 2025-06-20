@@ -8,9 +8,34 @@ import ContactsList from "../models/contactsList.model.js";
 
 const router = express.Router();
 
+/**
+ * Route to create a new contacts list.
+ * @name POST /
+ * @function
+ * @middleware verifyToken
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 router.post("/", verifyToken, createContactsList);
+
+/**
+ * Route to get all contacts lists for the authenticated user.
+ * @name GET /
+ * @function
+ * @middleware verifyToken
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 router.get("/", verifyToken, getContactsLists);
 
+/**
+ * Route to delete a contacts list by ID.
+ * @name DELETE /delete/:id
+ * @function
+ * @middleware verifyToken
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 router.delete("/delete/:id", verifyToken, async (req, res) => {
   try {
     const deleteContactsList = await ContactsList.findByIdAndDelete(
@@ -25,6 +50,14 @@ router.delete("/delete/:id", verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * Route to remove a contact from a contacts list.
+ * @name DELETE /:listId/contacts/:userId
+ * @function
+ * @middleware verifyToken
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 router.delete("/:listId/contacts/:userId", verifyToken, async (req, res) => {
   const { listId, userId } = req.params;
   try {
